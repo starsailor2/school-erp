@@ -1,0 +1,51 @@
+import { useMemo } from "react";
+import { Chip } from "@mui/material";
+import { DataTable } from "@/components/DataTable";
+import { PageHeader } from "@/components/PageHeader";
+import { students } from "@/data/mock";
+import { getLibraryRecords, getLibraryBooksState } from "@/data/libraryCirculationStore";
+
+export default function LibraryRecords() {
+  const rows = useMemo(() => {
+    const books = getLibraryBooksState();
+    return getLibraryRecords().map((r) => {
+      const student = students.find((s) => s.id === r.student_id);
+      const book = books.find((b) => b.id === r.book_id);
+      return {
+        ...r,
+        studentName: student?.name ?? "-",
+        bookTitle: book?.title ?? "-",
+      };
+    });
+  }, []);
+
+  return (
+    <>
+      <PageHeader
+        title="Library Records"
+        breadcrumbs={[{ label: "Dashboard", to: "/staff" }, { label: "Library", to: "/staff/library/books" }, { label: "Records" }]}
+      />
+      <DataTable
+        rows={rows}
+        columns={[
+          { key: "bookTitle", label: "Book" },
+          { key: "studentName", label: "Student" },
+          { key: "issue_date", label: "Issue Date" },
+          { key: "return_date", label: "Expected Return" },
+          { key: "actual_return_date", label: "Actual Return", render: (r) => r.actual_return_date ?? "-" },
+          {
+            key: "status",
+            label: "Status",
+            render: (r) => (
+              <Chip
+                size="small"
+                label={r.status}
+                color={r.status === "returned" ? "success" : r.status === "overdue" ? "error" : "warning"}
+              />
+            ),
+          },
+        ]}
+      />
+    </>
+  );
+}
