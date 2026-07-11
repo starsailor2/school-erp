@@ -1,9 +1,10 @@
 import type { SchoolClass } from "@/types";
+import { teachers } from "@/demo-data/people/teachers";
 
 // 12 classes; classes 1-5 have 2 sections (A, B), classes 6-12 have 3 (A, B, C).
-// Section class_teacher_id and student_count are patched in people/students.ts
-// (Task 3) and people/teachers.ts (Task 3) once those rosters exist, avoiding
-// a circular import between academics <-> people.
+// Section class_teacher_id and student_count are patched below and in
+// people/students.ts once those rosters exist, avoiding a circular import
+// between academics <-> people.
 export const classes: SchoolClass[] = Array.from({ length: 12 }, (_, i) => ({
   id: `c${i + 1}`,
   name: `Class ${i + 1}`,
@@ -19,4 +20,13 @@ export const classes: SchoolClass[] = Array.from({ length: 12 }, (_, i) => ({
 
 export function getClassName(classId: string) {
   return classes.find((c) => c.id === classId)?.name ?? classId;
+}
+
+const classTeacherPool = teachers.filter((t) => t.teacher_type === "class_teacher" || t.teacher_type === "hod");
+let ctIdx = 0;
+for (const cls of classes) {
+  for (const sec of cls.sections) {
+    sec.class_teacher_id = classTeacherPool[ctIdx % classTeacherPool.length].id;
+    ctIdx++;
+  }
 }
