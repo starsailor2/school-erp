@@ -46,6 +46,8 @@ export default function PaymentRecords() {
         </Grid>
       </Grid>
       <DataTable
+        pagination
+        pageSize={25}
         rows={rows}
         columns={[
           { key: "payment_date", label: "Date" },

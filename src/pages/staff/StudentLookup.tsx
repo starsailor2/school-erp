@@ -45,6 +45,8 @@ export default function StudentLookup() {
         </Grid>
       </Grid>
       <DataTable
+        pagination
+        pageSize={25}
         columns={[
           {
             key: "name", label: "Student",

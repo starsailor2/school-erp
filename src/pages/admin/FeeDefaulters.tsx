@@ -45,6 +45,8 @@ export default function FeeDefaulters() {
         </Grid>
       </Grid>
       <DataTable
+        pagination
+        pageSize={25}
         columns={[
           { key: "studentName", label: "Student" },
           { key: "className", label: "Class" },

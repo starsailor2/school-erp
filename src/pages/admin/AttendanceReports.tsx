@@ -94,6 +94,8 @@ export default function AttendanceReports() {
         </Grid>
         <Grid size={{ xs: 12 }}>
           <DataTable
+            pagination
+            pageSize={25}
             title="Attendance Risk Watchlist"
             columns={[
               { key: "student", label: "Student" },

@@ -60,6 +60,8 @@ export default function StudentDirectory() {
       </Grid>
 
       <DataTable<Student>
+        pagination
+        pageSize={25}
         columns={[
           {
             key: "name", label: "Student",
