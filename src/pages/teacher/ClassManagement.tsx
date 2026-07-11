@@ -4,7 +4,7 @@ import {
   Avatar, Dialog, DialogTitle, DialogContent, DialogActions, Divider,
   LinearProgress,
 } from "@mui/material";
-import { KpiCard } from "@/components/KpiCard";
+import { StatCard } from "@/components/StatCard";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import StatusChip from "@/components/StatusChip";
@@ -51,9 +51,9 @@ export default function ClassManagement() {
         </Grid>
       </Grid>
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Students" value={classStudents.length} icon={<PeopleIcon />} color="#6366f1" /></Grid>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Avg Attendance" value={`${avgAtt}%`} icon={<TrendingUpIcon />} color="#10b981" /></Grid>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Fees Paid" value={`${feesPaid}/${classStudents.length}`} icon={<PeopleIcon />} color="#f59e0b" /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Students" value={classStudents.length} numericValue={classStudents.length} icon={<PeopleIcon />} /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Avg Attendance" value={`${avgAtt}%`} numericValue={avgAtt} formatValue={(n) => `${n}%`} icon={<TrendingUpIcon />} delay={0.05} /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Fees Paid" value={`${feesPaid}/${classStudents.length}`} numericValue={feesPaid} formatValue={(n) => `${n}/${classStudents.length}`} icon={<PeopleIcon />} delay={0.1} /></Grid>
       </Grid>
 
       <DataTable
