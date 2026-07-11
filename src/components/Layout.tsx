@@ -146,7 +146,7 @@ export default function Layout() {
     color: sidebarTokens.text,
     justifyContent: showRail ? "center" : "flex-start",
     px: showRail ? 1.5 : 2,
-    transition: `background-color ${motionDuration}s ${motionEasingCss}`,
+    transition: `background-color ${motionDuration}s ${motionEasingCss}, color ${motionDuration}s ${motionEasingCss}`,
     "&:hover": { bgcolor: sidebarTokens.hoverBackground },
     ...(active && {
       bgcolor: sidebarTokens.activeBackground,
@@ -215,20 +215,23 @@ export default function Layout() {
                 return (
                   <Box key={item.label}>
                     <Tooltip title={showRail ? item.label : ""} placement="right">
-                      <ListItemButton
-                        onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
-                        sx={navButtonSx(active)}
-                      >
-                        <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
-                        {!showRail && (
-                          <>
-                            <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
-                            <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: motionDuration, ease: motionEasing }}>
-                              <ExpandMoreIcon fontSize="small" />
-                            </motion.div>
-                          </>
-                        )}
-                      </ListItemButton>
+                      <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+                        <ListItemButton
+                          disableRipple
+                          onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
+                          sx={navButtonSx(active)}
+                        >
+                          <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
+                          {!showRail && (
+                            <>
+                              <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
+                              <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+                                <ExpandMoreIcon fontSize="small" />
+                              </motion.div>
+                            </>
+                          )}
+                        </ListItemButton>
+                      </motion.div>
                     </Tooltip>
                     <AnimatePresence initial={false}>
                       {open && (
@@ -243,27 +246,34 @@ export default function Layout() {
                             {item.children.map((child) => {
                               const childActive = location.pathname === child.path;
                               return (
-                                <ListItemButton
+                                <motion.div
                                   key={child.path}
-                                  onClick={() => handleNav(child.path)}
-                                  sx={{
-                                    pl: 6.5,
-                                    mx: 1,
-                                    borderRadius: 1.5,
-                                    mb: 0.25,
-                                    minHeight: 40,
-                                    py: 0.75,
-                                    color: sidebarTokens.muted,
-                                    "&:hover": { bgcolor: sidebarTokens.hoverBackground },
-                                    ...(childActive && {
-                                      bgcolor: sidebarTokens.activeBackground,
-                                      color: sidebarTokens.activeText,
-                                      fontWeight: 600,
-                                    }),
-                                  }}
+                                  whileTap={{ scale: 0.97 }}
+                                  transition={{ duration: motionDuration, ease: motionEasing }}
                                 >
-                                  <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
-                                </ListItemButton>
+                                  <ListItemButton
+                                    disableRipple
+                                    onClick={() => handleNav(child.path)}
+                                    sx={{
+                                      pl: 6.5,
+                                      mx: 1,
+                                      borderRadius: 1.5,
+                                      mb: 0.25,
+                                      minHeight: 40,
+                                      py: 0.75,
+                                      color: sidebarTokens.muted,
+                                      transition: `background-color ${motionDuration}s ${motionEasingCss}, color ${motionDuration}s ${motionEasingCss}`,
+                                      "&:hover": { bgcolor: sidebarTokens.hoverBackground },
+                                      ...(childActive && {
+                                        bgcolor: sidebarTokens.activeBackground,
+                                        color: sidebarTokens.activeText,
+                                        fontWeight: 600,
+                                      }),
+                                    }}
+                                  >
+                                    <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
+                                  </ListItemButton>
+                                </motion.div>
                               );
                             })}
                           </List>
@@ -275,10 +285,12 @@ export default function Layout() {
               }
               return (
                 <Tooltip key={item.path} title={showRail ? item.label : ""} placement="right">
-                  <ListItemButton onClick={() => handleNav(item.path)} sx={navButtonSx(active)}>
-                    <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
-                    {!showRail && <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />}
-                  </ListItemButton>
+                  <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+                    <ListItemButton disableRipple onClick={() => handleNav(item.path)} sx={navButtonSx(active)}>
+                      <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
+                      {!showRail && <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />}
+                    </ListItemButton>
+                  </motion.div>
                 </Tooltip>
               );
             })}
