@@ -2,8 +2,8 @@ import { useMemo, useState } from "react";
 import { Grid, MenuItem, TextField, Drawer, Box, Typography, Divider, Stack, Chip } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { getFeePayments, getFeeReceipts, getStaffFees } from "@/data/feeTransactionStore";
-import { students, getClassName } from "@/data/mock";
+import { getFeePayments, getFeeReceipts, getStaffFees } from "@/demo-data/fees/feeTransactionStore";
+import { students, getClassName } from "@/demo-data";
 
 export default function StudentFeeHistory() {
   const [studentId, setStudentId] = useState("all");

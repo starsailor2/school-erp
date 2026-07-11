@@ -5,7 +5,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { parents, getChildrenOfParent, getStudentAttendance, getClassName } from "@/data/mock";
+import { parents, getChildrenOfParent, getStudentAttendance, getClassName } from "@/demo-data";
 
 export default function ParentAttendance() {
   const { user, selectedChildId, setSelectedChildId } = useAuth();

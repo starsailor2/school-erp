@@ -1,8 +1,8 @@
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students } from "@/data/mock";
+import { students } from "@/demo-data";
 import { useNavigate } from "react-router-dom";
-import { getTransportRoutes } from "@/data/transportRouteStore";
+import { getTransportRoutes } from "@/demo-data/transport/transportRouteStore";
 
 export default function StaffTransportRoutes() {
   const navigate = useNavigate();

@@ -11,7 +11,7 @@ import { DataTable } from "@/components/DataTable";
 import {
   students, parents, getClassName, getStudentAttendance, getStudentMarks,
   getStudentFees, getSubjectName, routes, classes,
-} from "@/data/mock";
+} from "@/demo-data";
 
 export default function StudentProfile() {
   const { id } = useParams<{ id: string }>();

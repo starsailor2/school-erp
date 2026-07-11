@@ -7,7 +7,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { teachers, subjects, getSubjectName } from "@/data/mock";
+import { teachers, subjects, getSubjectName } from "@/demo-data";
 import type { Teacher } from "@/types";
 
 export default function TeacherDirectory() {

@@ -5,7 +5,7 @@ import {
   PieChart, Pie, Cell, Legend,
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
-import { marks, subjects, exams, classes, students } from "@/data/mock";
+import { marks, subjects, exams, classes, students } from "@/demo-data";
 
 const COLORS = ["#6366f1", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6"];
 

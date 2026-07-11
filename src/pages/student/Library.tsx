@@ -7,7 +7,7 @@ import {
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { libraryBooks } from "@/data/mock";
+import { libraryBooks } from "@/demo-data";
 import type { LibraryBook } from "@/types";
 
 export default function StudentLibrary() {

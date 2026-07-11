@@ -5,8 +5,8 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, classes, getClassName } from "@/data/mock";
-import { createStudentRequest } from "@/data/studentRequestStore";
+import { students, classes, getClassName } from "@/demo-data";
+import { createStudentRequest } from "@/demo-data/staffOps/studentRequestStore";
 
 interface TransferRequest {
   id: string;

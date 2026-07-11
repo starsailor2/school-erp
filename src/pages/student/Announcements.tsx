@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import { PageHeader } from "@/components/PageHeader";
-import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/data/announcementStore";
+import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communication/announcementStore";
 import type { Announcement } from "@/types";
 
 export default function StudentAnnouncements() {

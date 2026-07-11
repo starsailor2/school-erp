@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Paper, Typography, Box, Chip, Stack, Divider, Button } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { getNotifications, resetNotifications, saveNotifications } from "@/data/notificationStore";
+import { getNotifications, resetNotifications, saveNotifications } from "@/demo-data/communication/notificationStore";
 
 export default function Notifications() {
   const [rows, setRows] = useState(getNotifications);

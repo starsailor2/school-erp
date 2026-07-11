@@ -30,3 +30,11 @@ for (const cls of classes) {
     ctIdx++;
   }
 }
+
+export function getClassTeacherSections(teacherId: string) {
+  return classes.flatMap((c) =>
+    c.sections
+      .filter((s) => s.class_teacher_id === teacherId)
+      .map((s) => ({ ...s, className: c.name }))
+  );
+}

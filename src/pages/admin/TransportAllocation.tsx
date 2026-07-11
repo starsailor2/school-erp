@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, routes, getClassName } from "@/data/mock";
+import { students, routes, getClassName } from "@/demo-data";
 
 type AllocationRow = {
   id: string;

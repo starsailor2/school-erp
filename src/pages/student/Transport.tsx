@@ -2,7 +2,7 @@ import { Paper, Typography, Stack, Chip } from "@mui/material";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { studentTransport, routes } from "@/data/mock";
+import { studentTransport, routes } from "@/demo-data";
 
 export default function StudentTransport() {
   const { user } = useAuth();

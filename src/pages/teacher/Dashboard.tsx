@@ -19,8 +19,8 @@ import { useAuth } from "@/context/AuthContext";
 import {
   teachers, getTeacherClasses, students, homework, getSubjectName,
   getClassName, timetable,
-} from "@/data/mock";
-import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/data/announcementStore";
+} from "@/demo-data";
+import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communication/announcementStore";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 

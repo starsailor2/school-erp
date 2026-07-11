@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Paper, Typography, Stack, Box, Chip, Button, Grid, TextField, MenuItem, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { getStudentRequests, updateStudentRequest } from "@/data/studentRequestStore";
-import { students } from "@/data/mock";
+import { getStudentRequests, updateStudentRequest } from "@/demo-data/staffOps/studentRequestStore";
+import { students } from "@/demo-data";
 import { useAuth } from "@/context/AuthContext";
 import type { StudentRequestStatus } from "@/types";
 

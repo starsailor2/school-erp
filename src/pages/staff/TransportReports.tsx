@@ -1,6 +1,6 @@
 import { Paper, Stack, Typography } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { routes, studentTransport } from "@/data/mock";
+import { routes, studentTransport } from "@/demo-data";
 
 export default function TransportReports() {
   const activeRoutes = routes.length;

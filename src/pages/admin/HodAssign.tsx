@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { teachers, subjects } from "@/data/mock";
+import { teachers, subjects } from "@/demo-data";
 
 type HodRow = {
   id: string;

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Button } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { students, libraryBooks } from "@/data/mock";
-import { getLibraryRecords, returnLibraryBook } from "@/data/libraryCirculationStore";
+import { students, libraryBooks } from "@/demo-data";
+import { getLibraryRecords, returnLibraryBook } from "@/demo-data/library/libraryCirculationStore";
 
 export default function LibraryReturn() {
   const [, setRefresh] = useState(0);

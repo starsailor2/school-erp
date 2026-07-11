@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Paper, Typography, Stack, Box, Chip, Button, Dialog, DialogTitle, DialogContent, Grid, TextField, MenuItem } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { getStaffTasks, saveStaffTasks, updateStaffTask } from "@/data/staffTaskStore";
+import { getStaffTasks, saveStaffTasks, updateStaffTask } from "@/demo-data/staffOps/staffTaskStore";
 import { useAuth } from "@/context/AuthContext";
 import type { StaffTask } from "@/types";
 

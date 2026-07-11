@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
-import { fees } from "@/data/mock";
+import { fees } from "@/demo-data";
 
 const COLORS = ["#10b981", "#f59e0b", "#ef4444"];
 

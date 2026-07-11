@@ -2,8 +2,8 @@ import { useMemo, useState } from "react";
 import { Grid, MenuItem, TextField } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { getFeePayments } from "@/data/feeTransactionStore";
-import { students, getClassName } from "@/data/mock";
+import { getFeePayments } from "@/demo-data/fees/feeTransactionStore";
+import { students, getClassName } from "@/demo-data";
 
 export default function PaymentRecords() {
   const [methodFilter, setMethodFilter] = useState("all");

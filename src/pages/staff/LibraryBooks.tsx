@@ -3,7 +3,7 @@ import { Chip, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { getLibraryBooksState } from "@/data/libraryCirculationStore";
+import { getLibraryBooksState } from "@/demo-data/library/libraryCirculationStore";
 
 export default function LibraryBooks() {
   const navigate = useNavigate();

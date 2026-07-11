@@ -11,8 +11,8 @@ import { useNavigate } from "react-router-dom";
 import {
   students, classes, getStudentAttendance, getStudentMarks, getSubjectName,
   getClassName, homework as allHomework, exams, timetable,
-} from "@/data/mock";
-import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/data/announcementStore";
+} from "@/demo-data";
+import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communication/announcementStore";
 
 export default function StudentDashboard() {
   const { user } = useAuth();

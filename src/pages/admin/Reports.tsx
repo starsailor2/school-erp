@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
-import { classes, students, marks, subjects } from "@/data/mock";
+import { classes, students, marks, subjects } from "@/demo-data";
 
 export default function Reports() {
   const [scope, setScope] = useState("month");

@@ -11,7 +11,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   teachers, students, getClassTeacherSections, marks, attendanceRecords,
   getSubjectName, parents,
-} from "@/data/mock";
+} from "@/demo-data";
 import PeopleIcon from "@mui/icons-material/People";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import VisibilityIcon from "@mui/icons-material/Visibility";

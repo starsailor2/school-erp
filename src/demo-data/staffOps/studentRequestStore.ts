@@ -1,4 +1,4 @@
-import { defaultStudentRequests } from "@/data/mock";
+import { defaultStudentRequests } from "@/demo-data/staffOps/studentRequests";
 import type { StudentRequest, StudentRequestType } from "@/types";
 
 const STORAGE_KEY = "erp_student_requests";

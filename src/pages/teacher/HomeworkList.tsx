@@ -11,7 +11,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, homework as initialHomework, getClassName, getSubjectName, getTeacherClasses } from "@/data/mock";
+import { teachers, homework as initialHomework, getClassName, getSubjectName, getTeacherClasses } from "@/demo-data";
 import type { Homework } from "@/types";
 
 export default function HomeworkList() {

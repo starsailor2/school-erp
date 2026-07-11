@@ -6,7 +6,7 @@ import {
 import QuizIcon from "@mui/icons-material/Quiz";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { students, getStudentMarks, getSubjectName, exams } from "@/data/mock";
+import { students, getStudentMarks, getSubjectName, exams } from "@/demo-data";
 
 export default function StudentExams() {
   const { user } = useAuth();

@@ -4,7 +4,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, classes, attendanceRecords } from "@/data/mock";
+import { students, classes, attendanceRecords } from "@/demo-data";
 import type { AttendanceStatus } from "@/types";
 
 type AttendanceRow = {

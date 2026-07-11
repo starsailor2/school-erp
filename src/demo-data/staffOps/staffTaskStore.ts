@@ -1,4 +1,4 @@
-import { defaultStaffTasks } from "@/data/mock";
+import { defaultStaffTasks } from "@/demo-data/staffOps/tasks";
 import type { StaffTask } from "@/types";
 
 const STORAGE_KEY = "erp_staff_tasks";

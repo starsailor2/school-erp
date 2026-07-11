@@ -1,4 +1,4 @@
-import { routes } from "@/data/mock";
+import { routes } from "@/demo-data/transport/routes";
 import type { Route } from "@/types";
 
 const STORAGE_KEY = "erp_transport_routes";

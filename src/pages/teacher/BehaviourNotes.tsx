@@ -10,7 +10,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, students, getTeacherClasses } from "@/data/mock";
+import { teachers, students, getTeacherClasses } from "@/demo-data";
 
 interface Note {
   id: string;

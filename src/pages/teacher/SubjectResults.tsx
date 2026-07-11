@@ -6,7 +6,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, marks, students, getTeacherClasses, getClassName, getSubjectName, exams } from "@/data/mock";
+import { teachers, marks, students, getTeacherClasses, getClassName, getSubjectName, exams } from "@/demo-data";
 
 export default function SubjectResults() {
   const { user } = useAuth();

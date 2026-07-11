@@ -11,8 +11,8 @@ import { useAuth } from "@/context/AuthContext";
 import {
   parents, getChildrenOfParent, getClassName, getStudentMarks,
   getStudentFees, getStudentAttendance, homework, getSubjectName, timetable, exams,
-} from "@/data/mock";
-import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/data/announcementStore";
+} from "@/demo-data";
+import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communication/announcementStore";
 
 export default function ParentDashboard() {
   const navigate = useNavigate();

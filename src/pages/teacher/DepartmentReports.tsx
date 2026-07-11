@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   teachers, students, subjects, classes, marks, exams, subjectAllocations,
   getClassName, getSubjectName,
-} from "@/data/mock";
+} from "@/demo-data";
 
 export default function DepartmentReports() {
   const { user } = useAuth();

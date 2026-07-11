@@ -17,7 +17,7 @@ import { PageHeader } from "@/components/PageHeader";
 import {
   students, teachers, staffMembers, classes, fees, attendanceRecords,
   announcements, routes, exams, getClassName,
-} from "@/data/mock";
+} from "@/demo-data";
 
 const COLORS = ["#6366f1", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6"];
 

@@ -1,4 +1,4 @@
-import { messages as defaultMessages } from "@/data/mock";
+import { messages as defaultMessages } from "@/demo-data/communication/messages";
 import type { Message } from "@/types";
 
 const STORAGE_KEY = "erp_messages";

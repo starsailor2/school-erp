@@ -8,11 +8,11 @@ import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import { KpiCard } from "@/components/KpiCard";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { staffMembers, students, routes, announcements } from "@/data/mock";
-import { getStaffFees, getFeePayments } from "@/data/feeTransactionStore";
-import { getLibraryRecords } from "@/data/libraryCirculationStore";
-import { getStudentRequests } from "@/data/studentRequestStore";
-import { getStaffTasks } from "@/data/staffTaskStore";
+import { staffMembers, students, routes, announcements } from "@/demo-data";
+import { getStaffFees, getFeePayments } from "@/demo-data/fees/feeTransactionStore";
+import { getLibraryRecords } from "@/demo-data/library/libraryCirculationStore";
+import { getStudentRequests } from "@/demo-data/staffOps/studentRequestStore";
+import { getStaffTasks } from "@/demo-data/staffOps/staffTaskStore";
 
 export default function StaffDashboard() {
   const navigate = useNavigate();

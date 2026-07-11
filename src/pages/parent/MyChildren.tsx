@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   parents, getChildrenOfParent, getClassName, getStudentMarks,
   getStudentAttendance, getStudentFees, getSubjectName,
-} from "@/data/mock";
+} from "@/demo-data";
 import type { Student } from "@/types";
 
 export default function MyChildren() {

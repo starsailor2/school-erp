@@ -7,7 +7,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, getSubjectName, getClassName } from "@/data/mock";
+import { teachers, getSubjectName, getClassName } from "@/demo-data";
 
 export default function TeacherProfile() {
   const { user } = useAuth();

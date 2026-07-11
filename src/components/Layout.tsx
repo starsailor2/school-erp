@@ -34,7 +34,7 @@ import { useColorMode } from "@/context/ColorModeContext";
 import TeacherTypeSwitcher from "@/components/TeacherTypeSwitcher";
 import StaffRoleSwitcher from "@/components/StaffRoleSwitcher";
 import { getNavItems, type NavItem } from "@/components/navigation";
-import { getUnreadNotificationCount } from "@/data/notificationStore";
+import { getUnreadNotificationCount } from "@/demo-data/communication/notificationStore";
 import { sidebarTokens, motionEasing, motionDuration, motionEasingCss } from "@/theme/tokens";
 
 const DRAWER_WIDTH = 260;

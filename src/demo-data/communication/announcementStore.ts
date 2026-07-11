@@ -1,4 +1,4 @@
-import { announcements as defaultAnnouncements } from "@/data/mock";
+import { announcements as defaultAnnouncements } from "@/demo-data/communication/announcements";
 import type { Announcement } from "@/types";
 
 const STORAGE_KEY = "erp_announcements";

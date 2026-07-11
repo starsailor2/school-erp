@@ -5,7 +5,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students } from "@/data/mock";
+import { students } from "@/demo-data";
 
 interface DocumentRecord {
   id: string;

@@ -8,7 +8,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import HistoryIcon from "@mui/icons-material/History";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { parents, getChildrenOfParent, getStudentFees, getClassName } from "@/data/mock";
+import { parents, getChildrenOfParent, getStudentFees, getClassName } from "@/demo-data";
 import type { Fee } from "@/types";
 
 export default function ParentFees() {

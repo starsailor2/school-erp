@@ -2,7 +2,7 @@ import { useState } from "react";
 import { TextField, Grid, Chip, Box, Button, MenuItem, Paper } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { teachers } from "@/data/mock";
+import { teachers } from "@/demo-data";
 import type { AttendanceStatus } from "@/types";
 
 type TeacherAttendanceRow = {

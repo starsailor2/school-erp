@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { staffMembers } from "@/data/mock";
+import { staffMembers } from "@/demo-data";
 import type { Staff, StaffRole } from "@/types";
 
 type StaffRow = {

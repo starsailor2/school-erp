@@ -2,7 +2,7 @@ import { Paper, Typography, Stack, Chip, MenuItem, TextField } from "@mui/materi
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { parents, getChildrenOfParent, studentTransport, routes, getClassName } from "@/data/mock";
+import { parents, getChildrenOfParent, studentTransport, routes, getClassName } from "@/demo-data";
 
 export default function ParentTransport() {
   const { user, selectedChildId, setSelectedChildId } = useAuth();

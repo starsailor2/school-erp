@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { routes, transportDrivers } from "@/data/mock";
+import { routes, transportDrivers } from "@/demo-data";
 
 export default function TransportDrivers() {
   const rows = transportDrivers.map((d) => ({

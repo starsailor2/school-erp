@@ -7,7 +7,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, getTeacherClasses, students, attendanceRecords, getClassName } from "@/data/mock";
+import { teachers, getTeacherClasses, students, attendanceRecords, getClassName } from "@/demo-data";
 import type { Student } from "@/types";
 
 export default function AttendanceHistory() {

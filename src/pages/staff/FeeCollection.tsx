@@ -3,8 +3,8 @@ import { MenuItem, TextField, Grid, Chip, Button, Box, Stack } from "@mui/materi
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, getClassName } from "@/data/mock";
-import { getStaffFees, recordFeePayment } from "@/data/feeTransactionStore";
+import { students, getClassName } from "@/demo-data";
+import { getStaffFees, recordFeePayment } from "@/demo-data/fees/feeTransactionStore";
 import { useAuth } from "@/context/AuthContext";
 
 export default function StaffFeeCollection() {

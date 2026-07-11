@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { teachers, classes } from "@/data/mock";
+import { teachers, classes } from "@/demo-data";
 
 type AssignmentRow = {
   id: string;

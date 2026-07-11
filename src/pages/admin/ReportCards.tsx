@@ -3,7 +3,7 @@ import {
   MenuItem, TextField, Grid, Paper, Typography, Avatar, Stack, Divider, Chip, Box,
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { students, marks, exams, getSubjectName, getClassName } from "@/data/mock";
+import { students, marks, exams, getSubjectName, getClassName } from "@/demo-data";
 
 export default function ReportCards() {
   const [studentId, setStudentId] = useState(students[0]?.id ?? "");

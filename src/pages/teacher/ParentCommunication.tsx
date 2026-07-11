@@ -9,9 +9,9 @@ import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, students, parents, getTeacherClasses, getClassName,
-} from "@/data/mock";
-import { addMessage } from "@/data/messageStore";
-import { createStudentRequest } from "@/data/studentRequestStore";
+} from "@/demo-data";
+import { addMessage } from "@/demo-data/communication/messageStore";
+import { createStudentRequest } from "@/demo-data/staffOps/studentRequestStore";
 import type { Parent } from "@/types";
 
 export default function ParentCommunication() {

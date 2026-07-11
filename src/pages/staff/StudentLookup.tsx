@@ -3,7 +3,7 @@ import { TextField, InputAdornment, Grid, Avatar, Box, Paper, Typography, Stack,
 import SearchIcon from "@mui/icons-material/Search";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, parents, getClassName, getStudentAttendance } from "@/data/mock";
+import { students, parents, getClassName, getStudentAttendance } from "@/demo-data";
 
 export default function StudentLookup() {
   const [search, setSearch] = useState("");

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { getLibraryBooksState } from "@/data/libraryCirculationStore";
+import { getLibraryBooksState } from "@/demo-data/library/libraryCirculationStore";
 
 export default function LibraryCategories() {
   const rows = useMemo(() => {

@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, subjects, getClassName, getSubjectName,
-} from "@/data/mock";
+} from "@/demo-data";
 
 interface SyllabusEntry {
   id: string;

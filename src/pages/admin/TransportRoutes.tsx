@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { routes, students } from "@/data/mock";
+import { routes, students } from "@/demo-data";
 import type { Route } from "@/types";
 
 export default function TransportRoutes() {

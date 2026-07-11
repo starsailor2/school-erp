@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { classes, students, marks, subjects, exams } from "@/data/mock";
+import { classes, students, marks, subjects, exams } from "@/demo-data";
 
 export default function PerformanceReports() {
   const [classFilter, setClassFilter] = useState("all");

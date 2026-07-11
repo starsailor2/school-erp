@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Avatar, Box, Button, Chip, Dialog, DialogContent, DialogTitle, Grid, MenuItem, Paper, Stack, TextField, Typography } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { getStudentRequests, saveStudentRequests, updateStudentRequest } from "@/data/studentRequestStore";
-import { students } from "@/data/mock";
+import { getStudentRequests, saveStudentRequests, updateStudentRequest } from "@/demo-data/staffOps/studentRequestStore";
+import { students } from "@/demo-data";
 import { useAuth } from "@/context/AuthContext";
 
 export default function IDCardRequests() {

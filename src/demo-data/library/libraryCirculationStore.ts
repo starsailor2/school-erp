@@ -1,4 +1,4 @@
-import { libraryBooks } from "@/data/mock";
+import { libraryBooks } from "@/demo-data/library/books";
 import type { LibraryBook, LibraryRecord } from "@/types";
 
 const BOOK_STORAGE_KEY = "erp_staff_library_books";

@@ -4,7 +4,7 @@ import {
   LineChart, Line,
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
-import { classes, students, attendanceRecords } from "@/data/mock";
+import { classes, students, attendanceRecords } from "@/demo-data";
 import { DataTable } from "@/components/DataTable";
 
 type RiskRow = {

@@ -9,7 +9,7 @@ import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, subjects, subjectAllocations, getSubjectName, getClassName,
-} from "@/data/mock";
+} from "@/demo-data";
 import PeopleIcon from "@mui/icons-material/People";
 import SchoolIcon from "@mui/icons-material/School";
 import VisibilityIcon from "@mui/icons-material/Visibility";

@@ -11,7 +11,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   teachers, getTeacherClasses, students, getClassName, marks, attendanceRecords,
   getSubjectName, parents,
-} from "@/data/mock";
+} from "@/demo-data";
 import type { Student } from "@/types";
 
 export default function MyStudents() {

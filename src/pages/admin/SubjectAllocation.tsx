@@ -7,7 +7,7 @@ import { DataTable } from "@/components/DataTable";
 import {
   subjectAllocations, teachers, subjects, classes, getSubjectName,
   getClassName, getTeacherName,
-} from "@/data/mock";
+} from "@/demo-data";
 import type { SubjectAllocation as SubjectAllocationType } from "@/types";
 
 type AllocationRow = {

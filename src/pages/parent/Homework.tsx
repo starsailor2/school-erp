@@ -6,7 +6,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { parents, getChildrenOfParent, homework, getSubjectName, getTeacherName, getClassName } from "@/data/mock";
+import { parents, getChildrenOfParent, homework, getSubjectName, getTeacherName, getClassName } from "@/demo-data";
 import type { Homework } from "@/types";
 
 export default function ParentHomework() {

@@ -11,7 +11,7 @@ import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, getTeacherClasses, students, attendanceRecords, getClassName,
-} from "@/data/mock";
+} from "@/demo-data";
 import type { AttendanceStatus } from "@/types";
 
 type Status = AttendanceStatus | "not_marked";

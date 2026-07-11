@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { routes } from "@/data/mock";
+import { routes } from "@/demo-data";
 
 type VehicleStatus = "active" | "maintenance" | "inactive";
 

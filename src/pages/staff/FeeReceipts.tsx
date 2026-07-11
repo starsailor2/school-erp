@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { Button, Stack } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { getFeeReceipts } from "@/data/feeTransactionStore";
-import { students } from "@/data/mock";
+import { getFeeReceipts } from "@/demo-data/fees/feeTransactionStore";
+import { students } from "@/demo-data";
 
 export default function FeeReceipts() {
   const rows = useMemo(() => {

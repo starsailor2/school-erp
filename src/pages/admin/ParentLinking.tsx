@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, parents, getClassName } from "@/data/mock";
+import { students, parents, getClassName } from "@/demo-data";
 import type { Parent } from "@/types";
 
 export default function ParentLinking() {

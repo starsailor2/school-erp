@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { classes, teachers } from "@/data/mock";
+import { classes, teachers } from "@/demo-data";
 
 type SectionRow = {
   id: string;

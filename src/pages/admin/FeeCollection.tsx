@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MenuItem, TextField, Grid, Chip, Button, Box, Paper } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { fees, students, getClassName } from "@/data/mock";
+import { fees, students, getClassName } from "@/demo-data";
 import type { Fee } from "@/types";
 
 export default function FeeCollection() {

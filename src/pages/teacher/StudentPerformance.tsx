@@ -6,7 +6,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, students, marks, getTeacherClasses, getClassName, exams } from "@/data/mock";
+import { teachers, students, marks, getTeacherClasses, getClassName, exams } from "@/demo-data";
 
 export default function StudentPerformance() {
   const { user } = useAuth();

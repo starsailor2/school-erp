@@ -3,7 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
-import { homework, classes } from "@/data/mock";
+import { homework, classes } from "@/demo-data";
 
 export default function HomeworkReports() {
   const data = classes.slice(0, 8).map((c) => ({

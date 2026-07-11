@@ -1,5 +1,5 @@
 import type { Notification } from "@/types";
-import { mockNotifications } from "@/data/mock";
+import { mockNotifications } from "@/demo-data/communication/notifications";
 
 const STORAGE_KEY = "erp_notifications";
 

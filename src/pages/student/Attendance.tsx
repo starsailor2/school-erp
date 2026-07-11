@@ -2,7 +2,7 @@ import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Chip, Typograp
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { students, getStudentAttendance } from "@/data/mock";
+import { students, getStudentAttendance } from "@/demo-data";
 
 export default function StudentAttendance() {
   const { user } = useAuth();

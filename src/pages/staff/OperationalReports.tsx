@@ -1,11 +1,11 @@
 import { Grid, Paper, Stack, Typography, Chip } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { getStaffFees, getFeePayments } from "@/data/feeTransactionStore";
-import { getTransportRoutes } from "@/data/transportRouteStore";
-import { getLibraryRecords, getLibraryBooksState } from "@/data/libraryCirculationStore";
-import { getStudentRequests } from "@/data/studentRequestStore";
-import { studentTransport } from "@/data/mock";
+import { getStaffFees, getFeePayments } from "@/demo-data/fees/feeTransactionStore";
+import { getTransportRoutes } from "@/demo-data/transport/transportRouteStore";
+import { getLibraryRecords, getLibraryBooksState } from "@/demo-data/library/libraryCirculationStore";
+import { getStudentRequests } from "@/demo-data/staffOps/studentRequestStore";
+import { studentTransport } from "@/demo-data";
 
 export default function OperationalReports() {
   const { staffRole } = useAuth();

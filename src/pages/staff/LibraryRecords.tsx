@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { Chip } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { students } from "@/data/mock";
-import { getLibraryRecords, getLibraryBooksState } from "@/data/libraryCirculationStore";
+import { students } from "@/demo-data";
+import { getLibraryRecords, getLibraryBooksState } from "@/demo-data/library/libraryCirculationStore";
 
 export default function LibraryRecords() {
   const rows = useMemo(() => {

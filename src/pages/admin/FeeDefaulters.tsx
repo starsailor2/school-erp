@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Chip, Button, Grid, MenuItem, TextField } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { fees, students, getClassName } from "@/data/mock";
+import { fees, students, getClassName } from "@/demo-data";
 
 export default function FeeDefaulters() {
   const [classFilter, setClassFilter] = useState("all");

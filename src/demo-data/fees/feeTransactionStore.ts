@@ -1,4 +1,4 @@
-import { fees } from "@/data/mock";
+import { fees } from "@/demo-data/fees/fees";
 import type { Fee, FeePayment, FeeReceipt, PaymentMethod } from "@/types";
 
 const FEE_STORAGE_KEY = "erp_staff_fees";
