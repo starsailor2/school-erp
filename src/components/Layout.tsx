@@ -1,3 +1,4 @@
+// src/components/Layout.tsx
 import { useState, useMemo, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -9,7 +10,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Collapse,
   IconButton,
   Box,
   Avatar,
@@ -24,32 +24,58 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { AnimatePresence, motion } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
 import { useColorMode } from "@/context/ColorModeContext";
 import TeacherTypeSwitcher from "@/components/TeacherTypeSwitcher";
 import StaffRoleSwitcher from "@/components/StaffRoleSwitcher";
 import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/data/notificationStore";
-import LogoutIcon from "@mui/icons-material/Logout";
+import { sidebarTokens, motionEasing, motionDuration } from "@/theme/tokens";
 
 const DRAWER_WIDTH = 260;
+const RAIL_WIDTH = 72;
 
 export default function Layout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const { role, teacherType, staffRole, user, logout } = useAuth();
   const { toggleColorMode, mode } = useColorMode();
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [collapsed, setCollapsed] = useState(() => {
+    return localStorage.getItem(`erp-sidebar-${role}`) === "collapsed";
+  });
+  useEffect(() => {
+    localStorage.setItem(`erp-sidebar-${role}`, collapsed ? "collapsed" : "expanded");
+  }, [collapsed, role]);
+
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
   const navItems = useMemo(
     () => getNavItems(role, teacherType, staffRole),
     [role, teacherType, staffRole]
   );
+
+  const groups = useMemo(() => {
+    const order: string[] = [];
+    const map = new Map<string, NavItem[]>();
+    for (const item of navItems) {
+      const g = item.group ?? "";
+      if (!map.has(g)) {
+        map.set(g, []);
+        order.push(g);
+      }
+      map.get(g)!.push(item);
+    }
+    return order.map((g) => ({ group: g, items: map.get(g)! }));
+  }, [navItems]);
 
   const [unreadNotifications, setUnreadNotifications] = useState(() => getUnreadNotificationCount());
 
@@ -88,112 +114,164 @@ export default function Layout() {
     student: "Student Portal",
   };
 
+  const showRail = collapsed && !isMobile;
+
+  const navButtonSx = (active: boolean) => ({
+    mx: 1,
+    borderRadius: 1.5,
+    mb: 0.25,
+    color: sidebarTokens.text,
+    justifyContent: showRail ? "center" : "flex-start",
+    px: showRail ? 1.5 : 2,
+    transition: `background-color ${motionDuration}s ${sidebarTokens.background}`,
+    "&:hover": { bgcolor: sidebarTokens.hoverBackground },
+    ...(active && {
+      bgcolor: sidebarTokens.activeBackground,
+      color: sidebarTokens.activeText,
+      "&:hover": { bgcolor: sidebarTokens.activeBackground },
+      "& .MuiListItemIcon-root": { color: sidebarTokens.activeText },
+    }),
+  });
+
   const drawerContent = (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", bgcolor: sidebarTokens.background }}>
       <Box
         sx={{
-          p: 2,
+          p: showRail ? 1.5 : 2,
           display: "flex",
           alignItems: "center",
           gap: 1.5,
-          borderBottom: 1,
-          borderColor: "divider",
+          borderBottom: `1px solid ${sidebarTokens.divider}`,
+          justifyContent: showRail ? "center" : "flex-start",
         }}
       >
-        <Avatar sx={{ bgcolor: "primary.main", width: 36, height: 36, fontSize: 14 }}>
+        <Avatar sx={{ bgcolor: sidebarTokens.text, color: sidebarTokens.background, width: 36, height: 36, fontSize: 14, fontWeight: 700 }}>
           {user?.name.charAt(0) ?? "U"}
         </Avatar>
-        <Box sx={{ minWidth: 0 }}>
-          <Typography variant="subtitle2" noWrap>
-            {user?.name ?? "User"}
-          </Typography>
-          <Typography variant="caption" color="text.secondary" noWrap>
-            {portalLabels[role]}
-          </Typography>
-        </Box>
+        {!showRail && (
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="subtitle2" noWrap sx={{ color: sidebarTokens.text }}>
+              {user?.name ?? "User"}
+            </Typography>
+            <Typography variant="caption" noWrap sx={{ color: sidebarTokens.muted }}>
+              {portalLabels[role]}
+            </Typography>
+          </Box>
+        )}
       </Box>
 
       <List sx={{ flex: 1, overflow: "auto", py: 1 }} component="nav">
-        {navItems.map((item) => {
-          const active = isActive(item);
-          if (item.children) {
-            const open = openMenus[item.label] ?? active;
-            return (
-              <Box key={item.label}>
-                <ListItemButton
-                  onClick={() => toggleSubmenu(item.label)}
-                  sx={{
-                    mx: 1,
-                    borderRadius: 1.5,
-                    mb: 0.25,
-                    ...(active && {
-                      bgcolor: "primary.main",
-                      color: "primary.contrastText",
-                      "&:hover": { bgcolor: "primary.dark" },
-                      "& .MuiListItemIcon-root": { color: "primary.contrastText" },
-                    }),
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 36 }}>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
-                  {open ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto">
-                  <List disablePadding>
-                    {item.children.map((child) => {
-                      const childActive = location.pathname === child.path;
-                      return (
-                        <ListItemButton
-                          key={child.path}
-                          onClick={() => handleNav(child.path)}
-                          sx={{
-                            pl: 6.5,
-                            mx: 1,
-                            borderRadius: 1.5,
-                            mb: 0.25,
-                            ...(childActive && {
-                              bgcolor: "action.selected",
-                              fontWeight: 600,
-                            }),
-                          }}
+        {groups.map(({ group, items }) => (
+          <Box key={group || "ungrouped"}>
+            {group && !showRail && (
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  color: sidebarTokens.muted,
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  fontSize: "0.65rem",
+                  px: 2.5,
+                  pt: 2,
+                  pb: 0.5,
+                }}
+              >
+                {group}
+              </Typography>
+            )}
+            {items.map((item) => {
+              const active = isActive(item);
+              if (item.children) {
+                const open = !showRail && (openMenus[item.label] ?? active);
+                return (
+                  <Box key={item.label}>
+                    <ListItemButton
+                      onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
+                      sx={navButtonSx(active)}
+                    >
+                      <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
+                      {!showRail && (
+                        <>
+                          <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
+                          <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+                            <ExpandMoreIcon fontSize="small" />
+                          </motion.div>
+                        </>
+                      )}
+                    </ListItemButton>
+                    <AnimatePresence initial={false}>
+                      {open && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: motionDuration, ease: motionEasing }}
+                          style={{ overflow: "hidden" }}
                         >
-                          <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
-                        </ListItemButton>
-                      );
-                    })}
-                  </List>
-                </Collapse>
-              </Box>
-            );
-          }
-          return (
-            <ListItemButton
-              key={item.path}
-              onClick={() => handleNav(item.path)}
-              sx={{
-                mx: 1,
-                borderRadius: 1.5,
-                mb: 0.25,
-                ...(active && {
-                  bgcolor: "primary.main",
-                  color: "primary.contrastText",
-                  "&:hover": { bgcolor: "primary.dark" },
-                  "& .MuiListItemIcon-root": { color: "primary.contrastText" },
-                }),
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 36 }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
-            </ListItemButton>
-          );
-        })}
+                          <List disablePadding>
+                            {item.children.map((child) => {
+                              const childActive = location.pathname === child.path;
+                              return (
+                                <ListItemButton
+                                  key={child.path}
+                                  onClick={() => handleNav(child.path)}
+                                  sx={{
+                                    pl: 6.5,
+                                    mx: 1,
+                                    borderRadius: 1.5,
+                                    mb: 0.25,
+                                    color: sidebarTokens.muted,
+                                    "&:hover": { bgcolor: sidebarTokens.hoverBackground },
+                                    ...(childActive && {
+                                      bgcolor: sidebarTokens.hoverBackground,
+                                      color: sidebarTokens.text,
+                                      fontWeight: 600,
+                                    }),
+                                  }}
+                                >
+                                  <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
+                                </ListItemButton>
+                              );
+                            })}
+                          </List>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </Box>
+                );
+              }
+              return (
+                <Tooltip key={item.path} title={showRail ? item.label : ""} placement="right">
+                  <ListItemButton onClick={() => handleNav(item.path)} sx={navButtonSx(active)}>
+                    <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
+                    {!showRail && <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />}
+                  </ListItemButton>
+                </Tooltip>
+              );
+            })}
+          </Box>
+        ))}
       </List>
+
+      {!isMobile && (
+        <Box sx={{ borderTop: `1px solid ${sidebarTokens.divider}`, p: 1 }}>
+          <IconButton
+            onClick={() => setCollapsed((c) => !c)}
+            sx={{ color: sidebarTokens.muted, width: "100%", borderRadius: 1.5, "&:hover": { bgcolor: sidebarTokens.hoverBackground } }}
+          >
+            {showRail ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </Box>
+      )}
     </Box>
   );
 
+  const currentWidth = showRail ? RAIL_WIDTH : DRAWER_WIDTH;
+
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      {/* AppBar */}
       <AppBar
         position="fixed"
         elevation={0}
@@ -211,11 +289,10 @@ export default function Layout() {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h6" fontWeight={700} sx={{ mr: 2 }} noWrap>
-            KALNET School ERP
+          <Typography variant="h6" fontWeight={700} sx={{ mr: 2, letterSpacing: "-0.02em" }} noWrap>
+            KALNET
           </Typography>
 
-          {/* Search */}
           {(role === "admin" || role === "staff") && (
             <Box
               sx={{
@@ -258,7 +335,6 @@ export default function Layout() {
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar */}
       {isMobile ? (
         <Drawer
           variant="temporary"
@@ -273,15 +349,17 @@ export default function Layout() {
         <Drawer
           variant="permanent"
           sx={{
-            width: DRAWER_WIDTH,
+            width: currentWidth,
             flexShrink: 0,
+            transition: `width ${motionDuration}s ${theme.transitions.easing.easeInOut}`,
             "& .MuiDrawer-paper": {
-              width: DRAWER_WIDTH,
+              width: currentWidth,
               boxSizing: "border-box",
-              borderRight: 1,
-              borderColor: "divider",
+              borderRight: "none",
               mt: "64px",
               height: "calc(100% - 64px)",
+              transition: `width ${motionDuration}s ${theme.transitions.easing.easeInOut}`,
+              overflowX: "hidden",
             },
           }}
         >
@@ -289,20 +367,22 @@ export default function Layout() {
         </Drawer>
       )}
 
-      {/* Main */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
           mt: "64px",
-          ml: { md: `${DRAWER_WIDTH}px` },
+          ml: { md: `${currentWidth}px` },
+          transition: `margin-left ${motionDuration}s ${theme.transitions.easing.easeInOut}`,
           bgcolor: "background.default",
           minHeight: "calc(100vh - 64px)",
           overflow: "auto",
         }}
       >
-        <Outlet />
+        <Box sx={{ maxWidth: 1600, mx: "auto" }}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );
