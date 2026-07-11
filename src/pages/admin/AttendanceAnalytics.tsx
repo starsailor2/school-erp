@@ -88,7 +88,7 @@ export default function AttendanceAnalytics() {
                 <Pie data={analytics.pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
                   {analytics.pieData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
                 </Pie>
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -102,7 +102,7 @@ export default function AttendanceAnalytics() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Bar dataKey="attendance" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -119,7 +119,7 @@ export default function AttendanceAnalytics() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis domain={[60, 100]} />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Line type="monotone" dataKey="rate" stroke={palette.categorical[0]} strokeWidth={2} dot />
               </LineChart>
             </ResponsiveContainer>

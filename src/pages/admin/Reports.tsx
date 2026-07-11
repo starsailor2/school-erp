@@ -118,7 +118,7 @@ export default function Reports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Legend />
                 <Bar dataKey="average" fill={palette.categorical[0]} name="Avg Marks" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="passRate" fill={palette.status.good} name="Pass %" radius={[4, 4, 0, 0]} />
@@ -136,7 +136,7 @@ export default function Reports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Bar dataKey="attendance" fill={palette.categorical[1]} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

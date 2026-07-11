@@ -77,5 +77,9 @@ export function getChartTooltipStyle(mode: "light" | "dark") {
       boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
     },
     labelStyle: { color: text, fontWeight: 600 },
+    // Recharts' default Tooltip cursor is a flat grey rectangle spanning the
+    // full category band (very visible on single/sparse-bar charts) — off
+    // by default everywhere this style object is spread onto <Tooltip>.
+    cursor: false,
   };
 }

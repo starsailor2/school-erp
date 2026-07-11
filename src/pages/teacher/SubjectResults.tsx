@@ -56,7 +56,7 @@ export default function SubjectResults() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis domain={[0, 100]} />
-            <Tooltip />
+            <Tooltip cursor={false} />
             <Bar dataKey="average" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>

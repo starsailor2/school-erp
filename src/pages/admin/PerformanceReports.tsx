@@ -113,7 +113,7 @@ export default function PerformanceReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Legend />
                 <Bar dataKey="highest" fill={palette.status.good} name="Highest" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="average" fill={palette.categorical[0]} name="Average" radius={[4, 4, 0, 0]} />
@@ -132,7 +132,7 @@ export default function PerformanceReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="grade" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Bar dataKey="count" fill={palette.categorical[1]} name="Students" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

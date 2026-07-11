@@ -45,7 +45,7 @@ export default function FeeReports() {
                 <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label>
                   {statusData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
                 </Pie>
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -61,7 +61,7 @@ export default function FeeReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Legend />
                 <Bar dataKey="collected" fill={palette.status.good} radius={[4, 4, 0, 0]} />
                 <Bar dataKey="pending" fill={palette.status.warning} radius={[4, 4, 0, 0]} />

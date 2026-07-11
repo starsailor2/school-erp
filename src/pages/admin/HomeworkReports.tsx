@@ -34,7 +34,7 @@ export default function HomeworkReports() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip />
+            <Tooltip cursor={false} />
             <Bar dataKey="count" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>

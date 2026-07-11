@@ -74,7 +74,7 @@ export default function AttendanceReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Bar dataKey="attendance" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -90,7 +90,7 @@ export default function AttendanceReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Line type="monotone" dataKey="attendance" stroke={palette.categorical[0]} strokeWidth={2.5} />
               </LineChart>
             </ResponsiveContainer>
