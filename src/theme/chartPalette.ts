@@ -53,3 +53,19 @@ export function getChartPalette(mode: "light" | "dark"): ChartPalette {
     baseline: mode === "light" ? "#c3c2b7" : "#383835",
   };
 }
+
+export function getChartTooltipStyle(mode: "light" | "dark") {
+  const surface = mode === "light" ? "#FFFFFF" : "#1A1A1A";
+  const border = mode === "light" ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)";
+  const text = mode === "light" ? "#111111" : "#F5F5F4";
+  return {
+    contentStyle: {
+      backgroundColor: surface,
+      border: `1px solid ${border}`,
+      borderRadius: 8,
+      fontSize: 13,
+      boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+    },
+    labelStyle: { color: text, fontWeight: 600 },
+  };
+}
