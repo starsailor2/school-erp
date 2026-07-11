@@ -12,7 +12,7 @@ function L(factory: () => Promise<{ default: React.ComponentType }>) {
   );
 }
 
-function SG(feature: "fees" | "transport" | "library" | "student_lookup" | "student_requests" | "communication" | "reports", element: ReactElement, minimum: "view" | "manage" = "view") {
+function SG(feature: "fees" | "transport" | "library" | "student_lookup" | "student_requests" | "communication" | "reports" | "hostel" | "mess", element: ReactElement, minimum: "view" | "manage" = "view") {
   return (
     <StaffFeatureGuard feature={feature} minimum={minimum}>
       {element}
@@ -67,6 +67,14 @@ const StudentDocuments = () => L(() => import("@/pages/admin/StudentDocuments"))
 const AttendanceAnalytics = () => L(() => import("@/pages/admin/AttendanceAnalytics"));
 const DriverManagement = () => L(() => import("@/pages/admin/DriverManagement"));
 const ParentNotifications = () => L(() => import("@/pages/admin/ParentNotifications"));
+const HostelDashboard = () => L(() => import("@/pages/admin/HostelDashboard"));
+const HostelRooms = () => L(() => import("@/pages/admin/HostelRooms"));
+const HostelAllocationAdmin = () => L(() => import("@/pages/admin/HostelAllocation"));
+const HostelFeeStructure = () => L(() => import("@/pages/admin/HostelFeeStructure"));
+const MessDashboard = () => L(() => import("@/pages/admin/MessDashboard"));
+const AdminMessMenu = () => L(() => import("@/pages/admin/MessMenu"));
+const MessPlans = () => L(() => import("@/pages/admin/MessPlans"));
+const MessBilling = () => L(() => import("@/pages/admin/MessBilling"));
 
 // Teacher pages
 const TeacherDashboard = () => L(() => import("@/pages/teacher/Dashboard"));
@@ -115,6 +123,10 @@ const Certificates = () => L(() => import("@/pages/staff/Certificates"));
 const IDCardRequests = () => L(() => import("@/pages/staff/IDCardRequests"));
 const StaffOperationalReports = () => L(() => import("@/pages/staff/OperationalReports"));
 const StaffProfile = () => L(() => import("@/pages/staff/Profile"));
+const StaffHostelAllocation = () => L(() => import("@/pages/staff/HostelAllocation"));
+const HostelRoster = () => L(() => import("@/pages/staff/HostelRoster"));
+const StaffMessAttendance = () => L(() => import("@/pages/staff/MessAttendance"));
+const StaffMessMenu = () => L(() => import("@/pages/staff/MessMenu"));
 
 // Parent pages
 const ParentDashboard = () => L(() => import("@/pages/parent/Dashboard"));
@@ -128,6 +140,8 @@ const ParentTransport = () => L(() => import("@/pages/parent/Transport"));
 const ParentAnnouncements = () => L(() => import("@/pages/parent/Announcements"));
 const ParentMessages = () => L(() => import("@/pages/parent/Messages"));
 const ParentProfile = () => L(() => import("@/pages/parent/Profile"));
+const ParentHostel = () => L(() => import("@/pages/parent/Hostel"));
+const ParentMess = () => L(() => import("@/pages/parent/Mess"));
 
 // Student pages
 const StudentDashboard = () => L(() => import("@/pages/student/Dashboard"));
@@ -140,6 +154,8 @@ const StudentAnnouncements = () => L(() => import("@/pages/student/Announcements
 const StudentMessages = () => L(() => import("@/pages/student/Messages"));
 const StudentLibrary = () => L(() => import("@/pages/student/Library"));
 const StudentTransport = () => L(() => import("@/pages/student/Transport"));
+const StudentHostel = () => L(() => import("@/pages/student/Hostel"));
+const StudentMess = () => L(() => import("@/pages/student/Mess"));
 
 // Shared
 const Notifications = () => L(() => import("@/pages/shared/Notifications"));
@@ -201,6 +217,14 @@ export const router = createBrowserRouter([
       { path: "admin/transport/vehicles", element: <Vehicles /> },
       { path: "admin/transport/allocation", element: <TransportAllocation /> },
       { path: "admin/transport/drivers", element: <DriverManagement /> },
+      { path: "admin/hostel", element: <HostelDashboard /> },
+      { path: "admin/hostel/rooms", element: <HostelRooms /> },
+      { path: "admin/hostel/allocation", element: <HostelAllocationAdmin /> },
+      { path: "admin/hostel/fees", element: <HostelFeeStructure /> },
+      { path: "admin/mess", element: <MessDashboard /> },
+      { path: "admin/mess/menu", element: <AdminMessMenu /> },
+      { path: "admin/mess/plans", element: <MessPlans /> },
+      { path: "admin/mess/billing", element: <MessBilling /> },
       { path: "admin/communication/announcements", element: <AdminAnnouncements /> },
       { path: "admin/communication/notices", element: <Notices /> },
       { path: "admin/communication/messages", element: <AdminMessages /> },
@@ -268,6 +292,10 @@ export const router = createBrowserRouter([
       { path: "staff/library/issue", element: SG("library", <LibraryIssue />) },
       { path: "staff/library/return", element: SG("library", <LibraryReturn />) },
       { path: "staff/library/records", element: SG("library", <LibraryRecords />) },
+      { path: "staff/hostel/allocation", element: SG("hostel", <StaffHostelAllocation />) },
+      { path: "staff/hostel/roster", element: SG("hostel", <HostelRoster />) },
+      { path: "staff/mess/attendance", element: SG("mess", <StaffMessAttendance />, "manage") },
+      { path: "staff/mess/menu", element: SG("mess", <StaffMessMenu />) },
       { path: "staff/certificates", element: SG("student_requests", <Certificates />, "manage") },
       { path: "staff/id-cards", element: SG("student_requests", <IDCardRequests />, "manage") },
       { path: "staff/communication", element: SG("communication", <AdminAnnouncements />) },
@@ -285,6 +313,8 @@ export const router = createBrowserRouter([
       { path: "parent/exams", element: <ParentExams /> },
       { path: "parent/fees", element: <ParentFees /> },
       { path: "parent/transport", element: <ParentTransport /> },
+      { path: "parent/hostel", element: <ParentHostel /> },
+      { path: "parent/mess", element: <ParentMess /> },
       { path: "parent/announcements", element: <ParentAnnouncements /> },
       { path: "parent/messages", element: <ParentMessages /> },
       { path: "parent/profile", element: <ParentProfile /> },
@@ -301,6 +331,8 @@ export const router = createBrowserRouter([
       { path: "student/messages", element: <StudentMessages /> },
       { path: "student/library", element: <StudentLibrary /> },
       { path: "student/transport", element: <StudentTransport /> },
+      { path: "student/hostel", element: <StudentHostel /> },
+      { path: "student/mess", element: <StudentMess /> },
       { path: "student/notifications", element: <Notifications /> },
     ],
   },
