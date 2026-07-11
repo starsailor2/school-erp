@@ -35,7 +35,7 @@ import TeacherTypeSwitcher from "@/components/TeacherTypeSwitcher";
 import StaffRoleSwitcher from "@/components/StaffRoleSwitcher";
 import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/data/notificationStore";
-import { sidebarTokens, motionEasing, motionDuration } from "@/theme/tokens";
+import { sidebarTokens, motionEasing, motionDuration, motionEasingCss } from "@/theme/tokens";
 
 const DRAWER_WIDTH = 260;
 const RAIL_WIDTH = 72;
@@ -123,7 +123,7 @@ export default function Layout() {
     color: sidebarTokens.text,
     justifyContent: showRail ? "center" : "flex-start",
     px: showRail ? 1.5 : 2,
-    transition: `background-color ${motionDuration}s ${sidebarTokens.background}`,
+    transition: `background-color ${motionDuration}s ${motionEasingCss}`,
     "&:hover": { bgcolor: sidebarTokens.hoverBackground },
     ...(active && {
       bgcolor: sidebarTokens.activeBackground,
@@ -187,20 +187,22 @@ export default function Layout() {
                 const open = !showRail && (openMenus[item.label] ?? active);
                 return (
                   <Box key={item.label}>
-                    <ListItemButton
-                      onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
-                      sx={navButtonSx(active)}
-                    >
-                      <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
-                      {!showRail && (
-                        <>
-                          <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
-                          <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: motionDuration, ease: motionEasing }}>
-                            <ExpandMoreIcon fontSize="small" />
-                          </motion.div>
-                        </>
-                      )}
-                    </ListItemButton>
+                    <Tooltip title={showRail ? item.label : ""} placement="right">
+                      <ListItemButton
+                        onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
+                        sx={navButtonSx(active)}
+                      >
+                        <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
+                        {!showRail && (
+                          <>
+                            <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
+                            <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+                              <ExpandMoreIcon fontSize="small" />
+                            </motion.div>
+                          </>
+                        )}
+                      </ListItemButton>
+                    </Tooltip>
                     <AnimatePresence initial={false}>
                       {open && (
                         <motion.div
@@ -225,8 +227,8 @@ export default function Layout() {
                                     color: sidebarTokens.muted,
                                     "&:hover": { bgcolor: sidebarTokens.hoverBackground },
                                     ...(childActive && {
-                                      bgcolor: sidebarTokens.hoverBackground,
-                                      color: sidebarTokens.text,
+                                      bgcolor: sidebarTokens.activeBackground,
+                                      color: sidebarTokens.activeText,
                                       fontWeight: 600,
                                     }),
                                   }}
@@ -351,14 +353,14 @@ export default function Layout() {
           sx={{
             width: currentWidth,
             flexShrink: 0,
-            transition: `width ${motionDuration}s ${theme.transitions.easing.easeInOut}`,
+            transition: `width ${motionDuration}s ${motionEasingCss}`,
             "& .MuiDrawer-paper": {
               width: currentWidth,
               boxSizing: "border-box",
               borderRight: "none",
               mt: "64px",
               height: "calc(100% - 64px)",
-              transition: `width ${motionDuration}s ${theme.transitions.easing.easeInOut}`,
+              transition: `width ${motionDuration}s ${motionEasingCss}`,
               overflowX: "hidden",
             },
           }}
@@ -374,7 +376,7 @@ export default function Layout() {
           p: 3,
           mt: "64px",
           ml: { md: `${currentWidth}px` },
-          transition: `margin-left ${motionDuration}s ${theme.transitions.easing.easeInOut}`,
+          transition: `margin-left ${motionDuration}s ${motionEasingCss}`,
           bgcolor: "background.default",
           minHeight: "calc(100vh - 64px)",
           overflow: "auto",
