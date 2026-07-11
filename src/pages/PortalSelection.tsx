@@ -17,36 +17,42 @@ const portals: {
   label: string;
   description: string;
   icon: React.ReactNode;
+  accent: string;
 }[] = [
   {
     role: "admin",
     label: "Admin",
     description: "Manage students, teachers, staff, fees, reports, and full school administration.",
     icon: <AdminPanelSettingsIcon />,
+    accent: "#2a78d6",
   },
   {
     role: "teacher",
     label: "Teacher",
     description: "Classes, attendance, homework, marks entry, and timetable management.",
     icon: <PersonIcon />,
+    accent: "#1baf7a",
   },
   {
     role: "student",
     label: "Student",
     description: "View timetable, homework, announcements, grades, and academic records.",
     icon: <SchoolIcon />,
+    accent: "#eb6834",
   },
   {
     role: "parent",
     label: "Parent",
     description: "Track your child's attendance, homework, results, fees, and school notices.",
     icon: <FamilyRestroomIcon />,
+    accent: "#eda100",
   },
   {
     role: "staff",
     label: "School Staff",
     description: "Non-teaching staff portal for fees, transport, library, and office tasks.",
     icon: <BuildIcon />,
+    accent: "#e34948",
   },
 ];
 
@@ -77,8 +83,8 @@ export default function PortalSelection() {
           sx={{
             width: 56,
             height: 56,
-            bgcolor: "primary.main",
-            color: "primary.contrastText",
+            bgcolor: "#1D1D1F",
+            color: "#F5F5F4",
             mb: 2,
           }}
         >
@@ -142,26 +148,33 @@ export default function PortalSelection() {
               onClick={() => handleSelect(portal.role)}
               sx={{
                 p: 2.5,
+                pt: 3,
                 height: "100%",
+                display: "flex",
+                flexDirection: "column",
                 cursor: "pointer",
                 border: "1px solid",
                 borderColor: "divider",
+                borderTop: "3px solid",
+                borderTopColor: portal.accent,
                 bgcolor: "background.paper",
+                boxShadow: (t) => (t.palette.mode === "light" ? "0 1px 3px rgba(0,0,0,0.04)" : "0 1px 3px rgba(0,0,0,0.3)"),
                 transition: `all ${motionDuration * 1.5}s ${motionEasingCss}`,
                 "&:hover": {
                   boxShadow: (t) => (t.palette.mode === "light" ? "0 12px 32px rgba(0,0,0,0.12)" : "0 12px 32px rgba(0,0,0,0.5)"),
                   transform: "translateY(-4px)",
                   borderColor: "transparent",
-                  bgcolor: "primary.main",
-                  color: "primary.contrastText",
-                  "& .portal-desc": { color: (t) => (t.palette.mode === "light" ? "rgba(255,255,255,0.75)" : "rgba(10,10,10,0.7)") },
+                  borderTopColor: portal.accent,
+                  bgcolor: "#1D1D1F",
+                  color: "#F5F5F4",
+                  "& .portal-desc": { color: "rgba(245,245,244,0.72)" },
                   "& .portal-avatar": {
-                    bgcolor: "primary.contrastText",
-                    color: "primary.main",
+                    bgcolor: "#F5F5F4",
+                    color: portal.accent,
                   },
                   "& .portal-btn": {
-                    bgcolor: (t) => (t.palette.mode === "light" ? "rgba(255,255,255,0.16)" : "rgba(10,10,10,0.12)"),
-                    color: "primary.contrastText",
+                    bgcolor: "#1D1D1F",
+                    color: "#F5F5F4",
                   },
                 },
               }}
@@ -171,9 +184,10 @@ export default function PortalSelection() {
                 sx={{
                   width: 44,
                   height: 44,
-                  bgcolor: "action.hover",
-                  color: "text.primary",
+                  bgcolor: "#1D1D1F",
+                  color: portal.accent,
                   mb: 2,
+                  boxShadow: `0 0 0 6px ${portal.accent}14`,
                   transition: `all ${motionDuration}s`,
                 }}
               >
@@ -195,14 +209,16 @@ export default function PortalSelection() {
               <Box
                 className="portal-btn"
                 sx={{
-                  display: "inline-flex",
+                  display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: 0.5,
+                  mt: "auto",
                   px: 2,
                   py: 0.75,
                   borderRadius: 2,
-                  bgcolor: "action.hover",
-                  color: "text.primary",
+                  bgcolor: "#1D1D1F",
+                  color: "#F5F5F4",
                   fontSize: 13,
                   fontWeight: 600,
                   transition: `all ${motionDuration}s`,

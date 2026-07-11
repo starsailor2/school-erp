@@ -9,7 +9,13 @@ const TARGET_RESIDENTS = 120;
 const boysBlockIds = new Set(hostelBlocks.filter((b) => b.gender === "boys").map((b) => b.id));
 const girlsBlockIds = new Set(hostelBlocks.filter((b) => b.gender === "girls").map((b) => b.id));
 
-const eligible = shuffle(students).filter((s) => s.gender !== "other").slice(0, TARGET_RESIDENTS);
+// stu1 is the fixed demo login for the student portal — always include them
+// so "My Hostel"/"My Mess" have real data out of the box, not just a random
+// subset of the other 449 students.
+const pinnedResident = students.find((s) => s.id === "stu1" && s.gender !== "other");
+const restEligible = shuffle(students.filter((s) => s.gender !== "other" && s.id !== pinnedResident?.id))
+  .slice(0, TARGET_RESIDENTS - (pinnedResident ? 1 : 0));
+const eligible = pinnedResident ? [pinnedResident, ...restEligible] : restEligible;
 
 const roomOccupancy = new Map<string, number>();
 

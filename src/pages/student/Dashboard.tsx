@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Paper, Typography, Stack, Grid, Chip, Box } from "@mui/material";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import QuizIcon from "@mui/icons-material/Quiz";
@@ -49,6 +49,38 @@ export default function StudentDashboard() {
       avgScore: examMarks.length ? Math.round(examMarks.reduce((s, m) => s + m.marks_obtained, 0) / examMarks.length) : 0,
     };
   });
+
+  const subjectPerformance = (() => {
+    const bySubject = new Map<string, { total: number; count: number }>();
+    for (const m of marks) {
+      const name = getSubjectName(m.subject_id);
+      const entry = bySubject.get(name) ?? { total: 0, count: 0 };
+      entry.total += m.marks_obtained;
+      entry.count += 1;
+      bySubject.set(name, entry);
+    }
+    return [...bySubject.entries()].map(([subject, { total, count }]) => ({
+      subject,
+      avgScore: count > 0 ? Math.round(total / count) : 0,
+    }));
+  })();
+
+  const attendanceTrend = (() => {
+    const byDate = new Map<string, { present: number; total: number }>();
+    for (const a of attendance) {
+      const entry = byDate.get(a.date) ?? { present: 0, total: 0 };
+      entry.total += 1;
+      if (a.status === "present") entry.present += 1;
+      byDate.set(a.date, entry);
+    }
+    return [...byDate.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-30)
+      .map(([date, v]) => ({
+        day: new Date(date).toLocaleDateString("en", { day: "2-digit", month: "short" }),
+        attendance: v.total > 0 ? Math.round((v.present / v.total) * 100) : 0,
+      }));
+  })();
 
   const hostelAllocation = student ? getHostelAllocationForStudent(student.id) : undefined;
   const room = hostelAllocation ? hostelRooms.find((r) => r.id === hostelAllocation.room_id) : undefined;
@@ -111,6 +143,55 @@ export default function StudentDashboard() {
         </Grid>
       )}
 
+      {marks.length > 0 && (
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ChartCard eyebrow="Academics" title="Grade Trend Across Exams">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={gradeTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                  <XAxis dataKey="exam" stroke={palette.axis} fontSize={11} />
+                  <YAxis domain={[0, 100]} stroke={palette.axis} fontSize={12} />
+                  <Tooltip {...tooltipStyle} />
+                  <Line type="monotone" dataKey="avgScore" name="Average Score" stroke={palette.categorical[0]} strokeWidth={2} dot={{ r: 4 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ChartCard eyebrow="Academics" title="Subject-wise Average" delay={0.05}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={subjectPerformance}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                  <XAxis dataKey="subject" stroke={palette.axis} fontSize={11} />
+                  <YAxis domain={[0, 100]} stroke={palette.axis} fontSize={12} />
+                  <Tooltip {...tooltipStyle} />
+                  <Bar dataKey="avgScore" name="Average" fill={palette.categorical[1]} radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </Grid>
+        </Grid>
+      )}
+
+      {attendanceTrend.length > 0 && (
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid size={12}>
+            <ChartCard eyebrow="Attendance" title="Attendance Trend — Last 30 Days">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={attendanceTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                  <XAxis dataKey="day" stroke={palette.axis} fontSize={11} interval={4} />
+                  <YAxis domain={[0, 100]} stroke={palette.axis} fontSize={12} />
+                  <Tooltip {...tooltipStyle} />
+                  <Line type="monotone" dataKey="attendance" name="Attendance %" stroke={palette.categorical[0]} strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </Grid>
+        </Grid>
+      )}
+
       <Grid container spacing={2}>
         {/* Today's Timetable */}
         <Grid size={{ xs: 12, md: 5 }}>
@@ -132,23 +213,6 @@ export default function StudentDashboard() {
               </Stack>
             )}
           </Paper>
-
-          {/* Grade trend */}
-          {marks.length > 0 && (
-            <Box sx={{ mt: 2 }}>
-              <ChartCard eyebrow="Academics" title="Grade Trend Across Exams">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={gradeTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
-                    <XAxis dataKey="exam" stroke={palette.axis} fontSize={11} />
-                    <YAxis domain={[0, 100]} stroke={palette.axis} fontSize={12} />
-                    <Tooltip {...tooltipStyle} />
-                    <Line type="monotone" dataKey="avgScore" name="Average Score" stroke={palette.categorical[0]} strokeWidth={2} dot={{ r: 4 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </ChartCard>
-            </Box>
-          )}
         </Grid>
 
         {/* Right column */}
