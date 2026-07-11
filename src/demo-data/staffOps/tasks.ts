@@ -1,0 +1,11 @@
+import type { StaffTask } from "@/types";
+
+export const defaultStaffTasks: StaffTask[] = [
+  { id: "task-1", title: "Collect fees from 12 students", description: "Prioritize overdue accounts first.", category: "finance", location: "Accounts Office", created_date: "2026-03-16", assigned_to: "sf1", assigned_by: "admin", due_date: "2026-03-19", status: "pending", priority: "high" },
+  { id: "task-2", title: "Issue library books", description: "Process class 7A request queue.", category: "library", location: "School Library", created_date: "2026-03-16", assigned_to: "sf6", assigned_by: "admin", due_date: "2026-03-19", status: "in_progress", priority: "medium" },
+  { id: "task-3", title: "Update transport allocation", description: "Add newly admitted students to routes.", category: "transport", location: "Transport Desk", created_date: "2026-03-16", assigned_to: "sf4", assigned_by: "admin", due_date: "2026-03-20", status: "pending", priority: "high" },
+  { id: "task-4", title: "Print ID cards", description: "Generate cards for office pickup.", category: "office", location: "Admin Office", created_date: "2026-03-16", assigned_to: "sf8", assigned_by: "admin", due_date: "2026-03-21", status: "pending", priority: "medium" },
+  { id: "task-5", title: "Repair broken pipe near science block", description: "Maintenance team inspected but leak persists. Immediate support required to prevent class disruption.", category: "maintenance", location: "Science Block - Ground Floor", created_date: "2026-03-17", assigned_to: "sf8", assigned_by: "admin", due_date: "2026-03-19", status: "in_progress", priority: "high" },
+  { id: "task-6", title: "Inspect hostel room fittings", description: "Quarterly maintenance check across Aravali Block.", category: "maintenance", location: "Aravali Block", created_date: "2026-03-17", assigned_to: "sf12", assigned_by: "admin", due_date: "2026-03-22", status: "pending", priority: "medium" },
+  { id: "task-7", title: "Finalize next week's mess menu", description: "Confirm vendor availability for the non-veg rotation.", category: "general", location: "Mess Hall", created_date: "2026-03-17", assigned_to: "sf14", assigned_by: "admin", due_date: "2026-03-20", status: "pending", priority: "low" },
+];
