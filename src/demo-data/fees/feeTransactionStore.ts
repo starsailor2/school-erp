@@ -1,4 +1,5 @@
 import { fees } from "@/demo-data/fees/fees";
+import { feePayments, feeReceipts } from "@/demo-data/fees/feePayments";
 import type { Fee, FeePayment, FeeReceipt, PaymentMethod } from "@/types";
 
 const FEE_STORAGE_KEY = "erp_staff_fees";
@@ -36,11 +37,11 @@ export function saveStaffFees(rows: Fee[]) {
 export function getFeePayments() {
   try {
     const raw = localStorage.getItem(PAYMENT_STORAGE_KEY);
-    if (!raw) return [] as FeePayment[];
+    if (!raw) return feePayments;
     const parsed: unknown = JSON.parse(raw);
-    return isPaymentArray(parsed) ? parsed : [];
+    return isPaymentArray(parsed) ? parsed : feePayments;
   } catch {
-    return [] as FeePayment[];
+    return feePayments;
   }
 }
 
@@ -52,11 +53,11 @@ export function saveFeePayments(rows: FeePayment[]) {
 export function getFeeReceipts() {
   try {
     const raw = localStorage.getItem(RECEIPT_STORAGE_KEY);
-    if (!raw) return [] as FeeReceipt[];
+    if (!raw) return feeReceipts;
     const parsed: unknown = JSON.parse(raw);
-    return isReceiptArray(parsed) ? parsed : [];
+    return isReceiptArray(parsed) ? parsed : feeReceipts;
   } catch {
-    return [] as FeeReceipt[];
+    return feeReceipts;
   }
 }
 
