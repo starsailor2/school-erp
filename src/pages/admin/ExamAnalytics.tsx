@@ -6,11 +6,14 @@ import {
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
 import { marks, subjects, exams, classes, students } from "@/demo-data";
-
-const COLORS = ["#6366f1", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6"];
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function ExamAnalytics() {
   const [examFilter, setExamFilter] = useState("all");
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
+  const COLORS = palette.categorical;
   const [classFilter, setClassFilter] = useState("all");
   const [sectionFilter, setSectionFilter] = useState("all");
 
@@ -96,7 +99,7 @@ export default function ExamAnalytics() {
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
                 <Tooltip />
-                <Bar dataKey="average" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="average" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Paper>

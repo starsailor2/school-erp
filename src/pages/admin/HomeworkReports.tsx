@@ -4,8 +4,12 @@ import {
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
 import { homework, classes } from "@/demo-data";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function HomeworkReports() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const data = classes.slice(0, 8).map((c) => ({
     name: c.name,
     count: homework.filter((h) => h.class_id === c.id).length,
@@ -31,7 +35,7 @@ export default function HomeworkReports() {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="count" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="count" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </Paper>

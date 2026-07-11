@@ -5,8 +5,12 @@ import {
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
 import { classes, students, marks, subjects } from "@/demo-data";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function Reports() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const [scope, setScope] = useState("month");
   const [classFilter, setClassFilter] = useState("all");
   const [sectionFilter, setSectionFilter] = useState("all");
@@ -116,8 +120,8 @@ export default function Reports() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="average" fill="#6366f1" name="Avg Marks" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="passRate" fill="#10b981" name="Pass %" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="average" fill={palette.categorical[0]} name="Avg Marks" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="passRate" fill={palette.status.good} name="Pass %" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Paper>
@@ -133,7 +137,7 @@ export default function Reports() {
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
                 <Tooltip />
-                <Bar dataKey="attendance" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="attendance" fill={palette.categorical[1]} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Paper>

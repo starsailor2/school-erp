@@ -4,8 +4,12 @@ import { PageHeader } from "@/components/PageHeader";
 import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
 import { students, getStudentAttendance } from "@/demo-data";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function StudentAttendance() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const { user } = useAuth();
   const student = students.find((s) => s.id === user?.id);
   const records = student ? getStudentAttendance(student.id) : [];
@@ -76,7 +80,7 @@ export default function StudentAttendance() {
                 <Tooltip formatter={(_v: number, _n: string, props: { payload?: { status?: string } }) => [props.payload?.status ?? "", "Status"]} />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                   {dailyData.map((entry, index) => (
-                    <Cell key={index} fill={entry.status === "present" ? "#22c55e" : entry.status === "absent" ? "#ef4444" : "#f59e0b"} />
+                    <Cell key={index} fill={entry.status === "present" ? palette.status.good : entry.status === "absent" ? palette.status.critical : palette.status.warning} />
                   ))}
                 </Bar>
               </BarChart>

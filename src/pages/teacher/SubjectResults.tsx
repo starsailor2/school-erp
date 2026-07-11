@@ -7,8 +7,12 @@ import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
 import { teachers, marks, students, getTeacherClasses, getClassName, getSubjectName, exams } from "@/demo-data";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function SubjectResults() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const { user } = useAuth();
   const teacher = teachers.find((t) => t.id === user?.id);
   const allocations = teacher ? getTeacherClasses(teacher.id) : [];
@@ -53,7 +57,7 @@ export default function SubjectResults() {
             <XAxis dataKey="name" />
             <YAxis domain={[0, 100]} />
             <Tooltip />
-            <Bar dataKey="average" fill="#6366f1" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="average" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </Paper>

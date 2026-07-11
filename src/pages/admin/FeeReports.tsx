@@ -5,10 +5,13 @@ import {
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
 import { fees } from "@/demo-data";
-
-const COLORS = ["#10b981", "#f59e0b", "#ef4444"];
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function FeeReports() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
+  const COLORS = [palette.status.good, palette.status.warning, palette.status.critical];
   const statusData = [
     { name: "Paid", value: fees.filter((f) => f.status === "paid").length },
     { name: "Pending", value: fees.filter((f) => f.status === "pending").length },
@@ -60,8 +63,8 @@ export default function FeeReports() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="collected" fill="#10b981" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="pending" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="collected" fill={palette.status.good} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="pending" fill={palette.status.warning} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Paper>
