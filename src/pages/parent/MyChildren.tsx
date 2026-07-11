@@ -4,6 +4,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button, LinearProgress,
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
 import {
   parents, getChildrenOfParent, getClassName, getStudentMarks,
@@ -50,7 +51,7 @@ export default function MyChildren() {
                 <Row label="Class" value={getClassName(c.class_id)} />
                 <Row label="Roll No." value={c.roll_number} />
                 <Row label="Attendance" value={<Chip label={`${c.attendance_pct}%`} size="small" color={c.attendance_pct >= 85 ? "success" : "warning"} />} />
-                <Row label="Fees" value={<Chip label={c.fee_status} size="small" color={c.fee_status === "paid" ? "success" : "error"} />} />
+                <Row label="Fees" value={<StatusChip status={c.fee_status} />} />
               </Stack>
             </Paper>
           </Grid>

@@ -1,6 +1,7 @@
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Chip, Typography, Stack, Box, Grid } from "@mui/material";
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Typography, Stack, Box, Grid } from "@mui/material";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
 import { students, getStudentAttendance } from "@/demo-data";
 
@@ -124,7 +125,7 @@ export default function StudentAttendance() {
                 <TableCell>{r.date}</TableCell>
                 <TableCell>{new Date(r.date).toLocaleDateString("en-US", { weekday: "long" })}</TableCell>
                 <TableCell>
-                  <Chip label={r.status} size="small" color={r.status === "present" ? "success" : r.status === "absent" ? "error" : "warning"} />
+                  <StatusChip status={r.status} />
                 </TableCell>
               </TableRow>
             ))}

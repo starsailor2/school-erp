@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Paper, Typography, Stack, Box, Chip, Button, Dialog, DialogTitle, DialogContent, Grid, TextField, MenuItem } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
+import StatusChip from "@/components/StatusChip";
 import { getStaffTasks, saveStaffTasks, updateStaffTask } from "@/demo-data/staffOps/staffTaskStore";
 import { useAuth } from "@/context/AuthContext";
 import type { StaffTask } from "@/types";
@@ -88,7 +89,7 @@ export default function Tasks() {
               </Box>
               <Box sx={{ display: "flex", gap: 0.5 }}>
                 <Chip label={t.priority} size="small" color={t.priority === "high" ? "error" : t.priority === "medium" ? "warning" : "default"} />
-                <Chip label={t.status.replace("_", " ")} size="small" color={t.status === "completed" ? "success" : t.status === "in_progress" ? "primary" : "default"} />
+                <StatusChip status={t.status} />
                 {t.support_request?.requested && <Chip label="Support Requested" size="small" color="warning" />}
                 <Button size="small" variant="outlined" onClick={() => setActiveTaskId(t.id)}>
                   View

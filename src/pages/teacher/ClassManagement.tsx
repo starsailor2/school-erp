@@ -7,6 +7,7 @@ import {
 import { KpiCard } from "@/components/KpiCard";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, students, getClassTeacherSections, marks, attendanceRecords,
@@ -69,7 +70,7 @@ export default function ClassManagement() {
           { key: "roll_number", label: "Roll No." },
           { key: "attendance_pct", label: "Attendance", render: (s) => <Chip label={`${s.attendance_pct}%`} size="small" color={s.attendance_pct >= 85 ? "success" : "warning"} /> },
           { key: "avgMarks", label: "Avg Marks", render: (s) => <Chip label={s.avgMarks} size="small" color={s.avgMarks >= 80 ? "success" : s.avgMarks >= 50 ? "warning" : "error"} /> },
-          { key: "fee_status", label: "Fees", render: (s) => <Chip label={s.fee_status} size="small" color={s.fee_status === "paid" ? "success" : "error"} /> },
+          { key: "fee_status", label: "Fees", render: (s) => <StatusChip status={s.fee_status} /> },
           {
             key: "id", label: "Actions",
             render: (s) => <Button size="small" startIcon={<VisibilityIcon />} onClick={() => setViewStudent(s)}>View</Button>,

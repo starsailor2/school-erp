@@ -7,6 +7,7 @@ import {
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import HistoryIcon from "@mui/icons-material/History";
 import { PageHeader } from "@/components/PageHeader";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
 import { parents, getChildrenOfParent, getStudentFees, getClassName } from "@/demo-data";
 import type { Fee } from "@/types";
@@ -85,7 +86,7 @@ export default function ParentFees() {
                     <TableCell align="right">₹{f.amount.toLocaleString()}</TableCell>
                     <TableCell>{f.due_date}</TableCell>
                     <TableCell>
-                      <Chip label={f.status} size="small" color={f.status === "paid" ? "success" : f.status === "overdue" ? "error" : "warning"} />
+                      <StatusChip status={f.status} />
                     </TableCell>
                     <TableCell>{f.paid_date ?? "—"}</TableCell>
                     <TableCell align="center">

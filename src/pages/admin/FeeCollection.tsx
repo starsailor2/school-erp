@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MenuItem, TextField, Grid, Chip, Button, Box, Paper } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { fees, students, getClassName } from "@/demo-data";
 import type { Fee } from "@/types";
 
@@ -69,7 +70,7 @@ export default function FeeCollection() {
           { key: "due_date", label: "Due Date" },
           {
             key: "status", label: "Status",
-            render: (f) => <Chip label={f.status} size="small" color={f.status === "paid" ? "success" : f.status === "pending" ? "warning" : "error"} />,
+            render: (f) => <StatusChip status={f.status} />,
           },
           { key: "paid_date", label: "Paid Date", render: (f) => f.paid_date ?? "—" },
           {

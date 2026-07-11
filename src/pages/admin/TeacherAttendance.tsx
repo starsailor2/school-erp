@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TextField, Grid, Chip, Box, Button, MenuItem, Paper } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { teachers } from "@/demo-data";
 import type { AttendanceStatus } from "@/types";
 
@@ -97,7 +98,7 @@ export default function TeacherAttendance() {
           { key: "department", label: "Department" },
           {
             key: "status", label: "Status",
-            render: (r) => <Chip label={r.status} size="small" color={r.status === "present" ? "success" : r.status === "late" ? "warning" : "error"} />,
+            render: (r) => <StatusChip status={r.status} />,
           },
           { key: "checkIn", label: "Check-in" },
           {

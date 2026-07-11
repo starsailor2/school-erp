@@ -1,10 +1,11 @@
 import { useState } from "react";
 import {
-  TextField, MenuItem, Button, Chip,
+  TextField, MenuItem, Button,
   Dialog, DialogTitle, DialogContent, DialogActions, Stack,
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { students, classes, getClassName } from "@/demo-data";
 import { createStudentRequest } from "@/demo-data/staffOps/studentRequestStore";
 
@@ -78,7 +79,7 @@ export default function StudentTransfer() {
           { key: "date", label: "Date" },
           {
             key: "status", label: "Status",
-            render: (t) => <Chip label={t.status} size="small" color={t.status === "approved" ? "success" : t.status === "rejected" ? "error" : "warning"} />,
+            render: (t) => <StatusChip status={t.status} />,
           },
           {
             key: "id", label: "Action",

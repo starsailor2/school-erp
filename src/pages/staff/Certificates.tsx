@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Button, Chip, Dialog, DialogContent, DialogTitle, Grid, MenuItem, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Button, Dialog, DialogContent, DialogTitle, Grid, MenuItem, Paper, Stack, TextField, Typography } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
+import StatusChip from "@/components/StatusChip";
 import { getStudentRequests, saveStudentRequests, updateStudentRequest } from "@/demo-data/staffOps/studentRequestStore";
 import { students } from "@/demo-data";
 import { useAuth } from "@/context/AuthContext";
@@ -101,7 +102,7 @@ export default function Certificates() {
           {
             key: "status",
             label: "Status",
-            render: (r) => <Chip size="small" label={r.status.replace("_", " ")} color={r.status === "completed" ? "success" : r.status === "in_progress" ? "primary" : "default"} />,
+            render: (r) => <StatusChip status={r.status} />,
           },
           {
             key: "actions",

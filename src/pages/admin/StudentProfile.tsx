@@ -8,6 +8,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import {
   students, parents, getClassName, getStudentAttendance, getStudentMarks,
   getStudentFees, getSubjectName, routes, classes,
@@ -63,7 +64,7 @@ export default function StudentProfile() {
               <InfoRow label="Gender" value={student.gender} />
               <InfoRow label="Date of Birth" value={student.date_of_birth} />
               <InfoRow label="Attendance" value={`${student.attendance_pct}%`} />
-              <InfoRow label="Fee Status" value={<Chip label={student.fee_status} size="small" color={student.fee_status === "paid" ? "success" : student.fee_status === "pending" ? "warning" : "error"} />} />
+              <InfoRow label="Fee Status" value={<StatusChip status={student.fee_status} />} />
             </Stack>
           </Paper>
         </Grid>
@@ -90,7 +91,7 @@ export default function StudentProfile() {
                   { key: "date", label: "Date" },
                   {
                     key: "status", label: "Status",
-                    render: (a) => <Chip label={a.status} size="small" color={a.status === "present" ? "success" : a.status === "absent" ? "error" : "warning"} />,
+                    render: (a) => <StatusChip status={a.status} />,
                   },
                 ]}
                 rows={attendance}
@@ -124,7 +125,7 @@ export default function StudentProfile() {
                     { key: "due_date", label: "Due Date" },
                     {
                       key: "status", label: "Status",
-                      render: (f) => <Chip label={f.status} size="small" color={f.status === "paid" ? "success" : f.status === "pending" ? "warning" : "error"} />,
+                      render: (f) => <StatusChip status={f.status} />,
                     },
                     { key: "paid_date", label: "Paid Date", render: (f) => f.paid_date ?? "—" },
                   ]}

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { TextField, InputAdornment, Grid, Avatar, Box, Paper, Typography, Stack, Chip } from "@mui/material";
+import { TextField, InputAdornment, Grid, Avatar, Box, Paper, Typography, Stack } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { students, parents, getClassName, getStudentAttendance } from "@/demo-data";
 
 export default function StudentLookup() {
@@ -63,13 +64,7 @@ export default function StudentLookup() {
           {
             key: "fee_status",
             label: "Fee",
-            render: (s) => (
-              <Chip
-                size="small"
-                label={s.fee_status}
-                color={s.fee_status === "paid" ? "success" : s.fee_status === "pending" ? "warning" : "error"}
-              />
-            ),
+            render: (s) => <StatusChip status={s.fee_status} />,
           },
         ]}
         rows={filtered}
