@@ -1,22 +1,30 @@
 import { useEffect, useState } from "react";
 import { Paper, Typography, Stack, Grid, Chip, Box } from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import QuizIcon from "@mui/icons-material/Quiz";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import { PageHeader } from "@/components/PageHeader";
-import { KpiCard } from "@/components/KpiCard";
+import { StatCard } from "@/components/StatCard";
+import { ChartCard } from "@/components/ChartCard";
+import { getChartPalette, getChartTooltipStyle } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
   students, classes, getStudentAttendance, getStudentMarks, getSubjectName,
   getClassName, homework as allHomework, exams, timetable,
+  getHostelAllocationForStudent, getMessPlanForStudent, hostelRooms, hostelBlocks,
 } from "@/demo-data";
 import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communication/announcementStore";
 
 export default function StudentDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
+  const tooltipStyle = getChartTooltipStyle(mode);
   const [announcementRows, setAnnouncementRows] = useState(() => getAnnouncements());
 
   useEffect(() => {
@@ -34,6 +42,19 @@ export default function StudentDashboard() {
   const upcomingExams = exams.filter((e) => new Date(e.start_date) >= new Date());
   const studentAnnouncements = announcementRows.filter((a) => a.target === "all" || a.target === "student");
 
+  const gradeTrend = exams.map((exam) => {
+    const examMarks = marks.filter((m) => m.exam_id === exam.id);
+    return {
+      exam: exam.name,
+      avgScore: examMarks.length ? Math.round(examMarks.reduce((s, m) => s + m.marks_obtained, 0) / examMarks.length) : 0,
+    };
+  });
+
+  const hostelAllocation = student ? getHostelAllocationForStudent(student.id) : undefined;
+  const room = hostelAllocation ? hostelRooms.find((r) => r.id === hostelAllocation.room_id) : undefined;
+  const block = room ? hostelBlocks.find((b) => b.id === room.block_id) : undefined;
+  const messPlan = student ? getMessPlanForStudent(student.id) : undefined;
+
   // Parse student class/section for timetable
   const cls = student ? classes.find((c) => c.id === student.class_id) : null;
   const sec = cls?.sections.find((s) => s.id === student?.section_id);
@@ -46,21 +67,49 @@ export default function StudentDashboard() {
 
   return (
     <>
-      <PageHeader title={`Welcome, ${student?.name ?? "Student"}`} breadcrumbs={[{ label: "Dashboard" }]} />
+      <PageHeader title={`Welcome, ${student?.name ?? "Student"}`} eyebrow="Student Portal" breadcrumbs={[{ label: "Dashboard" }]} />
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <KpiCard title="Attendance" value={`${pct}%`} icon={<EventAvailableIcon />} color="primary.main" onClick={() => navigate("/student/attendance")} />
+          <StatCard title="Attendance" value={`${pct}%`} numericValue={pct} formatValue={(n) => `${n}%`} icon={<EventAvailableIcon />} onClick={() => navigate("/student/attendance")} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <KpiCard title="Pending Homework" value={pendingHw.length} icon={<AssignmentIcon />} color="error.main" onClick={() => navigate("/student/homework")} />
+          <StatCard title="Pending Homework" value={pendingHw.length} numericValue={pendingHw.length} icon={<AssignmentIcon />} onClick={() => navigate("/student/homework")} delay={0.05} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <KpiCard title="Upcoming Exams" value={upcomingExams.length} icon={<QuizIcon />} color="warning.main" onClick={() => navigate("/student/exams")} />
+          <StatCard title="Upcoming Exams" value={upcomingExams.length} numericValue={upcomingExams.length} icon={<QuizIcon />} onClick={() => navigate("/student/exams")} delay={0.1} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <KpiCard title="Announcements" value={studentAnnouncements.length} icon={<CampaignIcon />} color="success.main" onClick={() => navigate("/student/announcements")} />
+          <StatCard title="Announcements" value={studentAnnouncements.length} numericValue={studentAnnouncements.length} icon={<CampaignIcon />} onClick={() => navigate("/student/announcements")} delay={0.15} />
         </Grid>
       </Grid>
+
+      {(hostelAllocation || messPlan) && (
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          {hostelAllocation && (
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Paper sx={{ p: 2 }}>
+                <Typography variant="subtitle2" fontWeight={600} gutterBottom>Hostel</Typography>
+                <Stack spacing={0.5}>
+                  <Typography variant="body2">Block: {block?.name}</Typography>
+                  <Typography variant="body2">Room: {room?.room_number} ({room?.type})</Typography>
+                  <Typography variant="body2">Since: {hostelAllocation.check_in_date}</Typography>
+                </Stack>
+              </Paper>
+            </Grid>
+          )}
+          {messPlan && (
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Paper sx={{ p: 2 }}>
+                <Typography variant="subtitle2" fontWeight={600} gutterBottom>Mess Plan</Typography>
+                <Stack spacing={0.5}>
+                  <Typography variant="body2">Plan: {messPlan.plan_type === "veg" ? "Vegetarian" : "Non-Vegetarian"}</Typography>
+                  <Typography variant="body2">Since: {messPlan.subscribed_since}</Typography>
+                </Stack>
+              </Paper>
+            </Grid>
+          )}
+        </Grid>
+      )}
 
       <Grid container spacing={2}>
         {/* Today's Timetable */}
@@ -84,19 +133,21 @@ export default function StudentDashboard() {
             )}
           </Paper>
 
-          {/* Marks summary */}
+          {/* Grade trend */}
           {marks.length > 0 && (
-            <Paper sx={{ p: 2, mt: 2 }}>
-              <Typography variant="subtitle1" fontWeight={600} gutterBottom>Latest Results</Typography>
-              <Stack spacing={1}>
-                {marks.slice(0, 5).map((m) => (
-                  <Box key={m.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Typography variant="body2">{getSubjectName(m.subject_id)}</Typography>
-                    <Chip label={`${m.marks_obtained}/${m.max_marks} — ${m.grade}`} size="small" color={m.marks_obtained >= 80 ? "success" : m.marks_obtained >= 50 ? "warning" : "error"} />
-                  </Box>
-                ))}
-              </Stack>
-            </Paper>
+            <Box sx={{ mt: 2 }}>
+              <ChartCard eyebrow="Academics" title="Grade Trend Across Exams">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={gradeTrend}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                    <XAxis dataKey="exam" stroke={palette.axis} fontSize={11} />
+                    <YAxis domain={[0, 100]} stroke={palette.axis} fontSize={12} />
+                    <Tooltip {...tooltipStyle} />
+                    <Line type="monotone" dataKey="avgScore" name="Average Score" stroke={palette.categorical[0]} strokeWidth={2} dot={{ r: 4 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartCard>
+            </Box>
           )}
         </Grid>
 
