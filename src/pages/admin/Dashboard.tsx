@@ -15,11 +15,11 @@ import { StatCard } from "@/components/StatCard";
 import { ChartCard } from "@/components/ChartCard";
 import StatusChip from "@/components/StatusChip";
 import { PageHeader } from "@/components/PageHeader";
-import { getChartPalette, getChartTooltipStyle } from "@/theme/chartPalette";
+import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
 import { useColorMode } from "@/context/ColorModeContext";
 import {
   students, teachers, staffMembers, classes, fees, attendanceRecords,
-  announcements, exams, marks, hostelAllocations, hostelRooms, hostelBlocks,
+  announcements, hostelAllocations, hostelRooms, hostelBlocks,
   messPlans, messAttendance, getClassName,
 } from "@/demo-data";
 
@@ -102,13 +102,6 @@ export default function AdminDashboard() {
       }));
   }, []);
 
-  const examPerformanceTrend = useMemo(() =>
-    exams.map((exam) => {
-      const examMarks = marks.filter((m) => m.exam_id === exam.id);
-      const avg = examMarks.length > 0 ? examMarks.reduce((s, m) => s + m.marks_obtained, 0) / examMarks.length : 0;
-      return { name: exam.name, avgScore: Math.round(avg) };
-    }), []);
-
   const hostelByBlock = useMemo(() =>
     hostelBlocks.map((block) => {
       const roomsInBlock = hostelRooms.filter((r) => r.block_id === block.id);
@@ -137,22 +130,22 @@ export default function AdminDashboard() {
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
-          <StatCard title="Total Students" value={stats.totalStudents} numericValue={stats.totalStudents} icon={<PeopleIcon />} onClick={() => navigate("/admin/students")} delay={0} />
+          <StatCard title="Total Students" value={stats.totalStudents} numericValue={stats.totalStudents} icon={<PeopleIcon />} color={getIconAccent(mode, "students")} onClick={() => navigate("/admin/students")} delay={0} />
         </Grid>
         <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
-          <StatCard title="Total Staff" value={stats.totalStaff} numericValue={stats.totalStaff} icon={<SchoolIcon />} onClick={() => navigate("/admin/staff")} delay={0.05} />
+          <StatCard title="Total Staff" value={stats.totalStaff} numericValue={stats.totalStaff} icon={<SchoolIcon />} color={getIconAccent(mode, "staff")} onClick={() => navigate("/admin/staff")} delay={0.05} />
         </Grid>
         <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
-          <StatCard title="Attendance Today" value={`${stats.attendancePct}%`} numericValue={stats.attendancePct} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />} onClick={() => navigate("/admin/attendance/students")} delay={0.1} />
+          <StatCard title="Attendance Today" value={`${stats.attendancePct}%`} numericValue={stats.attendancePct} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} onClick={() => navigate("/admin/attendance/students")} delay={0.1} />
         </Grid>
         <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
-          <StatCard title="Fee Collection Rate" value={`${stats.collectionRate}%`} numericValue={stats.collectionRate} formatValue={(n) => `${n}%`} icon={<PaymentIcon />} onClick={() => navigate("/admin/fees/collection")} delay={0.15} />
+          <StatCard title="Fee Collection Rate" value={`${stats.collectionRate}%`} numericValue={stats.collectionRate} formatValue={(n) => `${n}%`} icon={<PaymentIcon />} color={getIconAccent(mode, "fees")} onClick={() => navigate("/admin/fees/collection")} delay={0.15} />
         </Grid>
         <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
-          <StatCard title="Hostel Occupancy" value={`${stats.hostelOccupancy}%`} numericValue={stats.hostelOccupancy} formatValue={(n) => `${n}%`} icon={<HotelIcon />} onClick={() => navigate("/admin/hostel")} delay={0.2} />
+          <StatCard title="Hostel Occupancy" value={`${stats.hostelOccupancy}%`} numericValue={stats.hostelOccupancy} formatValue={(n) => `${n}%`} icon={<HotelIcon />} color={getIconAccent(mode, "hostel")} onClick={() => navigate("/admin/hostel")} delay={0.2} />
         </Grid>
         <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
-          <StatCard title="Mess Plans Active" value={stats.messPlansActive} numericValue={stats.messPlansActive} icon={<RestaurantIcon />} onClick={() => navigate("/admin/mess")} delay={0.25} />
+          <StatCard title="Mess Plans Active" value={stats.messPlansActive} numericValue={stats.messPlansActive} icon={<RestaurantIcon />} color={getIconAccent(mode, "mess")} onClick={() => navigate("/admin/mess")} delay={0.25} />
         </Grid>
       </Grid>
 
@@ -204,7 +197,7 @@ export default function AdminDashboard() {
         <Grid size={{ xs: 12, md: 6 }}>
           <ChartCard eyebrow="Academics" title="Students per Class" delay={0.25}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={classDistribution}>
+              <BarChart data={classDistribution} style={{ backgroundColor: "transparent" }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
                 <XAxis dataKey="name" stroke={palette.axis} fontSize={12} />
                 <YAxis stroke={palette.axis} fontSize={12} />
@@ -217,23 +210,10 @@ export default function AdminDashboard() {
       </Grid>
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <ChartCard eyebrow="Academics" title="Exam Performance Trend" subtitle="Average score across all subjects" delay={0.3}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={examPerformanceTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
-                <XAxis dataKey="name" stroke={palette.axis} fontSize={11} />
-                <YAxis domain={[0, 100]} stroke={palette.axis} fontSize={12} />
-                <Tooltip {...tooltipStyle} />
-                <Line type="monotone" dataKey="avgScore" name="Avg Score" stroke={palette.categorical[0]} strokeWidth={2} dot={{ r: 4 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartCard>
-        </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <ChartCard eyebrow="Hostel" title="Occupancy by Block" delay={0.35}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={hostelByBlock}>
+              <BarChart data={hostelByBlock} style={{ backgroundColor: "transparent" }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
                 <XAxis dataKey="name" stroke={palette.axis} fontSize={11} />
                 <YAxis stroke={palette.axis} fontSize={12} />
@@ -245,7 +225,7 @@ export default function AdminDashboard() {
             </ResponsiveContainer>
           </ChartCard>
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <ChartCard eyebrow="Mess" title="Meals Served — Last 30 Days" delay={0.4}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={messConsumptionTrend}>

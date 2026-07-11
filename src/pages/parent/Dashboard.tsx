@@ -7,6 +7,8 @@ import GradingIcon from "@mui/icons-material/Grading";
 import PaymentIcon from "@mui/icons-material/Payment";
 import { StatCard } from "@/components/StatCard";
 import { PageHeader } from "@/components/PageHeader";
+import { getIconAccent } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 import { useAuth } from "@/context/AuthContext";
 import {
   parents, getChildrenOfParent, getClassName, getStudentMarks,
@@ -17,6 +19,7 @@ import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communic
 
 export default function ParentDashboard() {
   const navigate = useNavigate();
+  const { mode } = useColorMode();
   const { user, selectedChildId, setSelectedChildId } = useAuth();
   const [announcementRows, setAnnouncementRows] = useState(() => getAnnouncements());
 
@@ -79,19 +82,19 @@ export default function ParentDashboard() {
 
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <StatCard title="Attendance" value={`${attendancePct}%`} numericValue={attendancePct} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />}
+              <StatCard title="Attendance" value={`${attendancePct}%`} numericValue={attendancePct} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")}
                 onClick={() => navigate("/parent/attendance")} />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <StatCard title="Homework Pending" value={pendingHw} numericValue={pendingHw} icon={<AssignmentIcon />}
+              <StatCard title="Homework Pending" value={pendingHw} numericValue={pendingHw} icon={<AssignmentIcon />} color={getIconAccent(mode, "homework")}
                 onClick={() => navigate("/parent/homework")} delay={0.05} />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <StatCard title="Upcoming Exams" value={upcomingExams} numericValue={upcomingExams} icon={<GradingIcon />}
+              <StatCard title="Upcoming Exams" value={upcomingExams} numericValue={upcomingExams} icon={<GradingIcon />} color={getIconAccent(mode, "exams")}
                 onClick={() => navigate("/parent/exams")} delay={0.1} />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <StatCard title="Fee Due" value={pendingFees > 0 ? `₹${pendingFees.toLocaleString()}` : "Nil"} icon={<PaymentIcon />}
+              <StatCard title="Fee Due" value={pendingFees > 0 ? `₹${pendingFees.toLocaleString()}` : "Nil"} icon={<PaymentIcon />} color={getIconAccent(mode, "fees")}
                 onClick={() => navigate("/parent/fees")} delay={0.15} />
             </Grid>
           </Grid>

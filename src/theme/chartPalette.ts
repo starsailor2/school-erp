@@ -54,6 +54,16 @@ export function getChartPalette(mode: "light" | "dark"): ChartPalette {
   };
 }
 
+// Stable per-feature accent color, hashed from a key (e.g. a nav path or
+// stat name) so the same feature keeps the same color everywhere it shows
+// up — sidebar icons, dashboard StatCard icons, etc.
+export function getIconAccent(mode: "light" | "dark", key: string): string {
+  const { categorical } = getChartPalette(mode);
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  return categorical[hash % categorical.length];
+}
+
 export function getChartTooltipStyle(mode: "light" | "dark") {
   const surface = mode === "light" ? "#FFFFFF" : "#1A1A1A";
   const border = mode === "light" ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)";

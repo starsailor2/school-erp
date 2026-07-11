@@ -11,7 +11,7 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { StatCard } from "@/components/StatCard";
 import { ChartCard } from "@/components/ChartCard";
 import { PageHeader } from "@/components/PageHeader";
-import { getChartPalette, getChartTooltipStyle } from "@/theme/chartPalette";
+import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
 import { useColorMode } from "@/context/ColorModeContext";
 import { useAuth } from "@/context/AuthContext";
 import { canViewFeature } from "@/data/staffPermissions";
@@ -92,41 +92,41 @@ export default function StaffDashboard() {
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard title="Total Students" value={students.length} numericValue={students.length} icon={<PeopleIcon />} onClick={() => navigate("/staff/students")} />
+          <StatCard title="Total Students" value={students.length} numericValue={students.length} icon={<PeopleIcon />} color={getIconAccent(mode, "students")} onClick={() => navigate("/staff/students")} />
         </Grid>
         {staffRole === "accountant" && (
           <>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <StatCard title="Fee Collections Today" value={feeCollectionsToday} numericValue={feeCollectionsToday} icon={<PaymentIcon />} onClick={() => navigate("/staff/fees/records")} delay={0.05} />
+              <StatCard title="Fee Collections Today" value={feeCollectionsToday} numericValue={feeCollectionsToday} icon={<PaymentIcon />} color={getIconAccent(mode, "fees")} onClick={() => navigate("/staff/fees/records")} delay={0.05} />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <StatCard title="Pending Fee Payments" value={pendingFeePayments} numericValue={pendingFeePayments} icon={<PaymentIcon />} onClick={() => navigate("/staff/fees/collection")} delay={0.1} />
+              <StatCard title="Pending Fee Payments" value={pendingFeePayments} numericValue={pendingFeePayments} icon={<PaymentIcon />} color={getIconAccent(mode, "fees-pending")} onClick={() => navigate("/staff/fees/collection")} delay={0.1} />
             </Grid>
           </>
         )}
         {staffRole === "library_staff" && (
           <Grid size={{ xs: 6, sm: 3 }}>
-            <StatCard title="Books Issued" value={booksIssued} numericValue={booksIssued} icon={<MenuBookIcon />} onClick={() => navigate("/staff/library/records")} delay={0.05} />
+            <StatCard title="Books Issued" value={booksIssued} numericValue={booksIssued} icon={<MenuBookIcon />} color={getIconAccent(mode, "library")} onClick={() => navigate("/staff/library/records")} delay={0.05} />
           </Grid>
         )}
         {staffRole === "transport_manager" && (
           <Grid size={{ xs: 6, sm: 3 }}>
-            <StatCard title="Bus Routes Active" value={routes.length} numericValue={routes.length} icon={<DirectionsBusIcon />} onClick={() => navigate("/staff/transport/routes")} delay={0.05} />
+            <StatCard title="Bus Routes Active" value={routes.length} numericValue={routes.length} icon={<DirectionsBusIcon />} color={getIconAccent(mode, "transport")} onClick={() => navigate("/staff/transport/routes")} delay={0.05} />
           </Grid>
         )}
         {staffRole === "hostel_warden" && (
           <Grid size={{ xs: 6, sm: 3 }}>
-            <StatCard title="Hostel Occupancy" value={`${totalBeds > 0 ? Math.round((hostelOccupied / totalBeds) * 100) : 0}%`} numericValue={totalBeds > 0 ? Math.round((hostelOccupied / totalBeds) * 100) : 0} formatValue={(n) => `${n}%`} icon={<HotelIcon />} onClick={() => navigate("/staff/hostel/allocation")} delay={0.05} />
+            <StatCard title="Hostel Occupancy" value={`${totalBeds > 0 ? Math.round((hostelOccupied / totalBeds) * 100) : 0}%`} numericValue={totalBeds > 0 ? Math.round((hostelOccupied / totalBeds) * 100) : 0} formatValue={(n) => `${n}%`} icon={<HotelIcon />} color={getIconAccent(mode, "hostel")} onClick={() => navigate("/staff/hostel/allocation")} delay={0.05} />
           </Grid>
         )}
         {staffRole === "mess_manager" && (
           <Grid size={{ xs: 6, sm: 3 }}>
-            <StatCard title="Meals Served Today" value={messTrendForStaff[messTrendForStaff.length - 1]?.meals ?? 0} numericValue={messTrendForStaff[messTrendForStaff.length - 1]?.meals ?? 0} icon={<RestaurantIcon />} onClick={() => navigate("/staff/mess/attendance")} delay={0.05} />
+            <StatCard title="Meals Served Today" value={messTrendForStaff[messTrendForStaff.length - 1]?.meals ?? 0} numericValue={messTrendForStaff[messTrendForStaff.length - 1]?.meals ?? 0} icon={<RestaurantIcon />} color={getIconAccent(mode, "mess")} onClick={() => navigate("/staff/mess/attendance")} delay={0.05} />
           </Grid>
         )}
         {(staffRole === "office_staff" || staffRole === "accountant") && (
           <Grid size={{ xs: 6, sm: 3 }}>
-            <StatCard title="Student Requests" value={studentRequestsCount} numericValue={studentRequestsCount} icon={<TaskIcon />} onClick={() => navigate("/staff/students/requests")} delay={0.15} />
+            <StatCard title="Student Requests" value={studentRequestsCount} numericValue={studentRequestsCount} icon={<TaskIcon />} color={getIconAccent(mode, "requests")} onClick={() => navigate("/staff/students/requests")} delay={0.15} />
           </Grid>
         )}
       </Grid>

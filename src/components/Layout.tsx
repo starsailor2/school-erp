@@ -35,11 +35,14 @@ import TeacherTypeSwitcher from "@/components/TeacherTypeSwitcher";
 import StaffRoleSwitcher from "@/components/StaffRoleSwitcher";
 import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/demo-data/communication/notificationStore";
-import { sidebarTokens, motionEasing, motionDuration, motionEasingCss } from "@/theme/tokens";
+import { getSidebarTokens, motionEasing, motionDuration, motionEasingCss } from "@/theme/tokens";
 import { getChartPalette } from "@/theme/chartPalette";
 
 const DRAWER_WIDTH = 260;
 const RAIL_WIDTH = 72;
+const SIDEBAR_TRANSITION_DURATION = 0.42;
+const SIDEBAR_TRANSITION_EASING = [0.22, 1, 0.36, 1] as const;
+const SIDEBAR_HEADER_MIN_HEIGHT = 84;
 
 export default function Layout() {
   const theme = useTheme();
@@ -47,6 +50,7 @@ export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { role, teacherType, staffRole, user, logout } = useAuth();
   const { toggleColorMode, mode } = useColorMode();
+  const sidebarTokens = getSidebarTokens(mode);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -146,16 +150,21 @@ export default function Layout() {
     mb: 0.25,
     minHeight: 44,
     py: 1,
-    color: sidebarTokens.text,
+    color: active ? sidebarTokens.activeText : sidebarTokens.text,
     justifyContent: showRail ? "center" : "flex-start",
     px: showRail ? 1.5 : 2,
-    transition: `background-color ${motionDuration}s ${motionEasingCss}, color ${motionDuration}s ${motionEasingCss}`,
-    "&:hover": { bgcolor: sidebarTokens.hoverBackground },
+    transition: `background-color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}, color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}`,
+    "&:hover": {
+      bgcolor: sidebarTokens.hoverBackground,
+      color: sidebarTokens.activeText,
+    },
     ...(active && {
       bgcolor: sidebarTokens.activeBackground,
       color: sidebarTokens.activeText,
-      "&:hover": { bgcolor: sidebarTokens.activeBackground },
-      "& .MuiListItemIcon-root": { color: sidebarTokens.activeText },
+      "&:hover": {
+        bgcolor: sidebarTokens.activeBackground,
+        color: sidebarTokens.activeText,
+      },
     }),
   });
 
@@ -173,24 +182,35 @@ export default function Layout() {
 
   const renderNavItem = (item: NavItem) => {
     const active = isActive(item);
+    const iconColor = iconColorFor(item.path);
     if (item.children) {
       const open = !showRail && (openMenus[item.label] ?? active);
       return (
         <Box key={item.label}>
           <Tooltip title={showRail ? item.label : ""} placement="right">
-            <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+            <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: SIDEBAR_TRANSITION_DURATION, ease: SIDEBAR_TRANSITION_EASING }}>
               <ListItemButton
                 disableRipple
                 onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
                 sx={navButtonSx(active)}
               >
-                <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: active ? sidebarTokens.activeText : iconColorFor(item.path) }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: showRail ? "auto" : 36,
+                    color: `${iconColor} !important`,
+                    opacity: 1,
+                    "& .MuiSvgIcon-root": {
+                      color: `${iconColor} !important`,
+                      opacity: 1,
+                    },
+                  }}
+                >
                   {item.icon}
                 </ListItemIcon>
                 {!showRail && (
                   <>
                     <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
-                    <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+                    <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: SIDEBAR_TRANSITION_DURATION, ease: SIDEBAR_TRANSITION_EASING }}>
                       <ExpandMoreIcon fontSize="small" />
                     </motion.div>
                   </>
@@ -204,7 +224,7 @@ export default function Layout() {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: motionDuration, ease: motionEasing }}
+                transition={{ duration: SIDEBAR_TRANSITION_DURATION, ease: SIDEBAR_TRANSITION_EASING }}
                 style={{ overflow: "hidden" }}
               >
                 <List disablePadding sx={{ position: "relative" }}>
@@ -218,7 +238,7 @@ export default function Layout() {
                       <motion.div
                         key={child.path}
                         whileTap={{ scale: 0.97 }}
-                        transition={{ duration: motionDuration, ease: motionEasing }}
+                        transition={{ duration: SIDEBAR_TRANSITION_DURATION, ease: SIDEBAR_TRANSITION_EASING }}
                       >
                         <ListItemButton
                           disableRipple
@@ -256,7 +276,17 @@ export default function Layout() {
       <Tooltip key={item.path} title={showRail ? item.label : ""} placement="right">
         <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
           <ListItemButton disableRipple onClick={() => handleNav(item.path)} sx={navButtonSx(active)}>
-            <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: active ? sidebarTokens.activeText : iconColorFor(item.path) }}>
+            <ListItemIcon
+              sx={{
+                minWidth: showRail ? "auto" : 36,
+                color: `${iconColor} !important`,
+                opacity: 1,
+                "& .MuiSvgIcon-root": {
+                  color: `${iconColor} !important`,
+                  opacity: 1,
+                },
+              }}
+            >
               {item.icon}
             </ListItemIcon>
             {!showRail && <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />}
@@ -270,11 +300,12 @@ export default function Layout() {
     <Box
       onMouseEnter={handleSidebarMouseEnter}
       onMouseLeave={handleSidebarMouseLeave}
-      sx={{ display: "flex", flexDirection: "column", height: "100%", bgcolor: sidebarTokens.background }}
+      sx={{ display: "flex", flexDirection: "column", height: "100%", bgcolor: sidebarTokens.background, gap: 1.5 }}
     >
       <Box
         sx={{
-          p: showRail ? 1.5 : 2,
+          p: 2,
+          minHeight: SIDEBAR_HEADER_MIN_HEIGHT,
           display: "flex",
           alignItems: "center",
           gap: 1.5,
@@ -324,14 +355,14 @@ export default function Layout() {
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
                     fontSize: "0.65rem",
-                    transition: `color ${motionDuration}s ${motionEasingCss}`,
+                    transition: `color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}`,
                   }}
                 >
                   {group}
                 </Typography>
                 <motion.div
                   animate={{ rotate: collapsedGroups[group] ? -90 : 0 }}
-                  transition={{ duration: motionDuration, ease: motionEasing }}
+                  transition={{ duration: SIDEBAR_TRANSITION_DURATION, ease: SIDEBAR_TRANSITION_EASING }}
                   style={{ display: "flex", color: sidebarTokens.muted }}
                 >
                   <ExpandMoreIcon sx={{ fontSize: 16 }} />
@@ -347,7 +378,7 @@ export default function Layout() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: motionDuration, ease: motionEasing }}
+                    transition={{ duration: SIDEBAR_TRANSITION_DURATION, ease: SIDEBAR_TRANSITION_EASING }}
                     style={{ overflow: "hidden" }}
                   >
                     {items.map(renderNavItem)}
@@ -397,7 +428,7 @@ export default function Layout() {
         <Toolbar>
           {isMobile && (
             <IconButton edge="start" onClick={() => setMobileOpen(true)} sx={{ mr: 1 }}>
-              <MenuIcon />
+              <MenuIcon sx={{ color: iconColorFor("menu") }} />
             </IconButton>
           )}
           <Typography variant="h6" fontWeight={700} sx={{ mr: 2, letterSpacing: "-0.02em" }} noWrap>
@@ -409,7 +440,9 @@ export default function Layout() {
               sx={{
                 display: { xs: "none", sm: "flex" },
                 alignItems: "center",
-                bgcolor: "action.hover",
+                bgcolor: "background.default",
+                border: "1px solid",
+                borderColor: "divider",
                 borderRadius: 2,
                 px: 1.5,
                 py: 0.5,
@@ -418,8 +451,8 @@ export default function Layout() {
                 flex: 1,
               }}
             >
-              <SearchIcon fontSize="small" sx={{ mr: 0.5, color: "text.secondary" }} />
-              <InputBase placeholder="Search students, teachers…" sx={{ flex: 1, fontSize: 14 }} />
+              <SearchIcon fontSize="small" sx={{ mr: 0.5, color: iconColorFor("search") }} />
+              <InputBase placeholder="Search students, teachers…" sx={{ flex: 1, fontSize: 14, color: "text.primary" }} />
             </Box>
           )}
 
@@ -428,18 +461,22 @@ export default function Layout() {
           {role === "staff" && <StaffRoleSwitcher />}
           <Tooltip title="Sign Out">
             <IconButton onClick={handleLogout} sx={{ ml: 0.5 }}>
-              <LogoutIcon />
+              <LogoutIcon sx={{ color: iconColorFor("logout") }} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Toggle theme">
             <IconButton onClick={toggleColorMode} sx={{ ml: 0.5 }}>
-              {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+              {mode === "dark" ? (
+                <Brightness7Icon sx={{ color: iconColorFor("theme") }} />
+              ) : (
+                <Brightness4Icon sx={{ color: iconColorFor("theme") }} />
+              )}
             </IconButton>
           </Tooltip>
           <Tooltip title="Notifications">
             <IconButton onClick={() => navigate(`/${role}/notifications`)} sx={{ ml: 0.5 }}>
               <Badge badgeContent={unreadNotifications} color="error">
-                <NotificationsIcon />
+                <NotificationsIcon sx={{ color: iconColorFor("notifications") }} />
               </Badge>
             </IconButton>
           </Tooltip>
@@ -462,14 +499,14 @@ export default function Layout() {
           sx={{
             width: reservedWidth,
             flexShrink: 0,
-            transition: `width ${motionDuration}s ${motionEasingCss}`,
+            transition: `width ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}`,
             "& .MuiDrawer-paper": {
               width: paperWidth,
               boxSizing: "border-box",
               borderRight: "none",
               mt: "64px",
               height: "calc(100% - 64px)",
-              transition: `width ${motionDuration}s ${motionEasingCss}, box-shadow ${motionDuration}s ${motionEasingCss}`,
+              transition: `width ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}, box-shadow ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}`,
               overflowX: "hidden",
               boxShadow: isHoverOverlay
                 ? theme.palette.mode === "light"

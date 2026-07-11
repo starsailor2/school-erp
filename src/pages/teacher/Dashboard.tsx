@@ -19,7 +19,7 @@ import {
 import { StatCard } from "@/components/StatCard";
 import { ChartCard } from "@/components/ChartCard";
 import { PageHeader } from "@/components/PageHeader";
-import { getChartPalette, getChartTooltipStyle } from "@/theme/chartPalette";
+import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
 import { useColorMode } from "@/context/ColorModeContext";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -153,16 +153,16 @@ export default function TeacherDashboard() {
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard title="Today's Classes" value={todayClasses} numericValue={todayClasses} icon={<ScheduleIcon />} onClick={() => navigate("/teacher/timetable")} />
+          <StatCard title="Today's Classes" value={todayClasses} numericValue={todayClasses} icon={<ScheduleIcon />} color={getIconAccent(mode, "timetable")} onClick={() => navigate("/teacher/timetable")} />
         </Grid>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard title="My Students" value={myStudents.length} numericValue={myStudents.length} icon={<PeopleIcon />} onClick={() => navigate("/teacher/students")} delay={0.05} />
+          <StatCard title="My Students" value={myStudents.length} numericValue={myStudents.length} icon={<PeopleIcon />} color={getIconAccent(mode, "students")} onClick={() => navigate("/teacher/students")} delay={0.05} />
         </Grid>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard title="Pending Homework" value={upcomingHomework.length} numericValue={upcomingHomework.length} icon={<AssignmentIcon />} onClick={() => navigate("/teacher/homework/list")} delay={0.1} />
+          <StatCard title="Pending Homework" value={upcomingHomework.length} numericValue={upcomingHomework.length} icon={<AssignmentIcon />} color={getIconAccent(mode, "homework")} onClick={() => navigate("/teacher/homework/list")} delay={0.1} />
         </Grid>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard title="Avg Attendance" value={`${avgAtt}%`} numericValue={avgAtt} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />} onClick={() => navigate("/teacher/attendance/history")} delay={0.15} />
+          <StatCard title="Avg Attendance" value={`${avgAtt}%`} numericValue={avgAtt} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} onClick={() => navigate("/teacher/attendance/history")} delay={0.15} />
         </Grid>
       </Grid>
 

@@ -8,7 +8,7 @@ import CampaignIcon from "@mui/icons-material/Campaign";
 import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
 import { ChartCard } from "@/components/ChartCard";
-import { getChartPalette, getChartTooltipStyle } from "@/theme/chartPalette";
+import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
 import { useColorMode } from "@/context/ColorModeContext";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -70,16 +70,16 @@ export default function StudentDashboard() {
       <PageHeader title={`Welcome, ${student?.name ?? "Student"}`} eyebrow="Student Portal" breadcrumbs={[{ label: "Dashboard" }]} />
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Attendance" value={`${pct}%`} numericValue={pct} formatValue={(n) => `${n}%`} icon={<EventAvailableIcon />} onClick={() => navigate("/student/attendance")} />
+          <StatCard title="Attendance" value={`${pct}%`} numericValue={pct} formatValue={(n) => `${n}%`} icon={<EventAvailableIcon />} color={getIconAccent(mode, "attendance")} onClick={() => navigate("/student/attendance")} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Pending Homework" value={pendingHw.length} numericValue={pendingHw.length} icon={<AssignmentIcon />} onClick={() => navigate("/student/homework")} delay={0.05} />
+          <StatCard title="Pending Homework" value={pendingHw.length} numericValue={pendingHw.length} icon={<AssignmentIcon />} color={getIconAccent(mode, "homework")} onClick={() => navigate("/student/homework")} delay={0.05} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Upcoming Exams" value={upcomingExams.length} numericValue={upcomingExams.length} icon={<QuizIcon />} onClick={() => navigate("/student/exams")} delay={0.1} />
+          <StatCard title="Upcoming Exams" value={upcomingExams.length} numericValue={upcomingExams.length} icon={<QuizIcon />} color={getIconAccent(mode, "exams")} onClick={() => navigate("/student/exams")} delay={0.1} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Announcements" value={studentAnnouncements.length} numericValue={studentAnnouncements.length} icon={<CampaignIcon />} onClick={() => navigate("/student/announcements")} delay={0.15} />
+          <StatCard title="Announcements" value={studentAnnouncements.length} numericValue={studentAnnouncements.length} icon={<CampaignIcon />} color={getIconAccent(mode, "announcements")} onClick={() => navigate("/student/announcements")} delay={0.15} />
         </Grid>
       </Grid>
 
