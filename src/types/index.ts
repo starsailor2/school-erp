@@ -160,6 +160,13 @@ export interface AttendanceRecord {
   marked_by: string;
 }
 
+export interface TeacherAttendanceRecord {
+  id: string;
+  teacher_id: string;
+  date: string;
+  status: AttendanceStatus;
+}
+
 export interface Homework {
   id: string;
   class_id: string;
@@ -200,6 +207,14 @@ export interface Fee {
   paid_date?: string;
 }
 
+export interface FeeStructureItem {
+  id: string;
+  class_id: string;
+  fee_type: FeeType;
+  amount: number;
+  frequency: "monthly" | "quarterly" | "annual";
+}
+
 export interface FeePayment {
   id: string;
   fee_id: string;
@@ -228,6 +243,19 @@ export interface Route {
   driver_phone: string;
   capacity: number;
   stops: string[];
+}
+
+export interface Vehicle {
+  id: string;
+  vehicle_number: string;
+  route_id: string;
+  type: "bus" | "van" | "minibus";
+  capacity: number;
+  make_model: string;
+  year: number;
+  last_service_date: string;
+  insurance_expiry: string;
+  status: "active" | "maintenance" | "retired";
 }
 
 export interface TransportDriver {
@@ -298,6 +326,74 @@ export interface LibraryRecord {
   actual_return_date?: string;
   status: LibraryRecordStatus;
   issued_by: string;
+}
+
+export type HostelRoomType = "single" | "double" | "dorm";
+export type HostelGender = "boys" | "girls";
+
+export interface HostelBlock {
+  id: string;
+  name: string;
+  gender: HostelGender;
+  warden_staff_id: string;
+}
+
+export interface HostelRoom {
+  id: string;
+  block_id: string;
+  room_number: string;
+  type: HostelRoomType;
+  capacity: number;
+}
+
+export interface HostelAllocation {
+  id: string;
+  student_id: string;
+  room_id: string;
+  check_in_date: string;
+  status: "active" | "vacated";
+}
+
+export interface HostelFee {
+  id: string;
+  student_id: string;
+  amount: number;
+  due_date: string;
+  status: FeeStatus;
+  paid_date?: string;
+}
+
+export type MessMeal = "breakfast" | "lunch" | "snacks" | "dinner";
+export type MessPlanType = "veg" | "non_veg";
+
+export interface MessMenuEntry {
+  id: string;
+  day_of_week: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
+  meal: MessMeal;
+  items: string[];
+}
+
+export interface MessPlan {
+  id: string;
+  student_id: string;
+  plan_type: MessPlanType;
+  subscribed_since: string;
+}
+
+export interface MessAttendanceRecord {
+  id: string;
+  student_id: string;
+  date: string;
+  meal: MessMeal;
+  consumed: boolean;
+}
+
+export interface MessBilling {
+  id: string;
+  student_id: string;
+  month_label: string; // e.g. "2026-06"
+  amount: number;
+  status: FeeStatus;
 }
 
 export type StaffFeature = "fees" | "transport" | "library" | "student_lookup" | "student_requests" | "communication" | "reports" | "hostel" | "mess";
