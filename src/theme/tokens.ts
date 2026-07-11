@@ -41,15 +41,31 @@ export interface SidebarTokens {
   divider: string;
 }
 
-export const sidebarTokens: SidebarTokens = {
+const darkSidebarTokens: SidebarTokens = {
   background: "#0A0A0A",
   text: "#F5F5F4",
   muted: "#8A8A87",
-  activeBackground: "#F5F5F4",
-  activeText: "#0A0A0A",
-  hoverBackground: "rgba(255,255,255,0.06)",
+  activeBackground: "#1D1D1F",
+  activeText: "#F5F5F4",
+  hoverBackground: "#1D1D1F",
   divider: "rgba(255,255,255,0.08)",
 };
+
+const lightSidebarTokens: SidebarTokens = {
+  background: "#FFFFFF",
+  text: "#111111",
+  muted: "#5B5B5B",
+  activeBackground: "#1D1D1F",
+  activeText: "#F5F5F4",
+  hoverBackground: "#1D1D1F",
+  divider: "rgba(0,0,0,0.08)",
+};
+
+export function getSidebarTokens(mode: "light" | "dark"): SidebarTokens {
+  return mode === "light" ? lightSidebarTokens : darkSidebarTokens;
+}
+
+export const sidebarTokens = darkSidebarTokens;
 
 export const statusTokens = {
   good: "#0ca30c",
