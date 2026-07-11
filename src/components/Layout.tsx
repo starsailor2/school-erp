@@ -36,6 +36,7 @@ import StaffRoleSwitcher from "@/components/StaffRoleSwitcher";
 import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/demo-data/communication/notificationStore";
 import { sidebarTokens, motionEasing, motionDuration, motionEasingCss } from "@/theme/tokens";
+import { getChartPalette } from "@/theme/chartPalette";
 
 const DRAWER_WIDTH = 260;
 const RAIL_WIDTH = 72;
@@ -73,6 +74,8 @@ export default function Layout() {
   };
 
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  const toggleGroup = (g: string) => setCollapsedGroups((prev) => ({ ...prev, [g]: !prev[g] }));
 
   const navItems = useMemo(
     () => getNavItems(role, teacherType, staffRole),
@@ -156,6 +159,113 @@ export default function Layout() {
     }),
   });
 
+  // Every nav item gets a stable accent color from the app's own validated
+  // chart palette (already contrast-checked against these exact surfaces),
+  // hashed from its path so the same feature keeps the same color across
+  // portals. Keeps the "colorful icon" idea from the reference without
+  // introducing new, unvetted hues into an otherwise monochrome app.
+  const palette = getChartPalette(mode);
+  const iconColorFor = (key: string) => {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+    return palette.categorical[hash % palette.categorical.length];
+  };
+
+  const renderNavItem = (item: NavItem) => {
+    const active = isActive(item);
+    if (item.children) {
+      const open = !showRail && (openMenus[item.label] ?? active);
+      return (
+        <Box key={item.label}>
+          <Tooltip title={showRail ? item.label : ""} placement="right">
+            <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+              <ListItemButton
+                disableRipple
+                onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
+                sx={navButtonSx(active)}
+              >
+                <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: active ? sidebarTokens.activeText : iconColorFor(item.path) }}>
+                  {item.icon}
+                </ListItemIcon>
+                {!showRail && (
+                  <>
+                    <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
+                    <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+                      <ExpandMoreIcon fontSize="small" />
+                    </motion.div>
+                  </>
+                )}
+              </ListItemButton>
+            </motion.div>
+          </Tooltip>
+          <AnimatePresence initial={false}>
+            {open && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: motionDuration, ease: motionEasing }}
+                style={{ overflow: "hidden" }}
+              >
+                <List disablePadding sx={{ position: "relative" }}>
+                  <Box
+                    aria-hidden
+                    sx={{ position: "absolute", left: 28, top: 4, bottom: 4, width: "1px", bgcolor: sidebarTokens.divider }}
+                  />
+                  {item.children.map((child) => {
+                    const childActive = location.pathname === child.path;
+                    return (
+                      <motion.div
+                        key={child.path}
+                        whileTap={{ scale: 0.97 }}
+                        transition={{ duration: motionDuration, ease: motionEasing }}
+                      >
+                        <ListItemButton
+                          disableRipple
+                          onClick={() => handleNav(child.path)}
+                          sx={{
+                            pl: 6.5,
+                            mx: 1,
+                            borderRadius: 1.5,
+                            mb: 0.25,
+                            minHeight: 40,
+                            py: 0.75,
+                            color: sidebarTokens.muted,
+                            transition: `background-color ${motionDuration}s ${motionEasingCss}, color ${motionDuration}s ${motionEasingCss}`,
+                            "&:hover": { bgcolor: sidebarTokens.hoverBackground },
+                            ...(childActive && {
+                              bgcolor: sidebarTokens.activeBackground,
+                              color: sidebarTokens.activeText,
+                              fontWeight: 600,
+                            }),
+                          }}
+                        >
+                          <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
+                        </ListItemButton>
+                      </motion.div>
+                    );
+                  })}
+                </List>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </Box>
+      );
+    }
+    return (
+      <Tooltip key={item.path} title={showRail ? item.label : ""} placement="right">
+        <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
+          <ListItemButton disableRipple onClick={() => handleNav(item.path)} sx={navButtonSx(active)}>
+            <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: active ? sidebarTokens.activeText : iconColorFor(item.path) }}>
+              {item.icon}
+            </ListItemIcon>
+            {!showRail && <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />}
+          </ListItemButton>
+        </motion.div>
+      </Tooltip>
+    );
+  };
+
   const drawerContent = (
     <Box
       onMouseEnter={handleSidebarMouseEnter}
@@ -191,109 +301,60 @@ export default function Layout() {
         {groups.map(({ group, items }) => (
           <Box key={group || "ungrouped"}>
             {group && !showRail && (
-              <Typography
-                variant="caption"
+              <Box
+                onClick={() => toggleGroup(group)}
                 sx={{
-                  display: "block",
-                  color: sidebarTokens.muted,
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  fontSize: "0.65rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  userSelect: "none",
                   px: 2.5,
                   pt: 2,
                   pb: 0.5,
+                  "&:hover .sidebar-group-label": { color: sidebarTokens.text },
                 }}
               >
-                {group}
-              </Typography>
+                <Typography
+                  variant="caption"
+                  className="sidebar-group-label"
+                  sx={{
+                    color: sidebarTokens.muted,
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    fontSize: "0.65rem",
+                    transition: `color ${motionDuration}s ${motionEasingCss}`,
+                  }}
+                >
+                  {group}
+                </Typography>
+                <motion.div
+                  animate={{ rotate: collapsedGroups[group] ? -90 : 0 }}
+                  transition={{ duration: motionDuration, ease: motionEasing }}
+                  style={{ display: "flex", color: sidebarTokens.muted }}
+                >
+                  <ExpandMoreIcon sx={{ fontSize: 16 }} />
+                </motion.div>
+              </Box>
             )}
-            {items.map((item) => {
-              const active = isActive(item);
-              if (item.children) {
-                const open = !showRail && (openMenus[item.label] ?? active);
-                return (
-                  <Box key={item.label}>
-                    <Tooltip title={showRail ? item.label : ""} placement="right">
-                      <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
-                        <ListItemButton
-                          disableRipple
-                          onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
-                          sx={navButtonSx(active)}
-                        >
-                          <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
-                          {!showRail && (
-                            <>
-                              <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />
-                              <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: motionDuration, ease: motionEasing }}>
-                                <ExpandMoreIcon fontSize="small" />
-                              </motion.div>
-                            </>
-                          )}
-                        </ListItemButton>
-                      </motion.div>
-                    </Tooltip>
-                    <AnimatePresence initial={false}>
-                      {open && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: motionDuration, ease: motionEasing }}
-                          style={{ overflow: "hidden" }}
-                        >
-                          <List disablePadding>
-                            {item.children.map((child) => {
-                              const childActive = location.pathname === child.path;
-                              return (
-                                <motion.div
-                                  key={child.path}
-                                  whileTap={{ scale: 0.97 }}
-                                  transition={{ duration: motionDuration, ease: motionEasing }}
-                                >
-                                  <ListItemButton
-                                    disableRipple
-                                    onClick={() => handleNav(child.path)}
-                                    sx={{
-                                      pl: 6.5,
-                                      mx: 1,
-                                      borderRadius: 1.5,
-                                      mb: 0.25,
-                                      minHeight: 40,
-                                      py: 0.75,
-                                      color: sidebarTokens.muted,
-                                      transition: `background-color ${motionDuration}s ${motionEasingCss}, color ${motionDuration}s ${motionEasingCss}`,
-                                      "&:hover": { bgcolor: sidebarTokens.hoverBackground },
-                                      ...(childActive && {
-                                        bgcolor: sidebarTokens.activeBackground,
-                                        color: sidebarTokens.activeText,
-                                        fontWeight: 600,
-                                      }),
-                                    }}
-                                  >
-                                    <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
-                                  </ListItemButton>
-                                </motion.div>
-                              );
-                            })}
-                          </List>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </Box>
-                );
-              }
-              return (
-                <Tooltip key={item.path} title={showRail ? item.label : ""} placement="right">
-                  <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
-                    <ListItemButton disableRipple onClick={() => handleNav(item.path)} sx={navButtonSx(active)}>
-                      <ListItemIcon sx={{ minWidth: showRail ? "auto" : 36, color: "inherit" }}>{item.icon}</ListItemIcon>
-                      {!showRail && <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: 14 }} />}
-                    </ListItemButton>
+            {showRail ? (
+              items.map(renderNavItem)
+            ) : (
+              <AnimatePresence initial={false}>
+                {!collapsedGroups[group] && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: motionDuration, ease: motionEasing }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    {items.map(renderNavItem)}
                   </motion.div>
-                </Tooltip>
-              );
-            })}
+                )}
+              </AnimatePresence>
+            )}
           </Box>
         ))}
       </List>
