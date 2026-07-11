@@ -10,9 +10,14 @@ export interface ModeTokens {
   selectedOverlay: string;
 }
 
+// The whole app's surfaces are built from exactly two tones per mode: a
+// "base" (recessed) tone and an "elevated" (paper/card) tone. Light mode
+// pairs off-white #F5F5F5 with pure white; dark mode pairs pitch black
+// #0A0A0A with soft-black #1D1D1F. Every surface in the app — page
+// backgrounds, cards, the sidebar — draws from this same pair.
 export const modeTokens: Record<"light" | "dark", ModeTokens> = {
   light: {
-    background: "#FAFAFA",
+    background: "#F5F5F5",
     paper: "#FFFFFF",
     textPrimary: "#111111",
     textSecondary: "#666666",
@@ -22,7 +27,7 @@ export const modeTokens: Record<"light" | "dark", ModeTokens> = {
   },
   dark: {
     background: "#0A0A0A",
-    paper: "#1A1A1A",
+    paper: "#1D1D1F",
     textPrimary: "#F5F5F4",
     textSecondary: "#9A9A97",
     divider: "rgba(255,255,255,0.08)",
@@ -38,6 +43,7 @@ export interface SidebarTokens {
   activeBackground: string;
   activeText: string;
   hoverBackground: string;
+  hoverText: string;
   divider: string;
 }
 
@@ -48,16 +54,18 @@ const darkSidebarTokens: SidebarTokens = {
   activeBackground: "#1D1D1F",
   activeText: "#F5F5F4",
   hoverBackground: "#1D1D1F",
+  hoverText: "#F5F5F4",
   divider: "rgba(255,255,255,0.08)",
 };
 
 const lightSidebarTokens: SidebarTokens = {
-  background: "#FFFFFF",
+  background: "#F5F5F5",
   text: "#111111",
   muted: "#5B5B5B",
-  activeBackground: "#1D1D1F",
-  activeText: "#F5F5F4",
-  hoverBackground: "#1D1D1F",
+  activeBackground: "#FFFFFF",
+  activeText: "#111111",
+  hoverBackground: "#FFFFFF",
+  hoverText: "#111111",
   divider: "rgba(0,0,0,0.08)",
 };
 

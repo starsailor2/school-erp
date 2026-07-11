@@ -151,16 +151,19 @@ export default function Layout() {
     minHeight: 44,
     py: 1,
     color: active ? sidebarTokens.activeText : sidebarTokens.text,
+    fontWeight: active ? 700 : 500,
     justifyContent: showRail ? "center" : "flex-start",
     px: showRail ? 1.5 : 2,
-    transition: `background-color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}, color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}`,
+    borderLeft: "3px solid transparent",
+    transition: `background-color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}, color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}, border-color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}`,
     "&:hover": {
       bgcolor: sidebarTokens.hoverBackground,
-      color: sidebarTokens.activeText,
+      color: sidebarTokens.hoverText,
     },
     ...(active && {
       bgcolor: sidebarTokens.activeBackground,
       color: sidebarTokens.activeText,
+      borderLeftColor: sidebarTokens.text,
       "&:hover": {
         bgcolor: sidebarTokens.activeBackground,
         color: sidebarTokens.activeText,
@@ -251,11 +254,13 @@ export default function Layout() {
                             minHeight: 40,
                             py: 0.75,
                             color: sidebarTokens.muted,
-                            transition: `background-color ${motionDuration}s ${motionEasingCss}, color ${motionDuration}s ${motionEasingCss}`,
-                            "&:hover": { bgcolor: sidebarTokens.hoverBackground },
+                            borderLeft: "3px solid transparent",
+                            transition: `background-color ${motionDuration}s ${motionEasingCss}, color ${motionDuration}s ${motionEasingCss}, border-color ${motionDuration}s ${motionEasingCss}`,
+                            "&:hover": { bgcolor: sidebarTokens.hoverBackground, color: sidebarTokens.hoverText },
                             ...(childActive && {
                               bgcolor: sidebarTokens.activeBackground,
                               color: sidebarTokens.activeText,
+                              borderLeftColor: sidebarTokens.text,
                               fontWeight: 600,
                             }),
                           }}
