@@ -1,5 +1,5 @@
 // src/components/Layout.tsx
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
@@ -55,6 +55,22 @@ export default function Layout() {
   useEffect(() => {
     localStorage.setItem(`erp-sidebar-${role}`, collapsed ? "collapsed" : "expanded");
   }, [collapsed, role]);
+
+  const [hovered, setHovered] = useState(false);
+  const hoverTimeoutRef = useRef<number | null>(null);
+  useEffect(() => () => {
+    if (hoverTimeoutRef.current) window.clearTimeout(hoverTimeoutRef.current);
+  }, []);
+  const handleSidebarMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      window.clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHovered(true);
+  };
+  const handleSidebarMouseLeave = () => {
+    hoverTimeoutRef.current = window.setTimeout(() => setHovered(false), 200);
+  };
 
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
@@ -114,12 +130,19 @@ export default function Layout() {
     student: "Student Portal",
   };
 
-  const showRail = collapsed && !isMobile;
+  // railPinned: the persisted user preference. showRail: what's actually rendered
+  // right now — hovering over a pinned-collapsed sidebar temporarily reveals it
+  // as an overlay without disturbing the pinned preference or reflowing the page.
+  const railPinned = collapsed && !isMobile;
+  const showRail = railPinned && !hovered;
+  const isHoverOverlay = railPinned && hovered;
 
   const navButtonSx = (active: boolean) => ({
     mx: 1,
     borderRadius: 1.5,
     mb: 0.25,
+    minHeight: 44,
+    py: 1,
     color: sidebarTokens.text,
     justifyContent: showRail ? "center" : "flex-start",
     px: showRail ? 1.5 : 2,
@@ -134,7 +157,11 @@ export default function Layout() {
   });
 
   const drawerContent = (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", bgcolor: sidebarTokens.background }}>
+    <Box
+      onMouseEnter={handleSidebarMouseEnter}
+      onMouseLeave={handleSidebarMouseLeave}
+      sx={{ display: "flex", flexDirection: "column", height: "100%", bgcolor: sidebarTokens.background }}
+    >
       <Box
         sx={{
           p: showRail ? 1.5 : 2,
@@ -224,6 +251,8 @@ export default function Layout() {
                                     mx: 1,
                                     borderRadius: 1.5,
                                     mb: 0.25,
+                                    minHeight: 40,
+                                    py: 0.75,
                                     color: sidebarTokens.muted,
                                     "&:hover": { bgcolor: sidebarTokens.hoverBackground },
                                     ...(childActive && {
@@ -259,18 +288,25 @@ export default function Layout() {
 
       {!isMobile && (
         <Box sx={{ borderTop: `1px solid ${sidebarTokens.divider}`, p: 1 }}>
-          <IconButton
-            onClick={() => setCollapsed((c) => !c)}
-            sx={{ color: sidebarTokens.muted, width: "100%", borderRadius: 1.5, "&:hover": { bgcolor: sidebarTokens.hoverBackground } }}
-          >
-            {showRail ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
+          <Tooltip title={collapsed ? "Pin sidebar open" : "Collapse sidebar"} placement="right">
+            <IconButton
+              onClick={() => setCollapsed((c) => !c)}
+              sx={{ color: sidebarTokens.muted, width: "100%", borderRadius: 1.5, "&:hover": { bgcolor: sidebarTokens.hoverBackground } }}
+            >
+              {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </Tooltip>
         </Box>
       )}
     </Box>
   );
 
-  const currentWidth = showRail ? RAIL_WIDTH : DRAWER_WIDTH;
+  // The docked drawer root reserves space for the main content based only on
+  // the pinned preference, so a hover-preview never reflows the page. The
+  // paper itself (position: fixed) can still grow wider than that reserved
+  // strip and float over the content as an overlay while hovered.
+  const reservedWidth = railPinned ? RAIL_WIDTH : DRAWER_WIDTH;
+  const paperWidth = showRail ? RAIL_WIDTH : DRAWER_WIDTH;
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
@@ -351,17 +387,22 @@ export default function Layout() {
         <Drawer
           variant="permanent"
           sx={{
-            width: currentWidth,
+            width: reservedWidth,
             flexShrink: 0,
             transition: `width ${motionDuration}s ${motionEasingCss}`,
             "& .MuiDrawer-paper": {
-              width: currentWidth,
+              width: paperWidth,
               boxSizing: "border-box",
               borderRight: "none",
               mt: "64px",
               height: "calc(100% - 64px)",
-              transition: `width ${motionDuration}s ${motionEasingCss}`,
+              transition: `width ${motionDuration}s ${motionEasingCss}, box-shadow ${motionDuration}s ${motionEasingCss}`,
               overflowX: "hidden",
+              boxShadow: isHoverOverlay
+                ? theme.palette.mode === "light"
+                  ? "8px 0 32px rgba(0,0,0,0.16)"
+                  : "8px 0 32px rgba(0,0,0,0.6)"
+                : "none",
             },
           }}
         >
