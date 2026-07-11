@@ -77,7 +77,7 @@ export default function Tasks() {
         breadcrumbs={[{ label: "Dashboard", to: "/staff" }, { label: "Tasks" }]}
         action={<Button variant="contained" size="small" onClick={addTask}>New Task</Button>}
       />
-      <Paper sx={{ p: 2, maxWidth: 700 }}>
+      <Paper sx={{ p: 2 }}>
         <Stack spacing={2}>
           {tasks.map((t) => (
             <Box key={t.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1 }}>

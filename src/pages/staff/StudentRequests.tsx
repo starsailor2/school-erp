@@ -77,7 +77,7 @@ export default function StudentRequests() {
           </TextField>
         </Grid>
       </Grid>
-      <Paper sx={{ p: 2, maxWidth: 700 }}>
+      <Paper sx={{ p: 2 }}>
         <Stack spacing={2}>
           {requests.map((r) => (
             <Box key={r.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
