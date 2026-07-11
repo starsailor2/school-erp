@@ -373,10 +373,9 @@ export default function Layout() {
         component="main"
         sx={{
           flexGrow: 1,
+          minWidth: 0,
           p: 3,
           mt: "64px",
-          ml: { md: `${currentWidth}px` },
-          transition: `margin-left ${motionDuration}s ${motionEasingCss}`,
           bgcolor: "background.default",
           minHeight: "calc(100vh - 64px)",
           overflow: "auto",
