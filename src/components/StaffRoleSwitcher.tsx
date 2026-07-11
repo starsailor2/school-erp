@@ -10,6 +10,8 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import BadgeIcon from "@mui/icons-material/Badge";
+import HotelIcon from "@mui/icons-material/Hotel";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useAuth } from "@/context/AuthContext";
 import type { StaffRole } from "@/types";
 
@@ -47,6 +49,20 @@ const staffRoles: {
     shortLabel: "Office",
     icon: <BadgeIcon fontSize="small" />,
     color: "default",
+  },
+  {
+    role: "hostel_warden",
+    label: "Hostel Warden",
+    shortLabel: "Hostel",
+    icon: <HotelIcon fontSize="small" />,
+    color: "secondary",
+  },
+  {
+    role: "mess_manager",
+    label: "Mess Manager",
+    shortLabel: "Mess",
+    icon: <RestaurantIcon fontSize="small" />,
+    color: "warning",
   },
 ];
 

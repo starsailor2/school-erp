@@ -2,7 +2,7 @@
 
 export type Role = "admin" | "teacher" | "parent" | "student" | "staff";
 export type TeacherType = "subject_teacher" | "class_teacher" | "hod";
-export type StaffRole = "accountant" | "transport_manager" | "library_staff" | "office_staff";
+export type StaffRole = "accountant" | "transport_manager" | "library_staff" | "office_staff" | "hostel_warden" | "mess_manager";
 export type AttendanceStatus = "present" | "absent" | "late";
 export type FeeStatus = "paid" | "pending" | "overdue";
 export type FeeType = "tuition" | "transport" | "library" | "activity";
@@ -300,7 +300,7 @@ export interface LibraryRecord {
   issued_by: string;
 }
 
-export type StaffFeature = "fees" | "transport" | "library" | "student_lookup" | "student_requests" | "communication" | "reports";
+export type StaffFeature = "fees" | "transport" | "library" | "student_lookup" | "student_requests" | "communication" | "reports" | "hostel" | "mess";
 
 export type StaffPermissionMap = Record<StaffRole, Record<StaffFeature, "none" | "view" | "manage">>;
 
