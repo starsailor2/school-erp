@@ -1,11 +1,12 @@
 import { useState } from "react";
 import {
-  TextField, MenuItem, Button, Chip, Grid, InputAdornment,
+  TextField, MenuItem, Button, Grid, InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students } from "@/data/mock";
+import StatusChip from "@/components/StatusChip";
+import { students } from "@/demo-data";
 
 interface DocumentRecord {
   id: string;
@@ -78,7 +79,7 @@ export default function StudentDocuments() {
           { key: "requestDate", label: "Request Date" },
           {
             key: "status", label: "Status",
-            render: (d) => <Chip label={d.status} size="small" color={d.status === "issued" ? "success" : d.status === "requested" ? "warning" : "info"} />,
+            render: (d) => <StatusChip status={d.status} />,
           },
           { key: "issueDate", label: "Issue Date", render: (d) => d.issueDate ?? "—" },
           {

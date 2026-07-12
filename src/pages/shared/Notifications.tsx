@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Paper, Typography, Box, Chip, Stack, Divider, Button } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { getNotifications, resetNotifications, saveNotifications } from "@/data/notificationStore";
+import { getNotifications, resetNotifications, saveNotifications } from "@/demo-data/communication/notificationStore";
 
 export default function Notifications() {
   const [rows, setRows] = useState(getNotifications);
@@ -31,7 +31,7 @@ export default function Notifications() {
   return (
     <>
       <PageHeader title="Notifications" />
-      <Paper sx={{ p: 2, maxWidth: 700 }}>
+      <Paper sx={{ p: 2 }}>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Button size="small" variant="outlined" onClick={markAllRead} disabled={rows.length === 0}>
             Mark all as read

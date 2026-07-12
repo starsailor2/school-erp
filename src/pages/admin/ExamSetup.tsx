@@ -7,7 +7,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { exams } from "@/data/mock";
+import { exams } from "@/demo-data";
 import type { Exam } from "@/types";
 
 type ExamStatus = "upcoming" | "ongoing" | "completed";

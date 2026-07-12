@@ -9,7 +9,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements, saveAnnouncements } from "@/data/announcementStore";
+import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements, saveAnnouncements } from "@/demo-data/communication/announcementStore";
 import type { Announcement } from "@/types";
 
 const priorityColor = (p: string) =>

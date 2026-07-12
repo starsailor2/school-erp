@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Paper, Tabs, Tab, Table, TableHead, TableBody, TableRow, TableCell, Chip, MenuItem, TextField, Typography } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { timetable, parents, getChildrenOfParent, getClassName } from "@/data/mock";
+import { timetable, parents, getChildrenOfParent, getClassName } from "@/demo-data";
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 

@@ -4,7 +4,7 @@ import {
   Chip, Grid, TextField, MenuItem, Button, ToggleButtonGroup, ToggleButton, Box,
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { timetable, classes, teachers, subjects } from "@/data/mock";
+import { timetable, classes, teachers, subjects } from "@/demo-data";
 import type { TimetableEntry } from "@/types";
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

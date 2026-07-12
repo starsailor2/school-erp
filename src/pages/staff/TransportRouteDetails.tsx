@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button, Grid, Paper, Stack, Typography, Chip, TextField } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, studentTransport, getClassName } from "@/data/mock";
-import { getTransportRoutes, updateTransportRoute } from "@/data/transportRouteStore";
+import { students, studentTransport, getClassName } from "@/demo-data";
+import { getTransportRoutes, updateTransportRoute } from "@/demo-data/transport/transportRouteStore";
 
 export default function TransportRouteDetails() {
   const navigate = useNavigate();

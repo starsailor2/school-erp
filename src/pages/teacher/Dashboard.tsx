@@ -13,20 +13,29 @@ import GradeIcon from "@mui/icons-material/Grade";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { KpiCard } from "@/components/KpiCard";
+import {
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from "recharts";
+import { StatCard } from "@/components/StatCard";
+import { ChartCard } from "@/components/ChartCard";
 import { PageHeader } from "@/components/PageHeader";
+import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, getTeacherClasses, students, homework, getSubjectName,
-  getClassName, timetable,
-} from "@/data/mock";
-import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/data/announcementStore";
+  getClassName, timetable, attendanceRecords, marks,
+} from "@/demo-data";
+import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communication/announcementStore";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, teacherType } = useAuth();
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
+  const tooltipStyle = getChartTooltipStyle(mode);
   const [announcementRows, setAnnouncementRows] = useState(() => getAnnouncements());
 
   useEffect(() => {
@@ -44,18 +53,14 @@ export default function TeacherDashboard() {
     ? Math.round(myStudents.reduce((s, st) => s + st.attendance_pct, 0) / myStudents.length)
     : 0;
 
-  // Build weekly timetable grid for this teacher
-  // Include all periods for any day that has at least one class for this teacher
   const LUNCH_PERIOD = 5;
   const myWeekEntries: Record<string, { period: number; time: string; subject: string; class_name: string; section: string; type: "class" | "lunch" | "free" }[]> = {};
   let maxPeriods = 0;
   for (const day of DAYS) {
     const allDayEntries = timetable[day] ?? [];
     const teacherEntries = allDayEntries.filter((e) => e.teacher === teacher?.name);
-    // Find max period for this day
     const dayMax = allDayEntries.reduce((m, e) => Math.max(m, e.period), 0);
     if (dayMax > maxPeriods) maxPeriods = dayMax;
-    // Build entries for each period
     const daySlots: typeof myWeekEntries[string] = [];
     for (let p = 1; p <= dayMax; p++) {
       if (p === LUNCH_PERIOD) {
@@ -77,7 +82,6 @@ export default function TeacherDashboard() {
   const todayName = DAYS[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1] ?? "";
   const todayClasses = myWeekEntries[todayName]?.filter((e) => e.type === "class").length ?? 0;
 
-  // Upcoming homework (due soon)
   const today = new Date().toISOString().split("T")[0];
   const upcomingHomework = myHomework
     .filter((h) => h.due_date >= today)
@@ -85,17 +89,52 @@ export default function TeacherDashboard() {
     .slice(0, 5);
   const overdueHomework = myHomework.filter((h) => h.due_date < today);
 
-  // Recent announcements for teachers
   const teacherAnnouncements = announcementRows
     .filter((a) => a.target === "all" || a.target === "teacher")
     .slice(0, 3);
 
-  // Period numbers for grid columns
   const periods = Array.from({ length: maxPeriods || 8 }, (_, i) => i + 1);
+
+  const myStudentIds = new Set(myStudents.map((s) => s.id));
+  const classAttendanceTrend = (() => {
+    const byDate = new Map<string, { present: number; total: number }>();
+    for (const a of attendanceRecords) {
+      if (!myStudentIds.has(a.student_id)) continue;
+      const entry = byDate.get(a.date) ?? { present: 0, total: 0 };
+      entry.total += 1;
+      if (a.status === "present") entry.present += 1;
+      byDate.set(a.date, entry);
+    }
+    return [...byDate.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-14)
+      .map(([date, v]) => ({
+        day: new Date(date).toLocaleDateString("en", { day: "2-digit", month: "short" }),
+        attendance: v.total > 0 ? Math.round((v.present / v.total) * 100) : 0,
+      }));
+  })();
+
+  const homeworkCompletionData = (() => {
+    const bySubject = new Map<string, number>();
+    for (const h of myHomework) {
+      const name = getSubjectName(h.subject_id);
+      bySubject.set(name, (bySubject.get(name) ?? 0) + 1);
+    }
+    return [...bySubject.entries()].map(([subject, assigned]) => ({ subject, assigned }));
+  })();
+
+  const crossClassPerformance = (() => {
+    return assignedClassIds.map((classId) => {
+      const classStudentIds = new Set(students.filter((s) => s.class_id === classId).map((s) => s.id));
+      const classMarks = marks.filter((m) => classStudentIds.has(m.student_id));
+      const avg = classMarks.length > 0 ? classMarks.reduce((s, m) => s + m.marks_obtained, 0) / classMarks.length : 0;
+      return { name: getClassName(classId), avgScore: Math.round(avg) };
+    });
+  })();
 
   return (
     <>
-      <PageHeader title="My Dashboard" />
+      <PageHeader title="My Dashboard" eyebrow="Teacher Portal" />
       <Box sx={{ mb: 2, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 1 }}>
         <Box>
           <Typography variant="h6" fontWeight={600}>
@@ -112,29 +151,69 @@ export default function TeacherDashboard() {
         </Stack>
       </Box>
 
-      {/* KPI Cards */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <KpiCard title="Today's Classes" value={todayClasses} icon={<ScheduleIcon />} color="#6366f1"
-            onClick={() => navigate("/teacher/timetable")} />
+          <StatCard title="Today's Classes" value={todayClasses} numericValue={todayClasses} icon={<ScheduleIcon />} color={getIconAccent(mode, "timetable")} onClick={() => navigate("/teacher/timetable")} />
         </Grid>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <KpiCard title="My Students" value={myStudents.length} icon={<PeopleIcon />} color="#10b981"
-            onClick={() => navigate("/teacher/students")} />
+          <StatCard title="My Students" value={myStudents.length} numericValue={myStudents.length} icon={<PeopleIcon />} color={getIconAccent(mode, "students")} onClick={() => navigate("/teacher/students")} delay={0.05} />
         </Grid>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <KpiCard title="Pending Homework" value={upcomingHomework.length} icon={<AssignmentIcon />} color="#f59e0b"
-            onClick={() => navigate("/teacher/homework/list")} />
+          <StatCard title="Pending Homework" value={upcomingHomework.length} numericValue={upcomingHomework.length} icon={<AssignmentIcon />} color={getIconAccent(mode, "homework")} onClick={() => navigate("/teacher/homework/list")} delay={0.1} />
         </Grid>
         <Grid size={{ xs: 6, sm: 3 }}>
-          <KpiCard title="Avg Attendance" value={`${avgAtt}%`} icon={<EventNoteIcon />} color="#8b5cf6"
-            onClick={() => navigate("/teacher/attendance/history")} />
+          <StatCard title="Avg Attendance" value={`${avgAtt}%`} numericValue={avgAtt} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} onClick={() => navigate("/teacher/attendance/history")} delay={0.15} />
         </Grid>
       </Grid>
 
-      {/* Main Content */}
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <ChartCard eyebrow="Attendance" title="My Classes — Attendance Trend (14 days)">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={classAttendanceTrend}>
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                <XAxis dataKey="day" stroke={palette.axis} fontSize={11} />
+                <YAxis domain={[60, 100]} stroke={palette.axis} fontSize={12} />
+                <Tooltip {...tooltipStyle} />
+                <Line type="monotone" dataKey="attendance" name="Attendance %" stroke={palette.categorical[0]} strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <ChartCard eyebrow="Homework" title="Homework by Subject">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={homeworkCompletionData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                <XAxis dataKey="subject" stroke={palette.axis} fontSize={11} />
+                <YAxis stroke={palette.axis} fontSize={12} />
+                <Tooltip {...tooltipStyle} />
+                <Bar dataKey="assigned" name="Assigned" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </Grid>
+      </Grid>
+
+      {teacherType === "hod" && (
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid size={12}>
+            <ChartCard eyebrow="Department" title="Cross-Class Performance Comparison">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={crossClassPerformance}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                  <XAxis dataKey="name" stroke={palette.axis} fontSize={11} />
+                  <YAxis domain={[0, 100]} stroke={palette.axis} fontSize={12} />
+                  <Tooltip {...tooltipStyle} />
+                  <Bar dataKey="avgScore" name="Avg Score" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </Grid>
+        </Grid>
+      )}
+
       <Grid container spacing={2}>
-        {/* Weekly Timetable — XY Grid */}
         <Grid size={12}>
           <Paper sx={{ p: 2, overflowX: "auto" }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
@@ -221,7 +300,6 @@ export default function TeacherDashboard() {
           </Paper>
         </Grid>
 
-        {/* Upcoming Homework */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 2, height: "100%" }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
@@ -260,7 +338,6 @@ export default function TeacherDashboard() {
           </Paper>
         </Grid>
 
-        {/* My Classes Overview */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 2, height: "100%" }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
@@ -293,7 +370,6 @@ export default function TeacherDashboard() {
           </Paper>
         </Grid>
 
-        {/* Announcements */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 2, height: "100%" }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>

@@ -10,6 +10,8 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import BadgeIcon from "@mui/icons-material/Badge";
+import HotelIcon from "@mui/icons-material/Hotel";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useAuth } from "@/context/AuthContext";
 import type { StaffRole } from "@/types";
 
@@ -18,7 +20,7 @@ const staffRoles: {
   label: string;
   shortLabel: string;
   icon: React.ReactNode;
-  color: "default" | "primary" | "secondary" | "success" | "warning";
+  color: string;
 }[] = [
   {
     role: "accountant",
@@ -48,6 +50,20 @@ const staffRoles: {
     icon: <BadgeIcon fontSize="small" />,
     color: "default",
   },
+  {
+    role: "hostel_warden",
+    label: "Hostel Warden",
+    shortLabel: "Hostel",
+    icon: <HotelIcon fontSize="small" />,
+    color: "secondary",
+  },
+  {
+    role: "mess_manager",
+    label: "Mess Manager",
+    shortLabel: "Mess",
+    icon: <RestaurantIcon fontSize="small" />,
+    color: "warning",
+  },
 ];
 
 export default function StaffRoleSwitcher() {
@@ -59,11 +75,17 @@ export default function StaffRoleSwitcher() {
     <>
       <Chip
         label={current.shortLabel}
-        color={current.color}
         size="small"
         icon={current.icon as React.ReactElement}
         onClick={(e) => setAnchor(e.currentTarget as HTMLElement)}
-        sx={{ cursor: "pointer", fontWeight: 600, mr: 0.5 }}
+        sx={{
+          cursor: "pointer",
+          fontWeight: 600,
+          mr: 0.5,
+          bgcolor: `${current.color}1A`,
+          color: current.color,
+          "& .MuiChip-icon": { color: current.color },
+        }}
       />
       <Menu
         anchorEl={anchor}
@@ -84,7 +106,7 @@ export default function StaffRoleSwitcher() {
               setAnchor(null);
             }}
           >
-            <ListItemIcon>{s.icon}</ListItemIcon>
+            <ListItemIcon sx={{ color: s.color }}>{s.icon}</ListItemIcon>
             <ListItemText>{s.label}</ListItemText>
           </MenuItem>
         ))}

@@ -4,7 +4,8 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, classes, attendanceRecords } from "@/data/mock";
+import StatusChip from "@/components/StatusChip";
+import { students, classes, attendanceRecords } from "@/demo-data";
 import type { AttendanceStatus } from "@/types";
 
 type AttendanceRow = {
@@ -115,13 +116,7 @@ export default function StudentAttendance() {
           { key: "sectionName", label: "Section" },
           {
             key: "status", label: "Status",
-            render: (r) => (
-              <Chip
-                label={r.status === "not_marked" ? "Not Marked" : r.status}
-                size="small"
-                color={r.status === "present" ? "success" : r.status === "absent" ? "error" : r.status === "late" ? "warning" : "default"}
-              />
-            ),
+            render: (r) => <StatusChip status={r.status} />,
           },
           { key: "attendancePct", label: "Overall %", render: (r) => `${r.attendancePct}%` },
           {

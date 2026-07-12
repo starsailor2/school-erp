@@ -6,8 +6,9 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, getTeacherClasses, students, attendanceRecords, getClassName } from "@/data/mock";
+import { teachers, getTeacherClasses, students, attendanceRecords, getClassName } from "@/demo-data";
 import type { Student } from "@/types";
 
 export default function AttendanceHistory() {
@@ -102,8 +103,7 @@ export default function AttendanceHistory() {
                 {records.map((r) => (
                   <Box key={r.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <Typography variant="body2">{r.date}</Typography>
-                    <Chip label={r.status} size="small"
-                      color={r.status === "present" ? "success" : r.status === "absent" ? "error" : "warning"} />
+                    <StatusChip status={r.status} />
                   </Box>
                 ))}
                 {records.length === 0 && <Typography color="text.secondary">No records found</Typography>}

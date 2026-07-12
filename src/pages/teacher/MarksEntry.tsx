@@ -7,7 +7,7 @@ import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, getTeacherClasses, students, marks as initialMarks, getClassName, getSubjectName, exams,
-} from "@/data/mock";
+} from "@/demo-data";
 
 export default function MarksEntry() {
   const { user } = useAuth();

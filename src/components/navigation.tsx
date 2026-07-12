@@ -9,6 +9,8 @@ import GradingIcon from "@mui/icons-material/Grading";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import PaymentIcon from "@mui/icons-material/Payment";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
+import HotelIcon from "@mui/icons-material/Hotel";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -19,6 +21,8 @@ import ChildCareIcon from "@mui/icons-material/ChildCare";
 import GroupsIcon from "@mui/icons-material/Groups";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ChatIcon from "@mui/icons-material/Chat";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
+import EventIcon from "@mui/icons-material/Event";
 import type { ReactNode } from "react";
 import { canViewFeature } from "@/data/staffPermissions";
 
@@ -26,6 +30,7 @@ export interface NavItem {
   label: string;
   path: string;
   icon: ReactNode;
+  group?: string;
   children?: { label: string; path: string }[];
 }
 
@@ -33,9 +38,9 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
   switch (role) {
     case "admin":
       return [
-        { label: "Dashboard", path: "/admin", icon: <DashboardIcon /> },
+        { label: "Dashboard", path: "/admin", icon: <DashboardIcon />, group: "Academics" },
         {
-          label: "Students", path: "/admin/students", icon: <PeopleIcon />,
+          label: "Students", path: "/admin/students", icon: <PeopleIcon />, group: "Academics",
           children: [
             { label: "Student Directory", path: "/admin/students" },
             { label: "Admissions", path: "/admin/students/admissions" },
@@ -45,7 +50,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Teachers", path: "/admin/teachers", icon: <SchoolIcon />,
+          label: "Teachers", path: "/admin/teachers", icon: <SchoolIcon />, group: "Academics",
           children: [
             { label: "Teacher Directory", path: "/admin/teachers" },
             { label: "Subject Allocation", path: "/admin/teachers/subjects" },
@@ -54,7 +59,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Academics", path: "/admin/academics", icon: <ClassIcon />,
+          label: "Academics", path: "/admin/academics", icon: <ClassIcon />, group: "Academics",
           children: [
             { label: "Classes", path: "/admin/academics/classes" },
             { label: "Sections", path: "/admin/academics/sections" },
@@ -63,7 +68,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Attendance", path: "/admin/attendance", icon: <EventNoteIcon />,
+          label: "Attendance", path: "/admin/attendance", icon: <EventNoteIcon />, group: "Academics",
           children: [
             { label: "Student Attendance", path: "/admin/attendance/students" },
             { label: "Teacher Attendance", path: "/admin/attendance/teachers" },
@@ -72,14 +77,14 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Homework", path: "/admin/homework", icon: <AssignmentIcon />,
+          label: "Homework", path: "/admin/homework", icon: <AssignmentIcon />, group: "Academics",
           children: [
             { label: "Homework Monitor", path: "/admin/homework" },
             { label: "Homework Reports", path: "/admin/homework/reports" },
           ],
         },
         {
-          label: "Examinations", path: "/admin/exams", icon: <GradingIcon />,
+          label: "Examinations", path: "/admin/exams", icon: <GradingIcon />, group: "Academics",
           children: [
             { label: "Exam Setup", path: "/admin/exams" },
             { label: "Exam Schedule", path: "/admin/exams/schedule" },
@@ -89,7 +94,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Fees", path: "/admin/fees", icon: <PaymentIcon />,
+          label: "Fees", path: "/admin/fees", icon: <PaymentIcon />, group: "Finance",
           children: [
             { label: "Fee Structure", path: "/admin/fees" },
             { label: "Fee Collection", path: "/admin/fees/collection" },
@@ -98,7 +103,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Transport", path: "/admin/transport", icon: <DirectionsBusIcon />,
+          label: "Transport", path: "/admin/transport", icon: <DirectionsBusIcon />, group: "Operations",
           children: [
             { label: "Routes", path: "/admin/transport" },
             { label: "Vehicles", path: "/admin/transport/vehicles" },
@@ -107,7 +112,25 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Communication", path: "/admin/communication", icon: <CampaignIcon />,
+          label: "Hostel", path: "/admin/hostel", icon: <HotelIcon />, group: "Operations",
+          children: [
+            { label: "Hostel Dashboard", path: "/admin/hostel" },
+            { label: "Blocks & Rooms", path: "/admin/hostel/rooms" },
+            { label: "Room Allocation", path: "/admin/hostel/allocation" },
+            { label: "Hostel Fee Structure", path: "/admin/hostel/fees" },
+          ],
+        },
+        {
+          label: "Mess", path: "/admin/mess", icon: <RestaurantIcon />, group: "Operations",
+          children: [
+            { label: "Mess Dashboard", path: "/admin/mess" },
+            { label: "Weekly Menu", path: "/admin/mess/menu" },
+            { label: "Mess Plans", path: "/admin/mess/plans" },
+            { label: "Mess Billing", path: "/admin/mess/billing" },
+          ],
+        },
+        {
+          label: "Communication", path: "/admin/communication", icon: <CampaignIcon />, group: "Engagement",
           children: [
             { label: "Announcements", path: "/admin/communication/announcements" },
             { label: "Notices", path: "/admin/communication/notices" },
@@ -116,14 +139,15 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "School Staff", path: "/admin/staff", icon: <GroupsIcon />,
+          label: "School Staff", path: "/admin/staff", icon: <GroupsIcon />, group: "Administration",
           children: [
             { label: "Staff Directory", path: "/admin/staff" },
             { label: "Staff Roles", path: "/admin/staff/roles" },
+            { label: "Leave Requests", path: "/admin/staff/leave" },
           ],
         },
         {
-          label: "Reports", path: "/admin/reports", icon: <AssessmentIcon />,
+          label: "Reports", path: "/admin/reports", icon: <AssessmentIcon />, group: "Administration",
           children: [
             { label: "Academic Reports", path: "/admin/reports/academic" },
             { label: "Attendance Reports", path: "/admin/reports/attendance" },
@@ -132,7 +156,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Settings", path: "/admin/settings", icon: <SettingsIcon />,
+          label: "Settings", path: "/admin/settings", icon: <SettingsIcon />, group: "Administration",
           children: [
             { label: "School Profile", path: "/admin/settings" },
             { label: "Academic Year", path: "/admin/settings/academic-year" },
@@ -171,6 +195,8 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
         { label: "Timetable", path: "/teacher/timetable", icon: <ScheduleIcon /> },
         { label: "Announcements", path: "/teacher/announcements", icon: <CampaignIcon /> },
         { label: "Messages", path: "/teacher/messages", icon: <ChatIcon /> },
+        { label: "Meetings", path: "/teacher/meetings", icon: <EventIcon /> },
+        { label: "Leave", path: "/teacher/leave", icon: <EventBusyIcon /> },
         { label: "Profile", path: "/teacher/profile", icon: <PersonIcon /> },
       ];
 
@@ -204,10 +230,10 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
 
     case "staff": {
       const base: NavItem[] = [
-        { label: "Dashboard", path: "/staff", icon: <DashboardIcon /> },
-        { label: "Tasks", path: "/staff/tasks", icon: <TaskIcon /> },
+        { label: "Dashboard", path: "/staff", icon: <DashboardIcon />, group: "Administration" },
+        { label: "Tasks", path: "/staff/tasks", icon: <TaskIcon />, group: "Administration" },
         {
-          label: "Students", path: "/staff/students", icon: <PeopleIcon />,
+          label: "Students", path: "/staff/students", icon: <PeopleIcon />, group: "Administration",
           children: [
             { label: "Student Lookup", path: "/staff/students" },
             { label: "Student Requests", path: "/staff/students/requests" },
@@ -218,7 +244,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
 
       if (staffRole && canViewFeature(staffRole, "fees")) {
         base.push({
-          label: "Fees", path: "/staff/fees/collection", icon: <PaymentIcon />,
+          label: "Fees", path: "/staff/fees/collection", icon: <PaymentIcon />, group: "Finance",
           children: [
             { label: "Fee Collection", path: "/staff/fees/collection" },
             { label: "Payment Records", path: "/staff/fees/records" },
@@ -231,7 +257,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
 
       if (staffRole && canViewFeature(staffRole, "transport")) {
         base.push({
-          label: "Transport", path: "/staff/transport/routes", icon: <DirectionsBusIcon />,
+          label: "Transport", path: "/staff/transport/routes", icon: <DirectionsBusIcon />, group: "Operations",
           children: [
             { label: "Routes", path: "/staff/transport/routes" },
             { label: "Vehicles", path: "/staff/transport/vehicles" },
@@ -244,7 +270,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
 
       if (staffRole && canViewFeature(staffRole, "library")) {
         base.push({
-          label: "Library", path: "/staff/library/books", icon: <MenuBookIcon />,
+          label: "Library", path: "/staff/library/books", icon: <MenuBookIcon />, group: "Operations",
           children: [
             { label: "Books", path: "/staff/library/books" },
             { label: "Book Categories", path: "/staff/library/categories" },
@@ -255,22 +281,43 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
         });
       }
 
+      if (staffRole && canViewFeature(staffRole, "hostel")) {
+        base.push({
+          label: "Hostel", path: "/staff/hostel/allocation", icon: <HotelIcon />, group: "Operations",
+          children: [
+            { label: "Room Allocation", path: "/staff/hostel/allocation" },
+            { label: "Roster", path: "/staff/hostel/roster" },
+          ],
+        });
+      }
+
+      if (staffRole && canViewFeature(staffRole, "mess")) {
+        base.push({
+          label: "Mess", path: "/staff/mess/attendance", icon: <RestaurantIcon />, group: "Operations",
+          children: [
+            { label: "Daily Attendance", path: "/staff/mess/attendance" },
+            { label: "Weekly Menu", path: "/staff/mess/menu" },
+          ],
+        });
+      }
+
       if (staffRole === "office_staff") {
         base.push(
-          { label: "Certificates", path: "/staff/certificates", icon: <ReceiptIcon /> },
-          { label: "ID Card Requests", path: "/staff/id-cards", icon: <ReceiptIcon /> },
+          { label: "Certificates", path: "/staff/certificates", icon: <ReceiptIcon />, group: "Administration" },
+          { label: "ID Card Requests", path: "/staff/id-cards", icon: <ReceiptIcon />, group: "Administration" },
         );
       }
 
       base.push(
-        { label: "Communication", path: "/staff/communication", icon: <CampaignIcon />,
+        { label: "Communication", path: "/staff/communication", icon: <CampaignIcon />, group: "Administration",
           children: [
             { label: "Notices", path: "/staff/communication" },
             { label: "Messages", path: "/staff/communication/messages" },
           ],
         },
-        { label: "Reports", path: "/staff/reports", icon: <AssessmentIcon /> },
-        { label: "Profile", path: "/staff/profile", icon: <PersonIcon /> },
+        { label: "Reports", path: "/staff/reports", icon: <AssessmentIcon />, group: "Administration" },
+        { label: "Leave", path: "/staff/leave", icon: <EventBusyIcon />, group: "Administration" },
+        { label: "Profile", path: "/staff/profile", icon: <PersonIcon />, group: "Administration" },
       );
       return base;
     }
@@ -285,8 +332,11 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
         { label: "Exams & Results", path: "/parent/exams", icon: <GradingIcon /> },
         { label: "Fees", path: "/parent/fees", icon: <PaymentIcon /> },
         { label: "Transport", path: "/parent/transport", icon: <DirectionsBusIcon /> },
+        { label: "My Hostel", path: "/parent/hostel", icon: <HotelIcon /> },
+        { label: "My Mess", path: "/parent/mess", icon: <RestaurantIcon /> },
         { label: "Announcements", path: "/parent/announcements", icon: <CampaignIcon /> },
         { label: "Messages", path: "/parent/messages", icon: <ChatIcon /> },
+        { label: "Meetings", path: "/parent/meetings", icon: <EventIcon /> },
         { label: "Profile", path: "/parent/profile", icon: <PersonIcon /> },
       ];
 
@@ -302,6 +352,8 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
         { label: "Messages", path: "/student/messages", icon: <ChatIcon /> },
         { label: "Library", path: "/student/library", icon: <MenuBookIcon /> },
         { label: "Transport", path: "/student/transport", icon: <DirectionsBusIcon /> },
+        { label: "My Hostel", path: "/student/hostel", icon: <HotelIcon /> },
+        { label: "My Mess", path: "/student/mess", icon: <RestaurantIcon /> },
       ];
   }
 }

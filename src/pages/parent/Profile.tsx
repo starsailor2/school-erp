@@ -6,7 +6,7 @@ import WorkIcon from "@mui/icons-material/Work";
 import HomeIcon from "@mui/icons-material/Home";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { parents, getChildrenOfParent, getClassName, getStudentAttendance } from "@/data/mock";
+import { parents, getChildrenOfParent, getClassName, getStudentAttendance } from "@/demo-data";
 
 export default function ParentProfile() {
   const { user } = useAuth();

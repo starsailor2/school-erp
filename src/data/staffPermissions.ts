@@ -9,6 +9,8 @@ export const staffPermissions: StaffPermissionMap = {
     student_requests: "view",
     communication: "manage",
     reports: "manage",
+    hostel: "view",
+    mess: "view",
   },
   transport_manager: {
     fees: "none",
@@ -18,6 +20,8 @@ export const staffPermissions: StaffPermissionMap = {
     student_requests: "view",
     communication: "manage",
     reports: "manage",
+    hostel: "none",
+    mess: "none",
   },
   library_staff: {
     fees: "none",
@@ -27,6 +31,8 @@ export const staffPermissions: StaffPermissionMap = {
     student_requests: "view",
     communication: "manage",
     reports: "manage",
+    hostel: "none",
+    mess: "none",
   },
   office_staff: {
     fees: "view",
@@ -36,6 +42,30 @@ export const staffPermissions: StaffPermissionMap = {
     student_requests: "manage",
     communication: "manage",
     reports: "view",
+    hostel: "view",
+    mess: "view",
+  },
+  hostel_warden: {
+    fees: "none",
+    transport: "none",
+    library: "none",
+    student_lookup: "manage",
+    student_requests: "view",
+    communication: "manage",
+    reports: "view",
+    hostel: "manage",
+    mess: "none",
+  },
+  mess_manager: {
+    fees: "none",
+    transport: "none",
+    library: "none",
+    student_lookup: "view",
+    student_requests: "none",
+    communication: "manage",
+    reports: "view",
+    hostel: "none",
+    mess: "manage",
   },
 };
 

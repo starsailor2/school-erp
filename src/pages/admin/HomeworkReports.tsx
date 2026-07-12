@@ -3,9 +3,13 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
-import { homework, classes } from "@/data/mock";
+import { homework, classes } from "@/demo-data";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function HomeworkReports() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const data = classes.slice(0, 8).map((c) => ({
     name: c.name,
     count: homework.filter((h) => h.class_id === c.id).length,
@@ -30,8 +34,8 @@ export default function HomeworkReports() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip />
-            <Bar dataKey="count" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+            <Tooltip cursor={false} />
+            <Bar dataKey="count" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </Paper>

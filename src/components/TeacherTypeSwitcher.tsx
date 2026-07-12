@@ -12,10 +12,10 @@ import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import { useAuth } from "@/context/AuthContext";
 import type { TeacherType } from "@/types";
 
-const teacherTypes: { type: TeacherType; label: string; shortLabel: string; icon: React.ReactNode; color: "default" | "primary" | "secondary" | "success" | "warning" }[] = [
-  { type: "subject_teacher", label: "Subject Teacher", shortLabel: "Teacher", icon: <PersonIcon fontSize="small" />, color: "default" },
-  { type: "class_teacher", label: "Class Teacher", shortLabel: "Class Teacher", icon: <GroupsIcon fontSize="small" />, color: "primary" },
-  { type: "hod", label: "Head of Department", shortLabel: "HOD", icon: <SupervisorAccountIcon fontSize="small" />, color: "warning" },
+const teacherTypes: { type: TeacherType; label: string; shortLabel: string; icon: React.ReactNode; color: string }[] = [
+  { type: "subject_teacher", label: "Subject Teacher", shortLabel: "Teacher", icon: <PersonIcon fontSize="small" />, color: "#2a78d6" },
+  { type: "class_teacher", label: "Class Teacher", shortLabel: "Class Teacher", icon: <GroupsIcon fontSize="small" />, color: "#1baf7a" },
+  { type: "hod", label: "Head of Department", shortLabel: "HOD", icon: <SupervisorAccountIcon fontSize="small" />, color: "#eda100" },
 ];
 
 export default function TeacherTypeSwitcher() {
@@ -27,11 +27,17 @@ export default function TeacherTypeSwitcher() {
     <>
       <Chip
         label={current.shortLabel}
-        color={current.color}
         size="small"
         icon={current.icon as React.ReactElement}
         onClick={(e) => setAnchor(e.currentTarget as HTMLElement)}
-        sx={{ cursor: "pointer", fontWeight: 600, mr: 0.5 }}
+        sx={{
+          cursor: "pointer",
+          fontWeight: 600,
+          mr: 0.5,
+          bgcolor: `${current.color}1A`,
+          color: current.color,
+          "& .MuiChip-icon": { color: current.color },
+        }}
       />
       <Menu
         anchorEl={anchor}
@@ -49,7 +55,7 @@ export default function TeacherTypeSwitcher() {
             selected={teacherType === t.type}
             onClick={() => { setTeacherType(t.type); setAnchor(null); }}
           >
-            <ListItemIcon>{t.icon}</ListItemIcon>
+            <ListItemIcon sx={{ color: t.color }}>{t.icon}</ListItemIcon>
             <ListItemText>{t.label}</ListItemText>
           </MenuItem>
         ))}

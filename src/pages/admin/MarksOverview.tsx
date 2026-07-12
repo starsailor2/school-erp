@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MenuItem, TextField, Grid, Chip } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { marks, students, classes, exams, getSubjectName, getClassName } from "@/data/mock";
+import { marks, students, classes, exams, getSubjectName, getClassName } from "@/demo-data";
 
 export default function MarksOverview() {
   const [classFilter, setClassFilter] = useState("all");
@@ -46,6 +46,8 @@ export default function MarksOverview() {
         </Grid>
       </Grid>
       <DataTable
+        pagination
+        pageSize={25}
         columns={[
           { key: "studentName", label: "Student" },
           { key: "className", label: "Class" },

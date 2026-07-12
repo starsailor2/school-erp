@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Paper, Typography, Stack, Box, Chip, Button, Grid, TextField, MenuItem, Dialog, DialogTitle, DialogContent } from "@mui/material";
+import { Paper, Typography, Stack, Box, Button, Grid, TextField, MenuItem, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { getStudentRequests, updateStudentRequest } from "@/data/studentRequestStore";
-import { students } from "@/data/mock";
+import StatusChip from "@/components/StatusChip";
+import { getStudentRequests, updateStudentRequest } from "@/demo-data/staffOps/studentRequestStore";
+import { students } from "@/demo-data";
 import { useAuth } from "@/context/AuthContext";
 import type { StudentRequestStatus } from "@/types";
 
@@ -76,7 +77,7 @@ export default function StudentRequests() {
           </TextField>
         </Grid>
       </Grid>
-      <Paper sx={{ p: 2, maxWidth: 700 }}>
+      <Paper sx={{ p: 2 }}>
         <Stack spacing={2}>
           {requests.map((r) => (
             <Box key={r.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
@@ -106,7 +107,7 @@ export default function StudentRequests() {
                 )}
               </Box>
               <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-                <Chip label={r.status.replace("_", " ")} size="small" color={r.status === "completed" ? "success" : r.status === "in_progress" ? "primary" : r.status === "rejected" ? "error" : "default"} />
+                <StatusChip status={r.status} />
                 <Button size="small" variant="outlined" disabled={r.status !== "pending"} onClick={() => setStatus(r.id, "in_progress")}>
                   Start
                 </Button>

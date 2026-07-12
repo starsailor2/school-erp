@@ -6,7 +6,7 @@ import {
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { students, homework as allHomework, getSubjectName, teachers } from "@/data/mock";
+import { students, homework as allHomework, getSubjectName, teachers } from "@/demo-data";
 import type { Homework } from "@/types";
 
 export default function StudentHomework() {

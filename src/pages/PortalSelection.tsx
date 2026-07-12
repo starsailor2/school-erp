@@ -7,7 +7,9 @@ import BuildIcon from "@mui/icons-material/Build";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ShieldIcon from "@mui/icons-material/Shield";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
+import { motion } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
+import { motionEasing, motionEasingCss, motionDuration } from "@/theme/tokens";
 import type { Role } from "@/types";
 
 const portals: {
@@ -15,42 +17,42 @@ const portals: {
   label: string;
   description: string;
   icon: React.ReactNode;
-  color: string;
+  accent: string;
 }[] = [
   {
     role: "admin",
     label: "Admin",
     description: "Manage students, teachers, staff, fees, reports, and full school administration.",
     icon: <AdminPanelSettingsIcon />,
-    color: "#10b981",
+    accent: "#2a78d6",
   },
   {
     role: "teacher",
     label: "Teacher",
     description: "Classes, attendance, homework, marks entry, and timetable management.",
     icon: <PersonIcon />,
-    color: "#8b5cf6",
+    accent: "#1baf7a",
   },
   {
     role: "student",
     label: "Student",
     description: "View timetable, homework, announcements, grades, and academic records.",
     icon: <SchoolIcon />,
-    color: "#6366f1",
+    accent: "#eb6834",
   },
   {
     role: "parent",
     label: "Parent",
     description: "Track your child's attendance, homework, results, fees, and school notices.",
     icon: <FamilyRestroomIcon />,
-    color: "#ec4899",
+    accent: "#eda100",
   },
   {
     role: "staff",
     label: "School Staff",
     description: "Non-teaching staff portal for fees, transport, library, and office tasks.",
     icon: <BuildIcon />,
-    color: "#f59e0b",
+    accent: "#e34948",
   },
 ];
 
@@ -71,27 +73,29 @@ export default function PortalSelection() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(180deg, #ede9fe 0%, #f0f0ff 40%, #f8fafc 100%)",
+        bgcolor: "background.default",
         px: 2,
       }}
     >
       {/* Logo */}
-      <Avatar
-        sx={{
-          width: 56,
-          height: 56,
-          bgcolor: "#6366f1",
-          mb: 2,
-          boxShadow: "0 4px 24px rgba(99,102,241,0.3)",
-        }}
-      >
-        <ShieldIcon sx={{ fontSize: 30 }} />
-      </Avatar>
+      <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: motionDuration * 2, ease: motionEasing }}>
+        <Avatar
+          sx={{
+            width: 56,
+            height: 56,
+            bgcolor: "#1D1D1F",
+            color: "#F5F5F4",
+            mb: 2,
+          }}
+        >
+          <ShieldIcon sx={{ fontSize: 30 }} />
+        </Avatar>
+      </motion.div>
 
       <Typography
         variant="overline"
         sx={{
-          color: "#6366f1",
+          color: "text.secondary",
           fontWeight: 700,
           letterSpacing: 3,
           mb: 0.5,
@@ -104,10 +108,9 @@ export default function PortalSelection() {
         variant="h4"
         sx={{
           fontWeight: 700,
-          color: "#6366f1",
+          color: "text.primary",
           mb: 1,
           textAlign: "center",
-          opacity: 0.85,
         }}
       >
         KALNET School ERP
@@ -126,92 +129,105 @@ export default function PortalSelection() {
         sx={{
           display: "flex",
           gap: 2,
-          flexWrap: "nowrap",
+          flexWrap: "wrap",
           justifyContent: "center",
           maxWidth: 1100,
           width: "100%",
         }}
       >
-        {portals.map((portal) => (
-          <Paper
+        {portals.map((portal, i) => (
+          <motion.div
             key={portal.role}
-            elevation={1}
-            onClick={() => handleSelect(portal.role)}
-            sx={{
-              flex: "1 1 0",
-              minWidth: 0,
-              maxWidth: 200,
-              p: 2.5,
-              cursor: "pointer",
-              borderRadius: 3,
-              transition: "all 0.3s cubic-bezier(0.4,0,0.2,1)",
-              border: "1px solid",
-              borderColor: "divider",
-              bgcolor: "background.paper",
-              "&:hover": {
-                elevation: 8,
-                boxShadow: `0 8px 32px ${portal.color}30`,
-                transform: "translateY(-4px)",
-                borderColor: "transparent",
-                background: `linear-gradient(135deg, ${portal.color}, #4f46e5)`,
-                color: "#fff",
-                "& .portal-desc": { color: "rgba(255,255,255,0.85)" },
-                "& .portal-avatar": {
-                  bgcolor: "rgba(255,255,255,0.2)",
-                  color: "#fff",
-                },
-                "& .portal-btn": {
-                  bgcolor: "rgba(255,255,255,0.2)",
-                  color: "#fff",
-                },
-              },
-            }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05, duration: motionDuration * 2, ease: motionEasing }}
+            style={{ flex: "1 1 0", minWidth: 180, maxWidth: 200 }}
           >
-            <Avatar
-              className="portal-avatar"
+            <Paper
+              elevation={0}
+              onClick={() => handleSelect(portal.role)}
               sx={{
-                width: 44,
-                height: 44,
-                bgcolor: `${portal.color}18`,
-                color: portal.color,
-                mb: 2,
-                transition: "all 0.3s",
+                p: 2.5,
+                pt: 3,
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                cursor: "pointer",
+                border: "1px solid",
+                borderColor: "divider",
+                borderTop: "3px solid",
+                borderTopColor: portal.accent,
+                bgcolor: "background.paper",
+                boxShadow: (t) => (t.palette.mode === "light" ? "0 1px 3px rgba(0,0,0,0.04)" : "0 1px 3px rgba(0,0,0,0.3)"),
+                transition: `all ${motionDuration * 1.5}s ${motionEasingCss}`,
+                "&:hover": {
+                  boxShadow: (t) => (t.palette.mode === "light" ? "0 12px 32px rgba(0,0,0,0.12)" : "0 12px 32px rgba(0,0,0,0.5)"),
+                  transform: "translateY(-4px)",
+                  borderColor: "transparent",
+                  borderTopColor: portal.accent,
+                  bgcolor: "#1D1D1F",
+                  color: "#F5F5F4",
+                  "& .portal-desc": { color: "rgba(245,245,244,0.72)" },
+                  "& .portal-avatar": {
+                    bgcolor: "#F5F5F4",
+                    color: portal.accent,
+                  },
+                  "& .portal-btn": {
+                    bgcolor: "#1D1D1F",
+                    color: "#F5F5F4",
+                  },
+                },
               }}
             >
-              {portal.icon}
-            </Avatar>
+              <Avatar
+                className="portal-avatar"
+                sx={{
+                  width: 44,
+                  height: 44,
+                  bgcolor: "#1D1D1F",
+                  color: portal.accent,
+                  mb: 2,
+                  boxShadow: `0 0 0 6px ${portal.accent}14`,
+                  transition: `all ${motionDuration}s`,
+                }}
+              >
+                {portal.icon}
+              </Avatar>
 
-            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
-              {portal.label}
-            </Typography>
+              <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>
+                {portal.label}
+              </Typography>
 
-            <Typography
-              variant="caption"
-              className="portal-desc"
-              sx={{ color: "text.secondary", display: "block", mb: 2, lineHeight: 1.5, transition: "all 0.3s" }}
-            >
-              {portal.description}
-            </Typography>
+              <Typography
+                variant="caption"
+                className="portal-desc"
+                sx={{ color: "text.secondary", display: "block", mb: 2, lineHeight: 1.5, transition: `all ${motionDuration}s` }}
+              >
+                {portal.description}
+              </Typography>
 
-            <Box
-              className="portal-btn"
-              sx={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 0.5,
-                px: 2,
-                py: 0.75,
-                borderRadius: 2,
-                bgcolor: `${portal.color}12`,
-                color: portal.color,
-                fontSize: 13,
-                fontWeight: 600,
-                transition: "all 0.3s",
-              }}
-            >
-              Get started <ArrowForwardIcon sx={{ fontSize: 16 }} />
-            </Box>
-          </Paper>
+              <Box
+                className="portal-btn"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 0.5,
+                  mt: "auto",
+                  px: 2,
+                  py: 0.75,
+                  borderRadius: 2,
+                  bgcolor: "#1D1D1F",
+                  color: "#F5F5F4",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  transition: `all ${motionDuration}s`,
+                }}
+              >
+                Get started <ArrowForwardIcon sx={{ fontSize: 16 }} />
+              </Box>
+            </Paper>
+          </motion.div>
         ))}
       </Box>
 

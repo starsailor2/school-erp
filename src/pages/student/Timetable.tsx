@@ -4,7 +4,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { timetable, students, classes } from "@/data/mock";
+import { timetable, students, classes } from "@/demo-data";
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 

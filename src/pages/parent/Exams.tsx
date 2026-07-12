@@ -1,7 +1,7 @@
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Chip, Typography, Stack, MenuItem, TextField, Tabs, Tab } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { parents, getChildrenOfParent, getStudentMarks, getSubjectName, getClassName, exams } from "@/data/mock";
+import { parents, getChildrenOfParent, getStudentMarks, getSubjectName, getClassName, exams } from "@/demo-data";
 import { useState } from "react";
 
 export default function ParentExams() {

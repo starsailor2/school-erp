@@ -4,7 +4,7 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { useState } from "react";
-import { exams, subjects, classes } from "@/data/mock";
+import { exams, subjects, classes } from "@/demo-data";
 
 export default function ExamSchedule() {
   const [examFilter, setExamFilter] = useState("all");

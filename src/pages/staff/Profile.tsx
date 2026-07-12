@@ -1,7 +1,7 @@
 import { Paper, Typography, Avatar, Stack, Box, Divider, Chip } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { staffMembers } from "@/data/mock";
+import { staffMembers } from "@/demo-data";
 
 export default function StaffProfile() {
   const { user, staffRole } = useAuth();

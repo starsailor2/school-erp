@@ -4,7 +4,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button, Divider, Box,
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/data/announcementStore";
+import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communication/announcementStore";
 import type { Announcement } from "@/types";
 
 export default function ParentAnnouncements() {

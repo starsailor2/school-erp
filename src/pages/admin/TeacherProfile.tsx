@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import {
   teachers, subjectAllocations, classes, getSubjectName, getClassName,
-} from "@/data/mock";
+} from "@/demo-data";
 
 export default function TeacherProfile() {
   const { id } = useParams<{ id: string }>();

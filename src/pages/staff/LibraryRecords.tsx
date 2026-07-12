@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { Chip } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { students } from "@/data/mock";
-import { getLibraryRecords, getLibraryBooksState } from "@/data/libraryCirculationStore";
+import StatusChip from "@/components/StatusChip";
+import { students } from "@/demo-data";
+import { getLibraryRecords, getLibraryBooksState } from "@/demo-data/library/libraryCirculationStore";
 
 export default function LibraryRecords() {
   const rows = useMemo(() => {
@@ -36,13 +36,7 @@ export default function LibraryRecords() {
           {
             key: "status",
             label: "Status",
-            render: (r) => (
-              <Chip
-                size="small"
-                label={r.status}
-                color={r.status === "returned" ? "success" : r.status === "overdue" ? "error" : "warning"}
-              />
-            ),
+            render: (r) => <StatusChip status={r.status} />,
           },
         ]}
       />

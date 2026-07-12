@@ -5,7 +5,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, getTeacherClasses, getClassName, getSubjectName } from "@/data/mock";
+import { teachers, getTeacherClasses, getClassName, getSubjectName } from "@/demo-data";
 
 const emptyForm = (classId: string, sectionId: string, subjectId: string) => ({
   classId, sectionId, subjectId, title: "", description: "", dueDate: "",

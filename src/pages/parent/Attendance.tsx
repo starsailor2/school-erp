@@ -4,8 +4,9 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
-import { parents, getChildrenOfParent, getStudentAttendance, getClassName } from "@/data/mock";
+import { parents, getChildrenOfParent, getStudentAttendance, getClassName } from "@/demo-data";
 
 export default function ParentAttendance() {
   const { user, selectedChildId, setSelectedChildId } = useAuth();
@@ -113,7 +114,7 @@ export default function ParentAttendance() {
           { key: "date", label: "Date" },
           {
             key: "status", label: "Status",
-            render: (a) => <Chip label={a.status} size="small" color={a.status === "present" ? "success" : a.status === "absent" ? "error" : "warning"} />,
+            render: (a) => <StatusChip status={a.status} />,
           },
         ]}
         rows={sorted}

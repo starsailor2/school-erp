@@ -1,10 +1,15 @@
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Chip, Typography, Stack, Box, Grid } from "@mui/material";
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Typography, Stack, Box, Grid } from "@mui/material";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
-import { students, getStudentAttendance } from "@/data/mock";
+import { students, getStudentAttendance } from "@/demo-data";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function StudentAttendance() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const { user } = useAuth();
   const student = students.find((s) => s.id === user?.id);
   const records = student ? getStudentAttendance(student.id) : [];
@@ -72,10 +77,10 @@ export default function StudentAttendance() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis hide />
-                <Tooltip formatter={(_v: number, _n: string, props: { payload?: { status?: string } }) => [props.payload?.status ?? "", "Status"]} />
+                <Tooltip cursor={false} formatter={(_v: number, _n: string, props: { payload?: { status?: string } }) => [props.payload?.status ?? "", "Status"]} />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                   {dailyData.map((entry, index) => (
-                    <Cell key={index} fill={entry.status === "present" ? "#22c55e" : entry.status === "absent" ? "#ef4444" : "#f59e0b"} />
+                    <Cell key={index} fill={entry.status === "present" ? palette.status.good : entry.status === "absent" ? palette.status.critical : palette.status.warning} />
                   ))}
                 </Bar>
               </BarChart>
@@ -124,7 +129,7 @@ export default function StudentAttendance() {
                 <TableCell>{r.date}</TableCell>
                 <TableCell>{new Date(r.date).toLocaleDateString("en-US", { weekday: "long" })}</TableCell>
                 <TableCell>
-                  <Chip label={r.status} size="small" color={r.status === "present" ? "success" : r.status === "absent" ? "error" : "warning"} />
+                  <StatusChip status={r.status} />
                 </TableCell>
               </TableRow>
             ))}

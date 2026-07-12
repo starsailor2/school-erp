@@ -4,8 +4,8 @@ import {
   Grid, MenuItem, Chip, List, ListItemButton, ListItemAvatar, ListItemText,
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { teachers, parents } from "@/data/mock";
-import { addMessage, getMessages, MESSAGE_STORE_EVENT } from "@/data/messageStore";
+import { teachers, parents } from "@/demo-data";
+import { addMessage, getMessages, MESSAGE_STORE_EVENT } from "@/demo-data/communication/messageStore";
 import type { Message } from "@/types";
 
 type Audience = "all" | "parent" | "teacher" | "student" | "staff";

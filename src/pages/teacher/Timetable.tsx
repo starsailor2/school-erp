@@ -1,7 +1,7 @@
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Chip, Typography, Box } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, timetable } from "@/data/mock";
+import { teachers, timetable } from "@/demo-data";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const LUNCH_PERIOD = 5;

@@ -3,7 +3,7 @@ import {
   Paper, Typography, TextField, Grid, MenuItem, Button, Stack, Divider,
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
-import { classes } from "@/data/mock";
+import { classes } from "@/demo-data";
 
 export default function Admissions() {
   const [form, setForm] = useState({

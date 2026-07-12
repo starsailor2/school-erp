@@ -6,7 +6,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, classes, getClassName } from "@/data/mock";
+import { students, classes, getClassName } from "@/demo-data";
 import type { Student } from "@/types";
 
 export default function StudentDirectory() {
@@ -60,6 +60,8 @@ export default function StudentDirectory() {
       </Grid>
 
       <DataTable<Student>
+        pagination
+        pageSize={25}
         columns={[
           {
             key: "name", label: "Student",

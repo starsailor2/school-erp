@@ -1,1 +1,0 @@
-function o(t){return t&&t.ownerDocument||document}function c(t){return o(t).defaultView||window}function a(t){var n;let e=t.activeElement;for(;((n=e==null?void 0:e.shadowRoot)==null?void 0:n.activeElement)!=null;)e=e.shadowRoot.activeElement;return e}export{a,o as b,c as o};

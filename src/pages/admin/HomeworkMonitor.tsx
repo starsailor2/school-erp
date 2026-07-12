@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MenuItem, TextField, Grid, Chip, Paper, Typography } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { homework, classes, getClassName, getSubjectName, getTeacherName } from "@/data/mock";
+import { homework, classes, getClassName, getSubjectName, getTeacherName } from "@/demo-data";
 
 export default function HomeworkMonitor() {
   const [classFilter, setClassFilter] = useState("all");

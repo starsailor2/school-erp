@@ -6,9 +6,13 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, students, marks, getTeacherClasses, getClassName, exams } from "@/data/mock";
+import { teachers, students, marks, getTeacherClasses, getClassName, exams } from "@/demo-data";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function StudentPerformance() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const { user } = useAuth();
   const teacher = teachers.find((t) => t.id === user?.id);
   const allocations = teacher ? getTeacherClasses(teacher.id) : [];
@@ -55,8 +59,8 @@ export default function StudentPerformance() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis domain={[0, 100]} />
-            <Tooltip />
-            <Bar dataKey="average" fill="#6366f1" radius={[4, 4, 0, 0]} />
+            <Tooltip cursor={false} />
+            <Bar dataKey="average" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </Paper>

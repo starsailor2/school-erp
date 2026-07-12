@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import MuiLink from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
 import { Link } from "react-router-dom";
 import { type ReactNode } from "react";
 
@@ -14,9 +15,11 @@ interface PageHeaderProps {
   title: string;
   breadcrumbs?: Crumb[];
   action?: ReactNode;
+  eyebrow?: string;
+  summary?: ReactNode;
 }
 
-export function PageHeader({ title, breadcrumbs, action }: PageHeaderProps) {
+export function PageHeader({ title, breadcrumbs, action, eyebrow, summary }: PageHeaderProps) {
   return (
     <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 1 }}>
       <Box>
@@ -42,9 +45,21 @@ export function PageHeader({ title, breadcrumbs, action }: PageHeaderProps) {
             )}
           </Breadcrumbs>
         )}
-        <Typography variant="h4" fontWeight={700}>
-          {title}
-        </Typography>
+        {eyebrow && (
+          <Typography
+            variant="overline"
+            color="text.secondary"
+            sx={{ fontSize: "0.7rem", display: "block", lineHeight: 1.8 }}
+          >
+            {eyebrow}
+          </Typography>
+        )}
+        <Stack direction="row" alignItems="center" spacing={1.5}>
+          <Typography variant="h4" fontWeight={700}>
+            {title}
+          </Typography>
+          {summary}
+        </Stack>
       </Box>
       {action && <Box>{action}</Box>}
     </Box>

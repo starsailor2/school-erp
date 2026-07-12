@@ -6,7 +6,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, getSubjectName, getTeacherClasses, getClassName } from "@/data/mock";
+import { teachers, getSubjectName, getTeacherClasses, getClassName } from "@/demo-data";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";

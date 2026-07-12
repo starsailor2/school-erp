@@ -5,12 +5,15 @@ import {
   PieChart, Pie, Cell, Legend, LineChart, Line,
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
-import { students, classes, attendanceRecords } from "@/data/mock";
-
-const COLORS = ["#10b981", "#ef4444", "#f59e0b"];
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
+import { students, classes, attendanceRecords } from "@/demo-data";
 
 export default function AttendanceAnalytics() {
   const [classFilter, setClassFilter] = useState("all");
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
+  const COLORS = [palette.status.good, palette.status.critical, palette.status.warning];
 
   const analytics = useMemo(() => {
     const targetStudentIds = classFilter === "all"
@@ -85,7 +88,7 @@ export default function AttendanceAnalytics() {
                 <Pie data={analytics.pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
                   {analytics.pieData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
                 </Pie>
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -99,8 +102,8 @@ export default function AttendanceAnalytics() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Bar dataKey="attendance" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <Tooltip cursor={false} />
+                <Bar dataKey="attendance" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Paper>
@@ -116,8 +119,8 @@ export default function AttendanceAnalytics() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis domain={[60, 100]} />
-                <Tooltip />
-                <Line type="monotone" dataKey="rate" stroke="#6366f1" strokeWidth={2} dot />
+                <Tooltip cursor={false} />
+                <Line type="monotone" dataKey="rate" stroke={palette.categorical[0]} strokeWidth={2} dot />
               </LineChart>
             </ResponsiveContainer>
           </Paper>
@@ -131,7 +134,7 @@ export default function AttendanceAnalytics() {
               analytics.riskStudents.map((s) => (
                 <Typography key={s.id} variant="body2" sx={{ display: "flex", justifyContent: "space-between", py: 0.5 }}>
                   <span>{s.name}</span>
-                  <span style={{ fontWeight: 600, color: s.attendance_pct < 60 ? "#ef4444" : "#f59e0b" }}>{s.attendance_pct}%</span>
+                  <span style={{ fontWeight: 600, color: s.attendance_pct < 60 ? palette.status.critical : palette.status.warning }}>{s.attendance_pct}%</span>
                 </Typography>
               ))
             )}

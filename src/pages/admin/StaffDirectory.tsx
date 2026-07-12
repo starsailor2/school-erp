@@ -5,7 +5,8 @@ import {
 } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { staffMembers } from "@/data/mock";
+import StatusChip from "@/components/StatusChip";
+import { staffMembers } from "@/demo-data";
 import type { Staff, StaffRole } from "@/types";
 
 type StaffRow = {
@@ -216,7 +217,7 @@ export default function StaffDirectory() {
                     <Paper key={t.id} variant="outlined" sx={{ p: 1.5 }}>
                       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Typography variant="subtitle2">{t.title}</Typography>
-                        <Chip label={t.status.replace("_", " ")} size="small" color={t.status === "completed" ? "success" : t.status === "in_progress" ? "warning" : "default"} />
+                        <StatusChip status={t.status} />
                       </Box>
                       {t.description && <Typography variant="caption" color="text.secondary">{t.description}</Typography>}
                       <Typography variant="caption" display="block" color="text.secondary">Assigned: {t.assignedDate}</Typography>

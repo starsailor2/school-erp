@@ -4,8 +4,10 @@ import {
   LineChart, Line,
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
-import { classes, students, attendanceRecords } from "@/data/mock";
+import { classes, students, attendanceRecords } from "@/demo-data";
 import { DataTable } from "@/components/DataTable";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 type RiskRow = {
   id: string;
@@ -16,6 +18,8 @@ type RiskRow = {
 };
 
 export default function AttendanceReports() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const classData = classes.map((c) => {
     const classStudents = students.filter((s) => s.class_id === c.id);
     const avgAtt = classStudents.length > 0
@@ -70,8 +74,8 @@ export default function AttendanceReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Bar dataKey="attendance" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <Tooltip cursor={false} />
+                <Bar dataKey="attendance" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Paper>
@@ -86,14 +90,16 @@ export default function AttendanceReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Line type="monotone" dataKey="attendance" stroke="#10b981" strokeWidth={2.5} />
+                <Tooltip cursor={false} />
+                <Line type="monotone" dataKey="attendance" stroke={palette.categorical[0]} strokeWidth={2.5} />
               </LineChart>
             </ResponsiveContainer>
           </Paper>
         </Grid>
         <Grid size={{ xs: 12 }}>
           <DataTable
+            pagination
+            pageSize={25}
             title="Attendance Risk Watchlist"
             columns={[
               { key: "student", label: "Student" },

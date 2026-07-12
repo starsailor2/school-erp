@@ -4,9 +4,10 @@ import {
   Tabs, Tab, Box, Grid, Dialog, DialogTitle, DialogContent, DialogActions, Button,
 } from "@mui/material";
 import QuizIcon from "@mui/icons-material/Quiz";
+import PrintIcon from "@mui/icons-material/Print";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { students, getStudentMarks, getSubjectName, exams } from "@/data/mock";
+import { students, getStudentMarks, getSubjectName, exams } from "@/demo-data";
 
 export default function StudentExams() {
   const { user } = useAuth();
@@ -28,6 +29,13 @@ export default function StudentExams() {
   return (
     <>
       <PageHeader title="Exams & Results" breadcrumbs={[{ label: "Dashboard", to: "/student" }, { label: "Exams" }]} />
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          #report-card-printable, #report-card-printable * { visibility: visible; }
+          #report-card-printable { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+      `}</style>
 
       <Paper sx={{ mb: 2 }}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)}>
@@ -196,6 +204,7 @@ export default function StudentExams() {
       <Dialog open={!!reportExam} onClose={() => setReportExam(null)} maxWidth="sm" fullWidth>
         <DialogTitle>Report Card — {exams.find((e) => e.id === reportExam)?.name}</DialogTitle>
         <DialogContent dividers>
+          <Box id="report-card-printable">
           {student && (
             <Box sx={{ mb: 2 }}>
               <Grid container spacing={2}>
@@ -244,8 +253,10 @@ export default function StudentExams() {
               ))}
             </TableBody>
           </Table>
+          </Box>
         </DialogContent>
         <DialogActions>
+          <Button startIcon={<PrintIcon />} onClick={() => window.print()}>Print</Button>
           <Button onClick={() => setReportExam(null)}>Close</Button>
         </DialogActions>
       </Dialog>

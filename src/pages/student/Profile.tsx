@@ -3,7 +3,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import PersonIcon from "@mui/icons-material/Person";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { students, parents, classes, teachers, getStudentFees, getClassName, getStudentAttendance } from "@/data/mock";
+import { students, parents, classes, teachers, getStudentFees, getClassName, getStudentAttendance } from "@/demo-data";
 
 export default function StudentProfile() {
   const { user } = useAuth();

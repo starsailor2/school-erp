@@ -10,7 +10,7 @@ import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, subjects, subjectAllocations as initialAllocations, getClassName, getSubjectName,
-} from "@/data/mock";
+} from "@/demo-data";
 import type { SubjectAllocation as SubjectAllocationType } from "@/types";
 
 export default function SubjectAllocation() {

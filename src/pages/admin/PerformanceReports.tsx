@@ -6,9 +6,13 @@ import {
 } from "recharts";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { classes, students, marks, subjects, exams } from "@/data/mock";
+import { classes, students, marks, subjects, exams } from "@/demo-data";
+import { getChartPalette } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 
 export default function PerformanceReports() {
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
   const [classFilter, setClassFilter] = useState("all");
   const [sectionFilter, setSectionFilter] = useState("all");
   const [examFilter, setExamFilter] = useState("all");
@@ -109,11 +113,11 @@ export default function PerformanceReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} />
-                <Tooltip />
+                <Tooltip cursor={false} />
                 <Legend />
-                <Bar dataKey="highest" fill="#10b981" name="Highest" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="average" fill="#6366f1" name="Average" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="lowest" fill="#ef4444" name="Lowest" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="highest" fill={palette.status.good} name="Highest" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="average" fill={palette.categorical[0]} name="Average" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="lowest" fill={palette.status.critical} name="Lowest" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Paper>
@@ -128,8 +132,8 @@ export default function PerformanceReports() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="grade" />
                 <YAxis />
-                <Tooltip />
-                <Bar dataKey="count" fill="#f59e0b" name="Students" radius={[4, 4, 0, 0]} />
+                <Tooltip cursor={false} />
+                <Bar dataKey="count" fill={palette.categorical[1]} name="Students" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Paper>

@@ -3,13 +3,13 @@ import {
   Grid, Typography, Chip, Dialog, DialogTitle, DialogContent,
   DialogActions, Button, Stack, Box, Avatar, Divider,
 } from "@mui/material";
-import { KpiCard } from "@/components/KpiCard";
+import { StatCard } from "@/components/StatCard";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, subjects, subjectAllocations, getSubjectName, getClassName,
-} from "@/data/mock";
+} from "@/demo-data";
 import PeopleIcon from "@mui/icons-material/People";
 import SchoolIcon from "@mui/icons-material/School";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -37,9 +37,9 @@ export default function DepartmentDashboard() {
         breadcrumbs={[{ label: "Dashboard", to: "/teacher" }, { label: "Department" }]}
       />
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Subjects" value={deptSubjects.length} icon={<SchoolIcon />} color="#6366f1" /></Grid>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Teachers" value={deptTeachers.length} icon={<PeopleIcon />} color="#10b981" /></Grid>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Allocations" value={deptAllocations.length} icon={<PeopleIcon />} color="#f59e0b" /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Subjects" value={deptSubjects.length} numericValue={deptSubjects.length} icon={<SchoolIcon />} /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Teachers" value={deptTeachers.length} numericValue={deptTeachers.length} icon={<PeopleIcon />} delay={0.05} /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Allocations" value={deptAllocations.length} numericValue={deptAllocations.length} icon={<PeopleIcon />} delay={0.1} /></Grid>
       </Grid>
 
       <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>Department Teachers</Typography>

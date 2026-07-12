@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Button, Grid, MenuItem, TextField } from "@mui/material";
 import { DataTable } from "@/components/DataTable";
 import { PageHeader } from "@/components/PageHeader";
-import { students } from "@/data/mock";
-import { getLibraryBooksState, issueLibraryBook } from "@/data/libraryCirculationStore";
+import { students } from "@/demo-data";
+import { getLibraryBooksState, issueLibraryBook } from "@/demo-data/library/libraryCirculationStore";
 import { useAuth } from "@/context/AuthContext";
 
 export default function LibraryIssue() {

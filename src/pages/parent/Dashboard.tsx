@@ -5,17 +5,21 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import GradingIcon from "@mui/icons-material/Grading";
 import PaymentIcon from "@mui/icons-material/Payment";
-import { KpiCard } from "@/components/KpiCard";
+import { StatCard } from "@/components/StatCard";
 import { PageHeader } from "@/components/PageHeader";
+import { getIconAccent } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 import { useAuth } from "@/context/AuthContext";
 import {
   parents, getChildrenOfParent, getClassName, getStudentMarks,
   getStudentFees, getStudentAttendance, homework, getSubjectName, timetable, exams,
-} from "@/data/mock";
-import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/data/announcementStore";
+  getHostelAllocationForStudent, getMessPlanForStudent, hostelRooms, hostelBlocks,
+} from "@/demo-data";
+import { ANNOUNCEMENT_STORE_EVENT, getAnnouncements } from "@/demo-data/communication/announcementStore";
 
 export default function ParentDashboard() {
   const navigate = useNavigate();
+  const { mode } = useColorMode();
   const { user, selectedChildId, setSelectedChildId } = useAuth();
   const [announcementRows, setAnnouncementRows] = useState(() => getAnnouncements());
 
@@ -39,6 +43,11 @@ export default function ParentDashboard() {
     ? Math.round((childAttendance.filter((a) => a.status === "present").length / childAttendance.length) * 100)
     : 0;
 
+  const hostelAllocation = child ? getHostelAllocationForStudent(child.id) : undefined;
+  const room = hostelAllocation ? hostelRooms.find((r) => r.id === hostelAllocation.room_id) : undefined;
+  const block = room ? hostelBlocks.find((b) => b.id === room.block_id) : undefined;
+  const messPlan = child ? getMessPlanForStudent(child.id) : undefined;
+
   // Today's schedule for the child's class/section
   const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date().getDay()];
   const classNum = child?.class_id.replace("c", "") ?? "";
@@ -51,7 +60,7 @@ export default function ParentDashboard() {
 
   return (
     <>
-      <PageHeader title="Parent Dashboard" />
+      <PageHeader title="Parent Dashboard" eyebrow="Overview" />
 
       {children.length > 1 && (
         <TextField
@@ -73,24 +82,50 @@ export default function ParentDashboard() {
 
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <KpiCard title="Attendance" value={`${attendancePct}%`} icon={<EventNoteIcon />}
-                color={attendancePct >= 85 ? "#10b981" : "#f59e0b"}
+              <StatCard title="Attendance" value={`${attendancePct}%`} numericValue={attendancePct} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")}
                 onClick={() => navigate("/parent/attendance")} />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <KpiCard title="Homework Pending" value={pendingHw} icon={<AssignmentIcon />} color="#6366f1"
-                onClick={() => navigate("/parent/homework")} />
+              <StatCard title="Homework Pending" value={pendingHw} numericValue={pendingHw} icon={<AssignmentIcon />} color={getIconAccent(mode, "homework")}
+                onClick={() => navigate("/parent/homework")} delay={0.05} />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <KpiCard title="Upcoming Exams" value={upcomingExams} icon={<GradingIcon />} color="#8b5cf6"
-                onClick={() => navigate("/parent/exams")} />
+              <StatCard title="Upcoming Exams" value={upcomingExams} numericValue={upcomingExams} icon={<GradingIcon />} color={getIconAccent(mode, "exams")}
+                onClick={() => navigate("/parent/exams")} delay={0.1} />
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
-              <KpiCard title="Fee Due" value={pendingFees > 0 ? `₹${pendingFees.toLocaleString()}` : "Nil"} icon={<PaymentIcon />}
-                color={pendingFees > 0 ? "#ef4444" : "#10b981"}
-                onClick={() => navigate("/parent/fees")} />
+              <StatCard title="Fee Due" value={pendingFees > 0 ? `₹${pendingFees.toLocaleString()}` : "Nil"} icon={<PaymentIcon />} color={getIconAccent(mode, "fees")}
+                onClick={() => navigate("/parent/fees")} delay={0.15} />
             </Grid>
           </Grid>
+
+          {(hostelAllocation || messPlan) && (
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+              {hostelAllocation && (
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Paper sx={{ p: 2 }}>
+                    <Typography variant="subtitle2" fontWeight={600} gutterBottom>Hostel</Typography>
+                    <Stack spacing={0.5}>
+                      <Typography variant="body2">Block: {block?.name}</Typography>
+                      <Typography variant="body2">Room: {room?.room_number} ({room?.type})</Typography>
+                      <Typography variant="body2">Since: {hostelAllocation.check_in_date}</Typography>
+                    </Stack>
+                  </Paper>
+                </Grid>
+              )}
+              {messPlan && (
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Paper sx={{ p: 2 }}>
+                    <Typography variant="subtitle2" fontWeight={600} gutterBottom>Mess Plan</Typography>
+                    <Stack spacing={0.5}>
+                      <Typography variant="body2">Plan: {messPlan.plan_type === "veg" ? "Vegetarian" : "Non-Vegetarian"}</Typography>
+                      <Typography variant="body2">Since: {messPlan.subscribed_since}</Typography>
+                    </Stack>
+                  </Paper>
+                </Grid>
+              )}
+            </Grid>
+          )}
 
           <Grid container spacing={2}>
             {/* Left column: Today's Schedule + Recent Marks */}

@@ -4,199 +4,288 @@ import { Grid, Paper, Typography, Box, Stack, Chip } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
 import SchoolIcon from "@mui/icons-material/School";
 import EventNoteIcon from "@mui/icons-material/EventNote";
-import WarningIcon from "@mui/icons-material/Warning";
-import ClassIcon from "@mui/icons-material/Class";
 import PaymentIcon from "@mui/icons-material/Payment";
-import GradingIcon from "@mui/icons-material/Grading";
+import HotelIcon from "@mui/icons-material/Hotel";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend,
 } from "recharts";
-import { KpiCard } from "@/components/KpiCard";
+import { StatCard } from "@/components/StatCard";
+import { ChartCard } from "@/components/ChartCard";
+import StatusChip from "@/components/StatusChip";
 import { PageHeader } from "@/components/PageHeader";
+import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
+import { useColorMode } from "@/context/ColorModeContext";
 import {
   students, teachers, staffMembers, classes, fees, attendanceRecords,
-  announcements, routes, exams, getClassName,
-} from "@/data/mock";
-
-const COLORS = ["#6366f1", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6"];
+  announcements, hostelAllocations, hostelRooms, hostelBlocks,
+  messPlans, messAttendance, getClassName,
+} from "@/demo-data";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const { mode } = useColorMode();
+  const palette = getChartPalette(mode);
+  const tooltipStyle = getChartTooltipStyle(mode);
 
   const stats = useMemo(() => {
     const totalStudents = students.length;
-    const totalTeachers = teachers.length;
-    const totalStaff = staffMembers.length;
-    const totalClasses = classes.length;
-
-    const totalFees = fees.reduce((s, f) => s + f.amount, 0);
-    const collectedFees = fees.filter((f) => f.status === "paid").reduce((s, f) => s + f.amount, 0);
-    const pendingFees = fees.filter((f) => f.status !== "paid").reduce((s, f) => s + f.amount, 0);
-    const feeDefaulters = fees.filter((f) => f.status === "overdue").length;
+    const totalStaff = teachers.length + staffMembers.length;
 
     const todayStr = new Date().toISOString().split("T")[0];
     const todayAtt = attendanceRecords.filter((a) => a.date === todayStr);
     const presentToday = todayAtt.filter((a) => a.status === "present").length;
-    const attendancePct = todayAtt.length > 0 ? Math.round((presentToday / todayAtt.length) * 100) : 92;
+    const attendancePct = todayAtt.length > 0 ? Math.round((presentToday / todayAtt.length) * 100) : 0;
 
-    const upcomingExams = exams.filter((e) => new Date(e.start_date) > new Date()).length;
+    const currentMonthFees = fees.filter((f) => {
+      const d = new Date(f.due_date);
+      const now = new Date();
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const collected = currentMonthFees.filter((f) => f.status === "paid").length;
+    const collectionRate = currentMonthFees.length > 0 ? Math.round((collected / currentMonthFees.length) * 100) : 0;
 
-    return { totalStudents, totalTeachers, totalStaff, totalClasses, totalFees, collectedFees, pendingFees, feeDefaulters, attendancePct, upcomingExams };
+    const occupiedBeds = hostelAllocations.length;
+    const totalBeds = hostelRooms.reduce((s, r) => s + r.capacity, 0);
+    const hostelOccupancy = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
+
+    return { totalStudents, totalStaff, attendancePct, collectionRate, hostelOccupancy, messPlansActive: messPlans.length };
   }, []);
 
-  const classDistribution = classes.slice(0, 6).map((c) => ({
-    name: c.name,
+  const classDistribution = classes.slice(0, 12).map((c) => ({
+    name: c.name.replace("Class ", "C"),
     students: c.sections.reduce((sum, s) => sum + s.student_count, 0),
   }));
 
-  const feeData = [
-    { name: "Paid", value: fees.filter((f) => f.status === "paid").length },
-    { name: "Pending", value: fees.filter((f) => f.status === "pending").length },
-    { name: "Overdue", value: fees.filter((f) => f.status === "overdue").length },
+  const feeStatusData = [
+    { name: "Paid", value: fees.filter((f) => f.status === "paid").length, color: palette.status.good },
+    { name: "Pending", value: fees.filter((f) => f.status === "pending").length, color: palette.status.warning },
+    { name: "Overdue", value: fees.filter((f) => f.status === "overdue").length, color: palette.status.critical },
   ];
 
-  const attendanceTrend = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    return {
-      day: d.toLocaleDateString("en", { weekday: "short" }),
-      attendance: 85 + Math.floor(Math.random() * 12),
-    };
-  });
+  const feeCollectionTrend = useMemo(() => {
+    const byMonth = new Map<string, { collected: number; due: number }>();
+    for (const f of fees) {
+      if (f.fee_type !== "tuition") continue;
+      const d = new Date(f.due_date);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const entry = byMonth.get(key) ?? { collected: 0, due: 0 };
+      entry.due += f.amount;
+      if (f.status === "paid") entry.collected += f.amount;
+      byMonth.set(key, entry);
+    }
+    return [...byMonth.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-12)
+      .map(([key, v]) => ({
+        month: new Date(`${key}-01`).toLocaleDateString("en", { month: "short" }),
+        collected: Math.round(v.collected / 1000),
+        due: Math.round(v.due / 1000),
+      }));
+  }, []);
 
-  // Recent admissions (latest students)
+  const attendanceTrend = useMemo(() => {
+    const byDate = new Map<string, { present: number; total: number }>();
+    for (const a of attendanceRecords) {
+      const entry = byDate.get(a.date) ?? { present: 0, total: 0 };
+      entry.total += 1;
+      if (a.status === "present") entry.present += 1;
+      byDate.set(a.date, entry);
+    }
+    return [...byDate.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-30)
+      .map(([date, v]) => ({
+        day: new Date(date).toLocaleDateString("en", { day: "2-digit", month: "short" }),
+        attendance: Math.round((v.present / v.total) * 100),
+      }));
+  }, []);
+
+  const hostelByBlock = useMemo(() =>
+    hostelBlocks.map((block) => {
+      const roomsInBlock = hostelRooms.filter((r) => r.block_id === block.id);
+      const capacity = roomsInBlock.reduce((s, r) => s + r.capacity, 0);
+      const occupied = hostelAllocations.filter((a) => roomsInBlock.some((r) => r.id === a.room_id)).length;
+      return { name: block.name.replace(" Block", ""), occupied, capacity };
+    }), []);
+
+  const messConsumptionTrend = useMemo(() => {
+    const byDate = new Map<string, number>();
+    for (const rec of messAttendance) {
+      if (!rec.consumed) continue;
+      byDate.set(rec.date, (byDate.get(rec.date) ?? 0) + 1);
+    }
+    return [...byDate.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, count]) => ({ day: new Date(date).toLocaleDateString("en", { day: "2-digit", month: "short" }), meals: count }));
+  }, []);
+
   const recentAdmissions = students.slice(-5).reverse();
+  const feeDefaulters = fees.filter((f) => f.status === "overdue").slice(0, 5);
 
   return (
     <>
-      <PageHeader title="Admin Dashboard" />
+      <PageHeader title="Admin Dashboard" eyebrow="Overview" />
 
-      {/* KPI Cards - Row 1 */}
-      <Grid container spacing={2} sx={{ mb: 2 }}>
-        <Grid size={{ xs: 6, sm: 3, lg: 2 }}>
-          <KpiCard title="Total Students" value={stats.totalStudents} icon={<PeopleIcon />} color="#6366f1" onClick={() => navigate("/admin/students")} />
-        </Grid>
-        <Grid size={{ xs: 6, sm: 3, lg: 2 }}>
-          <KpiCard title="Teachers" value={stats.totalTeachers} icon={<SchoolIcon />} color="#10b981" onClick={() => navigate("/admin/teachers")} />
-        </Grid>
-        <Grid size={{ xs: 6, sm: 3, lg: 2 }}>
-          <KpiCard title="Total Classes" value={stats.totalClasses} icon={<ClassIcon />} color="#8b5cf6" onClick={() => navigate("/admin/academics/classes")} />
-        </Grid>
-        <Grid size={{ xs: 6, sm: 3, lg: 2 }}>
-          <KpiCard title="Attendance Today" value={`${stats.attendancePct}%`} icon={<EventNoteIcon />} color="#f59e0b" onClick={() => navigate("/admin/attendance/students")} />
-        </Grid>
-        <Grid size={{ xs: 6, sm: 3, lg: 2 }}>
-          <KpiCard title="Fees Collected" value={`₹${(stats.collectedFees / 1000).toFixed(0)}K`} icon={<PaymentIcon />} color="#10b981" onClick={() => navigate("/admin/fees/collection")} />
-        </Grid>
-        <Grid size={{ xs: 6, sm: 3, lg: 2 }}>
-          <KpiCard title="Pending Fees" value={`₹${(stats.pendingFees / 1000).toFixed(0)}K`} icon={<WarningIcon />} color="#ef4444" onClick={() => navigate("/admin/fees/defaulters")} />
-        </Grid>
-      </Grid>
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 6, sm: 3 }}>
-          <KpiCard title="Upcoming Exams" value={stats.upcomingExams} icon={<GradingIcon />} color="#f59e0b" onClick={() => navigate("/admin/exams")} />
+        <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
+          <StatCard title="Total Students" value={stats.totalStudents} numericValue={stats.totalStudents} icon={<PeopleIcon />} color={getIconAccent(mode, "students")} onClick={() => navigate("/admin/students")} delay={0} />
+        </Grid>
+        <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
+          <StatCard title="Total Staff" value={stats.totalStaff} numericValue={stats.totalStaff} icon={<SchoolIcon />} color={getIconAccent(mode, "staff")} onClick={() => navigate("/admin/staff")} delay={0.05} />
+        </Grid>
+        <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
+          <StatCard title="Attendance Today" value={`${stats.attendancePct}%`} numericValue={stats.attendancePct} formatValue={(n) => `${n}%`} icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} onClick={() => navigate("/admin/attendance/students")} delay={0.1} />
+        </Grid>
+        <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
+          <StatCard title="Fee Collection Rate" value={`${stats.collectionRate}%`} numericValue={stats.collectionRate} formatValue={(n) => `${n}%`} icon={<PaymentIcon />} color={getIconAccent(mode, "fees")} onClick={() => navigate("/admin/fees/collection")} delay={0.15} />
+        </Grid>
+        <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
+          <StatCard title="Hostel Occupancy" value={`${stats.hostelOccupancy}%`} numericValue={stats.hostelOccupancy} formatValue={(n) => `${n}%`} icon={<HotelIcon />} color={getIconAccent(mode, "hostel")} onClick={() => navigate("/admin/hostel")} delay={0.2} />
+        </Grid>
+        <Grid size={{ xs: 6, sm: 4, lg: 2 }}>
+          <StatCard title="Mess Plans Active" value={stats.messPlansActive} numericValue={stats.messPlansActive} icon={<RestaurantIcon />} color={getIconAccent(mode, "mess")} onClick={() => navigate("/admin/mess")} delay={0.25} />
         </Grid>
       </Grid>
 
-      {/* Charts Row */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid size={{ xs: 12, md: 8 }}>
-          <Paper sx={{ p: 2, height: 320 }}>
-            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Students per Class</Typography>
-            <ResponsiveContainer width="100%" height="85%">
-              <BarChart data={classDistribution}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="students" fill="#6366f1" radius={[4, 4, 0, 0]} />
-              </BarChart>
+          <ChartCard eyebrow="Finance" title="Fee Collection — Last 12 Months" subtitle="Amount in ₹ thousands" delay={0.1}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={feeCollectionTrend}>
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                <XAxis dataKey="month" stroke={palette.axis} fontSize={12} />
+                <YAxis stroke={palette.axis} fontSize={12} />
+                <Tooltip {...tooltipStyle} />
+                <Legend />
+                <Line type="monotone" dataKey="collected" name="Collected" stroke={palette.categorical[0]} strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="due" name="Due" stroke={palette.categorical[1]} strokeWidth={2} dot={false} />
+              </LineChart>
             </ResponsiveContainer>
-          </Paper>
+          </ChartCard>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <Paper sx={{ p: 2, height: 320 }}>
-            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Fee Collection</Typography>
-            <ResponsiveContainer width="100%" height="85%">
+          <ChartCard eyebrow="Finance" title="Fee Status Breakdown" delay={0.15}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={feeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                  {feeData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
+                <Pie data={feeStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                  {feeStatusData.map((d) => <Cell key={d.name} fill={d.color} />)}
                 </Pie>
-                <Tooltip />
+                <Tooltip {...tooltipStyle} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
-          </Paper>
+          </ChartCard>
         </Grid>
       </Grid>
 
-      {/* Attendance Trend + Widgets */}
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <Paper sx={{ p: 2, height: 300 }}>
-            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Attendance Trend (Last 7 days)</Typography>
-            <ResponsiveContainer width="100%" height="85%">
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <ChartCard eyebrow="Attendance" title="School-wide Attendance — Last 30 Days" delay={0.2}>
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart data={attendanceTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis domain={[70, 100]} />
-                <Tooltip />
-                <Line type="monotone" dataKey="attendance" stroke="#6366f1" strokeWidth={2} dot />
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                <XAxis dataKey="day" stroke={palette.axis} fontSize={11} interval={4} />
+                <YAxis domain={[60, 100]} stroke={palette.axis} fontSize={12} />
+                <Tooltip {...tooltipStyle} />
+                <Line type="monotone" dataKey="attendance" name="Attendance %" stroke={palette.categorical[0]} strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
+          </ChartCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <ChartCard eyebrow="Academics" title="Students per Class" delay={0.25}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={classDistribution} style={{ backgroundColor: "transparent" }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                <XAxis dataKey="name" stroke={palette.axis} fontSize={12} />
+                <YAxis stroke={palette.axis} fontSize={12} />
+                <Tooltip {...tooltipStyle} />
+                <Bar dataKey="students" name="Students" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <ChartCard eyebrow="Hostel" title="Occupancy by Block" delay={0.35}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={hostelByBlock} style={{ backgroundColor: "transparent" }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                <XAxis dataKey="name" stroke={palette.axis} fontSize={11} />
+                <YAxis stroke={palette.axis} fontSize={12} />
+                <Tooltip {...tooltipStyle} />
+                <Legend />
+                <Bar dataKey="occupied" name="Occupied" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="capacity" name="Capacity" fill={palette.categorical[1]} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <ChartCard eyebrow="Mess" title="Meals Served — Last 30 Days" delay={0.4}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={messConsumptionTrend}>
+                <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
+                <XAxis dataKey="day" stroke={palette.axis} fontSize={10} interval={4} />
+                <YAxis stroke={palette.axis} fontSize={12} />
+                <Tooltip {...tooltipStyle} />
+                <Line type="monotone" dataKey="meals" name="Meals" stroke={palette.categorical[0]} strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2" fontWeight={600} gutterBottom>Recent Admissions</Typography>
+            <Stack spacing={0.75}>
+              {recentAdmissions.map((s) => (
+                <Box key={s.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Box>
+                    <Typography variant="body2" fontWeight={500}>{s.name}</Typography>
+                    <Typography variant="caption" color="text.secondary">{getClassName(s.class_id)}</Typography>
+                  </Box>
+                  <Chip label={s.admission_number} size="small" variant="outlined" />
+                </Box>
+              ))}
+            </Stack>
           </Paper>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <Stack spacing={2}>
-            {/* Recent Admissions */}
-            <Paper sx={{ p: 2 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>Recent Admissions</Typography>
-              <Stack spacing={0.75}>
-                {recentAdmissions.map((s) => (
-                  <Box key={s.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Box>
-                      <Typography variant="body2" fontWeight={500}>{s.name}</Typography>
-                      <Typography variant="caption" color="text.secondary">{getClassName(s.class_id)}</Typography>
-                    </Box>
-                    <Chip label={s.admission_number} size="small" variant="outlined" />
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2" fontWeight={600} gutterBottom>Fee Defaulter Watchlist</Typography>
+            <Stack spacing={0.75}>
+              {feeDefaulters.map((f) => {
+                const student = students.find((s) => s.id === f.student_id);
+                return (
+                  <Box key={f.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Typography variant="body2" fontWeight={500}>{student?.name ?? f.student_id}</Typography>
+                    <StatusChip status="overdue" />
                   </Box>
-                ))}
-              </Stack>
-            </Paper>
-
-            {/* Quick Stats */}
-            <Paper sx={{ p: 2 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>Quick Stats</Typography>
-              <Stack spacing={1}>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography variant="body2">Total Staff</Typography>
-                  <Typography variant="body2" fontWeight={600}>{stats.totalStaff}</Typography>
+                );
+              })}
+              {feeDefaulters.length === 0 && <Typography variant="body2" color="text.secondary">No overdue fees.</Typography>}
+            </Stack>
+          </Paper>
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2" fontWeight={600} gutterBottom>Recent Announcements</Typography>
+            <Stack spacing={1}>
+              {announcements.slice(0, 3).map((a) => (
+                <Box key={a.id}>
+                  <Typography variant="body2" fontWeight={500}>{a.title}</Typography>
+                  <Typography variant="caption" color="text.secondary">{a.date}</Typography>
                 </Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography variant="body2">Transport Routes</Typography>
-                  <Typography variant="body2" fontWeight={600}>{routes.length}</Typography>
-                </Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography variant="body2">Fee Defaulters</Typography>
-                  <Typography variant="body2" fontWeight={600}>{stats.feeDefaulters}</Typography>
-                </Box>
-              </Stack>
-            </Paper>
-
-            {/* Recent Announcements */}
-            <Paper sx={{ p: 2 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>Recent Announcements</Typography>
-              <Stack spacing={1}>
-                {announcements.slice(0, 3).map((a) => (
-                  <Box key={a.id}>
-                    <Typography variant="body2" fontWeight={500}>{a.title}</Typography>
-                    <Typography variant="caption" color="text.secondary">{a.date}</Typography>
-                  </Box>
-                ))}
-              </Stack>
-            </Paper>
-          </Stack>
+              ))}
+            </Stack>
+          </Paper>
         </Grid>
       </Grid>
     </>

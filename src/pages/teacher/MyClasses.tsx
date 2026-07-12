@@ -3,7 +3,7 @@ import { Chip, Button, Stack } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, getTeacherClasses, students, getClassName, getSubjectName } from "@/data/mock";
+import { teachers, getTeacherClasses, students, getClassName, getSubjectName } from "@/demo-data";
 
 export default function MyClasses() {
   const navigate = useNavigate();

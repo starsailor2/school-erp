@@ -2,7 +2,7 @@
 
 export type Role = "admin" | "teacher" | "parent" | "student" | "staff";
 export type TeacherType = "subject_teacher" | "class_teacher" | "hod";
-export type StaffRole = "accountant" | "transport_manager" | "library_staff" | "office_staff";
+export type StaffRole = "accountant" | "transport_manager" | "library_staff" | "office_staff" | "hostel_warden" | "mess_manager";
 export type AttendanceStatus = "present" | "absent" | "late";
 export type FeeStatus = "paid" | "pending" | "overdue";
 export type FeeType = "tuition" | "transport" | "library" | "activity";
@@ -160,6 +160,13 @@ export interface AttendanceRecord {
   marked_by: string;
 }
 
+export interface TeacherAttendanceRecord {
+  id: string;
+  teacher_id: string;
+  date: string;
+  status: AttendanceStatus;
+}
+
 export interface Homework {
   id: string;
   class_id: string;
@@ -200,6 +207,14 @@ export interface Fee {
   paid_date?: string;
 }
 
+export interface FeeStructureItem {
+  id: string;
+  class_id: string;
+  fee_type: FeeType;
+  amount: number;
+  frequency: "monthly" | "quarterly" | "annual";
+}
+
 export interface FeePayment {
   id: string;
   fee_id: string;
@@ -228,6 +243,19 @@ export interface Route {
   driver_phone: string;
   capacity: number;
   stops: string[];
+}
+
+export interface Vehicle {
+  id: string;
+  vehicle_number: string;
+  route_id: string;
+  type: "bus" | "van" | "minibus";
+  capacity: number;
+  make_model: string;
+  year: number;
+  last_service_date: string;
+  insurance_expiry: string;
+  status: "active" | "maintenance" | "retired";
 }
 
 export interface TransportDriver {
@@ -300,7 +328,75 @@ export interface LibraryRecord {
   issued_by: string;
 }
 
-export type StaffFeature = "fees" | "transport" | "library" | "student_lookup" | "student_requests" | "communication" | "reports";
+export type HostelRoomType = "single" | "double" | "dorm";
+export type HostelGender = "boys" | "girls";
+
+export interface HostelBlock {
+  id: string;
+  name: string;
+  gender: HostelGender;
+  warden_staff_id: string;
+}
+
+export interface HostelRoom {
+  id: string;
+  block_id: string;
+  room_number: string;
+  type: HostelRoomType;
+  capacity: number;
+}
+
+export interface HostelAllocation {
+  id: string;
+  student_id: string;
+  room_id: string;
+  check_in_date: string;
+  status: "active" | "vacated";
+}
+
+export interface HostelFee {
+  id: string;
+  student_id: string;
+  amount: number;
+  due_date: string;
+  status: FeeStatus;
+  paid_date?: string;
+}
+
+export type MessMeal = "breakfast" | "lunch" | "snacks" | "dinner";
+export type MessPlanType = "veg" | "non_veg";
+
+export interface MessMenuEntry {
+  id: string;
+  day_of_week: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
+  meal: MessMeal;
+  items: string[];
+}
+
+export interface MessPlan {
+  id: string;
+  student_id: string;
+  plan_type: MessPlanType;
+  subscribed_since: string;
+}
+
+export interface MessAttendanceRecord {
+  id: string;
+  student_id: string;
+  date: string;
+  meal: MessMeal;
+  consumed: boolean;
+}
+
+export interface MessBilling {
+  id: string;
+  student_id: string;
+  month_label: string; // e.g. "2026-06"
+  amount: number;
+  status: FeeStatus;
+}
+
+export type StaffFeature = "fees" | "transport" | "library" | "student_lookup" | "student_requests" | "communication" | "reports" | "hostel" | "mess";
 
 export type StaffPermissionMap = Record<StaffRole, Record<StaffFeature, "none" | "view" | "manage">>;
 
@@ -311,4 +407,38 @@ export interface Notification {
   type: "homework" | "fee" | "announcement" | "exam" | "attendance";
   read: boolean;
   timestamp: string;
+}
+
+export type LeaveType = "sick" | "casual" | "earned" | "unpaid";
+export type LeaveStatus = "pending" | "approved" | "rejected";
+export type LeaveApplicantRole = "teacher" | "staff";
+
+export interface LeaveRequest {
+  id: string;
+  applicant_id: string;
+  applicant_role: LeaveApplicantRole;
+  leave_type: LeaveType;
+  start_date: string;
+  end_date: string;
+  reason: string;
+  status: LeaveStatus;
+  applied_date: string;
+  reviewed_by?: string;
+  review_note?: string;
+}
+
+export type PTMStatus = "pending" | "confirmed" | "declined" | "completed";
+
+export interface ParentTeacherMeeting {
+  id: string;
+  teacher_id: string;
+  parent_id: string;
+  student_id: string;
+  requested_by: "parent" | "teacher";
+  proposed_date: string;
+  proposed_time: string;
+  status: PTMStatus;
+  reason?: string;
+  notes?: string;
+  created_date: string;
 }

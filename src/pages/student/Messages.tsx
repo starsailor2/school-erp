@@ -6,8 +6,8 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import { PageHeader } from "@/components/PageHeader";
 import { useAuth } from "@/context/AuthContext";
-import { teachers, students, classes } from "@/data/mock";
-import { addMessage, getMessages, MESSAGE_STORE_EVENT } from "@/data/messageStore";
+import { teachers, students, classes } from "@/demo-data";
+import { addMessage, getMessages, MESSAGE_STORE_EVENT } from "@/demo-data/communication/messageStore";
 import type { Message } from "@/types";
 
 function buildConversations(rows: Message[], myId: string) {

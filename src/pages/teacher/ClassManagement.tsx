@@ -4,14 +4,15 @@ import {
   Avatar, Dialog, DialogTitle, DialogContent, DialogActions, Divider,
   LinearProgress,
 } from "@mui/material";
-import { KpiCard } from "@/components/KpiCard";
+import { StatCard } from "@/components/StatCard";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, students, getClassTeacherSections, marks, attendanceRecords,
   getSubjectName, parents,
-} from "@/data/mock";
+} from "@/demo-data";
 import PeopleIcon from "@mui/icons-material/People";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -50,9 +51,9 @@ export default function ClassManagement() {
         </Grid>
       </Grid>
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Students" value={classStudents.length} icon={<PeopleIcon />} color="#6366f1" /></Grid>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Avg Attendance" value={`${avgAtt}%`} icon={<TrendingUpIcon />} color="#10b981" /></Grid>
-        <Grid size={{ xs: 6, sm: 3 }}><KpiCard title="Fees Paid" value={`${feesPaid}/${classStudents.length}`} icon={<PeopleIcon />} color="#f59e0b" /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Students" value={classStudents.length} numericValue={classStudents.length} icon={<PeopleIcon />} /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Avg Attendance" value={`${avgAtt}%`} numericValue={avgAtt} formatValue={(n) => `${n}%`} icon={<TrendingUpIcon />} delay={0.05} /></Grid>
+        <Grid size={{ xs: 6, sm: 3 }}><StatCard title="Fees Paid" value={`${feesPaid}/${classStudents.length}`} numericValue={feesPaid} formatValue={(n) => `${n}/${classStudents.length}`} icon={<PeopleIcon />} delay={0.1} /></Grid>
       </Grid>
 
       <DataTable
@@ -69,7 +70,7 @@ export default function ClassManagement() {
           { key: "roll_number", label: "Roll No." },
           { key: "attendance_pct", label: "Attendance", render: (s) => <Chip label={`${s.attendance_pct}%`} size="small" color={s.attendance_pct >= 85 ? "success" : "warning"} /> },
           { key: "avgMarks", label: "Avg Marks", render: (s) => <Chip label={s.avgMarks} size="small" color={s.avgMarks >= 80 ? "success" : s.avgMarks >= 50 ? "warning" : "error"} /> },
-          { key: "fee_status", label: "Fees", render: (s) => <Chip label={s.fee_status} size="small" color={s.fee_status === "paid" ? "success" : "error"} /> },
+          { key: "fee_status", label: "Fees", render: (s) => <StatusChip status={s.fee_status} /> },
           {
             key: "id", label: "Actions",
             render: (s) => <Button size="small" startIcon={<VisibilityIcon />} onClick={() => setViewStudent(s)}>View</Button>,

@@ -7,11 +7,12 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { useAuth } from "@/context/AuthContext";
 import {
   teachers, getTeacherClasses, students, getClassName, marks, attendanceRecords,
   getSubjectName, parents,
-} from "@/data/mock";
+} from "@/demo-data";
 import type { Student } from "@/types";
 
 export default function MyStudents() {
@@ -66,7 +67,7 @@ export default function MyStudents() {
           { key: "roll_number", label: "Roll No." },
           { key: "admission_number", label: "Adm. No." },
           { key: "attendance_pct", label: "Attendance", render: (s) => <Chip label={`${s.attendance_pct}%`} size="small" color={s.attendance_pct >= 85 ? "success" : "warning"} /> },
-          { key: "fee_status", label: "Fees", render: (s) => <Chip label={s.fee_status} size="small" color={s.fee_status === "paid" ? "success" : "error"} /> },
+          { key: "fee_status", label: "Fees", render: (s) => <StatusChip status={s.fee_status} /> },
           {
             key: "id", label: "Actions",
             render: (s) => <Button size="small" startIcon={<VisibilityIcon />} onClick={() => setViewStudent(s)}>View</Button>,

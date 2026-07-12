@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { MenuItem, TextField, Grid, Chip, Button, Box, Stack } from "@mui/material";
+import { MenuItem, TextField, Grid, Button, Box, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
-import { students, getClassName } from "@/data/mock";
-import { getStaffFees, recordFeePayment } from "@/data/feeTransactionStore";
+import StatusChip from "@/components/StatusChip";
+import { students, getClassName } from "@/demo-data";
+import { getStaffFees, recordFeePayment } from "@/demo-data/fees/feeTransactionStore";
 import { useAuth } from "@/context/AuthContext";
 
 export default function StaffFeeCollection() {
@@ -68,13 +69,15 @@ export default function StaffFeeCollection() {
         </Grid>
       </Grid>
       <DataTable
+        pagination
+        pageSize={25}
         columns={[
           { key: "studentName", label: "Student" },
           { key: "className", label: "Class" },
           { key: "fee_type", label: "Type" },
           { key: "amount", label: "Amount", render: (f) => `INR ${f.amount.toLocaleString()}` },
           { key: "due_date", label: "Due Date" },
-          { key: "status", label: "Status", render: (f) => <Chip label={f.status} size="small" color={f.status === "paid" ? "success" : f.status === "pending" ? "warning" : "error"} /> },
+          { key: "status", label: "Status", render: (f) => <StatusChip status={f.status} /> },
           {
             key: "actions",
             label: "Actions",
