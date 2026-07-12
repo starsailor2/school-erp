@@ -1,7 +1,8 @@
 import { useState } from "react";
 import {
-  MenuItem, TextField, Grid, Paper, Typography, Avatar, Stack, Divider, Chip, Box,
+  MenuItem, TextField, Grid, Paper, Typography, Avatar, Stack, Divider, Chip, Box, Button,
 } from "@mui/material";
+import PrintIcon from "@mui/icons-material/Print";
 import { PageHeader } from "@/components/PageHeader";
 import { students, marks, exams, getSubjectName, getClassName } from "@/demo-data";
 
@@ -25,7 +26,19 @@ export default function ReportCards() {
           { label: "Examinations", to: "/admin/exams" },
           { label: "Report Cards" },
         ]}
+        action={
+          <Button variant="contained" size="small" startIcon={<PrintIcon />} disabled={!student} onClick={() => window.print()}>
+            Print
+          </Button>
+        }
       />
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          #report-card-printable, #report-card-printable * { visibility: visible; }
+          #report-card-printable { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border: none; }
+        }
+      `}</style>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <Grid size={{ xs: 12, sm: 4 }}>
           <TextField fullWidth select size="small" label="Student" value={studentId} onChange={(e) => setStudentId(e.target.value)}>
@@ -44,7 +57,7 @@ export default function ReportCards() {
       </Grid>
 
       {student && (
-        <Paper sx={{ p: 3, maxWidth: 700 }}>
+        <Paper id="report-card-printable" sx={{ p: 3, maxWidth: 700 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
             <Avatar sx={{ width: 56, height: 56, bgcolor: "primary.main" }}>{student.name.charAt(0)}</Avatar>
             <Box>

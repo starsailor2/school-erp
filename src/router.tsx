@@ -58,6 +58,7 @@ const Notices = () => L(() => import("@/pages/admin/Notices"));
 const AdminMessages = () => L(() => import("@/pages/admin/Messages"));
 const StaffDirectory = () => L(() => import("@/pages/admin/StaffDirectory"));
 const StaffRoles = () => L(() => import("@/pages/admin/StaffRoles"));
+const AdminLeaveRequests = () => L(() => import("@/pages/admin/LeaveRequests"));
 const Reports = () => L(() => import("@/pages/admin/Reports"));
 const PerformanceReports = () => L(() => import("@/pages/admin/PerformanceReports"));
 const Settings = () => L(() => import("@/pages/admin/Settings"));
@@ -100,6 +101,8 @@ const TeacherSubjectAllocation = () => L(() => import("@/pages/teacher/SubjectAl
 const SyllabusProgress = () => L(() => import("@/pages/teacher/SyllabusProgress"));
 const DepartmentReports = () => L(() => import("@/pages/teacher/DepartmentReports"));
 const ExamReview = () => L(() => import("@/pages/teacher/ExamReview"));
+const TeacherLeave = () => L(() => import("@/pages/teacher/Leave"));
+const TeacherMeetings = () => L(() => import("@/pages/teacher/Meetings"));
 
 // Staff pages
 const StaffDashboard = () => L(() => import("@/pages/staff/Dashboard"));
@@ -127,6 +130,7 @@ const StaffHostelAllocation = () => L(() => import("@/pages/staff/HostelAllocati
 const HostelRoster = () => L(() => import("@/pages/staff/HostelRoster"));
 const StaffMessAttendance = () => L(() => import("@/pages/staff/MessAttendance"));
 const StaffMessMenu = () => L(() => import("@/pages/staff/MessMenu"));
+const StaffLeave = () => L(() => import("@/pages/staff/Leave"));
 
 // Parent pages
 const ParentDashboard = () => L(() => import("@/pages/parent/Dashboard"));
@@ -142,6 +146,7 @@ const ParentMessages = () => L(() => import("@/pages/parent/Messages"));
 const ParentProfile = () => L(() => import("@/pages/parent/Profile"));
 const ParentHostel = () => L(() => import("@/pages/parent/Hostel"));
 const ParentMess = () => L(() => import("@/pages/parent/Mess"));
+const ParentMeetings = () => L(() => import("@/pages/parent/Meetings"));
 
 // Student pages
 const StudentDashboard = () => L(() => import("@/pages/student/Dashboard"));
@@ -231,6 +236,7 @@ export const router = createBrowserRouter([
       { path: "admin/communication/parent-notifications", element: <ParentNotifications /> },
       { path: "admin/staff", element: <StaffDirectory /> },
       { path: "admin/staff/roles", element: <StaffRoles /> },
+      { path: "admin/staff/leave", element: <AdminLeaveRequests /> },
       { path: "admin/reports/academic", element: <Reports /> },
       { path: "admin/reports/attendance", element: <AttendanceReports /> },
       { path: "admin/reports/fees", element: <FeeReports /> },
@@ -265,6 +271,8 @@ export const router = createBrowserRouter([
       { path: "teacher/department/syllabus", element: <SyllabusProgress /> },
       { path: "teacher/department/exam-review", element: <ExamReview /> },
       { path: "teacher/department/reports", element: <DepartmentReports /> },
+      { path: "teacher/leave", element: <TeacherLeave /> },
+      { path: "teacher/meetings", element: <TeacherMeetings /> },
       { path: "teacher/notifications", element: <Notifications /> },
 
       // ─── Staff ──────────────────────────────────
@@ -301,6 +309,7 @@ export const router = createBrowserRouter([
       { path: "staff/communication", element: SG("communication", <AdminAnnouncements />) },
       { path: "staff/communication/messages", element: <AdminMessages /> },
       { path: "staff/reports", element: SG("reports", <StaffOperationalReports />) },
+      { path: "staff/leave", element: <StaffLeave /> },
       { path: "staff/profile", element: <StaffProfile /> },
       { path: "staff/notifications", element: <Notifications /> },
 
@@ -315,6 +324,7 @@ export const router = createBrowserRouter([
       { path: "parent/transport", element: <ParentTransport /> },
       { path: "parent/hostel", element: <ParentHostel /> },
       { path: "parent/mess", element: <ParentMess /> },
+      { path: "parent/meetings", element: <ParentMeetings /> },
       { path: "parent/announcements", element: <ParentAnnouncements /> },
       { path: "parent/messages", element: <ParentMessages /> },
       { path: "parent/profile", element: <ParentProfile /> },

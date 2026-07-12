@@ -21,6 +21,8 @@ import ChildCareIcon from "@mui/icons-material/ChildCare";
 import GroupsIcon from "@mui/icons-material/Groups";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ChatIcon from "@mui/icons-material/Chat";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
+import EventIcon from "@mui/icons-material/Event";
 import type { ReactNode } from "react";
 import { canViewFeature } from "@/data/staffPermissions";
 
@@ -141,6 +143,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           children: [
             { label: "Staff Directory", path: "/admin/staff" },
             { label: "Staff Roles", path: "/admin/staff/roles" },
+            { label: "Leave Requests", path: "/admin/staff/leave" },
           ],
         },
         {
@@ -192,6 +195,8 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
         { label: "Timetable", path: "/teacher/timetable", icon: <ScheduleIcon /> },
         { label: "Announcements", path: "/teacher/announcements", icon: <CampaignIcon /> },
         { label: "Messages", path: "/teacher/messages", icon: <ChatIcon /> },
+        { label: "Meetings", path: "/teacher/meetings", icon: <EventIcon /> },
+        { label: "Leave", path: "/teacher/leave", icon: <EventBusyIcon /> },
         { label: "Profile", path: "/teacher/profile", icon: <PersonIcon /> },
       ];
 
@@ -311,6 +316,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         { label: "Reports", path: "/staff/reports", icon: <AssessmentIcon />, group: "Administration" },
+        { label: "Leave", path: "/staff/leave", icon: <EventBusyIcon />, group: "Administration" },
         { label: "Profile", path: "/staff/profile", icon: <PersonIcon />, group: "Administration" },
       );
       return base;
@@ -330,6 +336,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
         { label: "My Mess", path: "/parent/mess", icon: <RestaurantIcon /> },
         { label: "Announcements", path: "/parent/announcements", icon: <CampaignIcon /> },
         { label: "Messages", path: "/parent/messages", icon: <ChatIcon /> },
+        { label: "Meetings", path: "/parent/meetings", icon: <EventIcon /> },
         { label: "Profile", path: "/parent/profile", icon: <PersonIcon /> },
       ];
 

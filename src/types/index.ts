@@ -408,3 +408,37 @@ export interface Notification {
   read: boolean;
   timestamp: string;
 }
+
+export type LeaveType = "sick" | "casual" | "earned" | "unpaid";
+export type LeaveStatus = "pending" | "approved" | "rejected";
+export type LeaveApplicantRole = "teacher" | "staff";
+
+export interface LeaveRequest {
+  id: string;
+  applicant_id: string;
+  applicant_role: LeaveApplicantRole;
+  leave_type: LeaveType;
+  start_date: string;
+  end_date: string;
+  reason: string;
+  status: LeaveStatus;
+  applied_date: string;
+  reviewed_by?: string;
+  review_note?: string;
+}
+
+export type PTMStatus = "pending" | "confirmed" | "declined" | "completed";
+
+export interface ParentTeacherMeeting {
+  id: string;
+  teacher_id: string;
+  parent_id: string;
+  student_id: string;
+  requested_by: "parent" | "teacher";
+  proposed_date: string;
+  proposed_time: string;
+  status: PTMStatus;
+  reason?: string;
+  notes?: string;
+  created_date: string;
+}
