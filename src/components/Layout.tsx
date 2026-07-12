@@ -37,7 +37,7 @@ import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/demo-data/communication/notificationStore";
 import { getSidebarTokens, motionEasing, motionDuration, motionEasingCss } from "@/theme/tokens";
 import { getChartPalette } from "@/theme/chartPalette";
-
+ 
 const DRAWER_WIDTH = 260;
 const RAIL_WIDTH = 72;
 const SIDEBAR_TRANSITION_DURATION = 0.42;
@@ -122,9 +122,21 @@ export default function Layout() {
     if (isMobile) setMobileOpen(false);
   };
 
-  const isActive = (item: NavItem) => {
+  // hasActiveChild: does this section contain the current route — drives
+  // auto-expanding the accordion, nothing else.
+  const hasActiveChild = (item: NavItem) => {
+    if (!item.children) return false;
+    return item.children.some((c) => location.pathname === c.path);
+  };
+
+  // isSelected: should THIS button show the selected pill. A parent with
+  // children only looks selected in rail mode, where it's the sole visual
+  // cue and there's no child list on screen — in expanded mode, selection
+  // belongs only to whichever specific child route is actually active, so
+  // opening a sub-route (e.g. Parent Linking) doesn't also light up Students.
+  const isSelected = (item: NavItem) => {
     if (item.children) {
-      return item.children.some((c) => location.pathname === c.path);
+      return showRail && (location.pathname === item.path || hasActiveChild(item));
     }
     return location.pathname === item.path;
   };
@@ -184,10 +196,10 @@ export default function Layout() {
   };
 
   const renderNavItem = (item: NavItem) => {
-    const active = isActive(item);
+    const selected = isSelected(item);
     const iconColor = iconColorFor(item.path);
     if (item.children) {
-      const open = !showRail && (openMenus[item.label] ?? active);
+      const open = !showRail && (openMenus[item.label] ?? hasActiveChild(item));
       return (
         <Box key={item.label}>
           <Tooltip title={showRail ? item.label : ""} placement="right">
@@ -195,7 +207,7 @@ export default function Layout() {
               <ListItemButton
                 disableRipple
                 onClick={() => (showRail ? handleNav(item.path) : toggleSubmenu(item.label))}
-                sx={navButtonSx(active)}
+                sx={navButtonSx(selected)}
               >
                 <ListItemIcon
                   sx={{
@@ -280,7 +292,7 @@ export default function Layout() {
     return (
       <Tooltip key={item.path} title={showRail ? item.label : ""} placement="right">
         <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
-          <ListItemButton disableRipple onClick={() => handleNav(item.path)} sx={navButtonSx(active)}>
+          <ListItemButton disableRipple onClick={() => handleNav(item.path)} sx={navButtonSx(selected)}>
             <ListItemIcon
               sx={{
                 minWidth: showRail ? "auto" : 36,
