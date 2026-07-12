@@ -47,7 +47,8 @@ export default function TeacherDashboard() {
   const teacher = teachers.find((t) => t.id === user?.id);
   const allocations = teacher ? getTeacherClasses(teacher.id) : [];
   const assignedClassIds = [...new Set(allocations.map((a) => a.class_id))];
-  const myStudents = students.filter((s) => assignedClassIds.includes(s.class_id));
+  const assignedSectionIds = [...new Set(allocations.map((a) => a.section_id))];
+  const myStudents = students.filter((s) => assignedSectionIds.includes(s.section_id));
   const myHomework = homework.filter((h) => h.teacher_id === teacher?.id);
   const avgAtt = myStudents.length > 0
     ? Math.round(myStudents.reduce((s, st) => s + st.attendance_pct, 0) / myStudents.length)
@@ -114,13 +115,13 @@ export default function TeacherDashboard() {
       }));
   })();
 
-  const homeworkCompletionData = (() => {
-    const bySubject = new Map<string, number>();
+  const homeworkByClassData = (() => {
+    const byClass = new Map<string, number>();
     for (const h of myHomework) {
-      const name = getSubjectName(h.subject_id);
-      bySubject.set(name, (bySubject.get(name) ?? 0) + 1);
+      const name = getClassName(h.class_id);
+      byClass.set(name, (byClass.get(name) ?? 0) + 1);
     }
-    return [...bySubject.entries()].map(([subject, assigned]) => ({ subject, assigned }));
+    return [...byClass.entries()].map(([className, assigned]) => ({ className, assigned }));
   })();
 
   const crossClassPerformance = (() => {
@@ -181,11 +182,11 @@ export default function TeacherDashboard() {
           </ChartCard>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <ChartCard eyebrow="Homework" title="Homework by Subject">
+          <ChartCard eyebrow="Homework" title="Homework by Class">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={homeworkCompletionData}>
+              <BarChart data={homeworkByClassData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} vertical={false} />
-                <XAxis dataKey="subject" stroke={palette.axis} fontSize={11} />
+                <XAxis dataKey="className" stroke={palette.axis} fontSize={11} />
                 <YAxis stroke={palette.axis} fontSize={12} />
                 <Tooltip {...tooltipStyle} />
                 <Bar dataKey="assigned" name="Assigned" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />

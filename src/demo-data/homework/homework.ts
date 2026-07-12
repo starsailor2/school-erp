@@ -1,7 +1,6 @@
 import type { Homework } from "@/types";
-import { classes } from "@/demo-data/academics/classes";
-import { subjects } from "@/demo-data/academics/subjects";
-import { teachers } from "@/demo-data/people/teachers";
+import { subjectAllocations } from "@/demo-data/academics/subjectAllocations";
+import { getSubjectName } from "@/demo-data/academics/subjects";
 import { randomInt } from "@/demo-data/generators/random";
 
 const homeworkTitles: Record<string, string> = {
@@ -10,29 +9,33 @@ const homeworkTitles: Record<string, string> = {
   sub7: "Timeline Chart", sub8: "Map Work", sub9: "Coding Exercise", sub10: "Fitness Log",
 };
 
-export const homework: Homework[] = classes.slice(0, 8).flatMap((cls, ci) =>
-  cls.sections.map((sec, si) => {
-    const subject = subjects[(ci + si) % (subjects.length - 1)]; // skip PE (last)
-    const teacher = teachers[(ci * 3 + si) % teachers.length];
-    const assignedDaysAgo = randomInt(1, 10);
-    const dueInDays = randomInt(1, 7);
+// Each teacher-class-subject allocation gets several homework entries spread
+// over the term (not just one), so a teacher's homework history reflects
+// actual assigned classes/subjects rather than an arbitrary class-section rotation.
+export const homework: Homework[] = subjectAllocations.flatMap((alloc) => {
+  const subjectName = getSubjectName(alloc.subject_id);
+  const title = homeworkTitles[alloc.subject_id] ?? "Assignment";
+  const count = randomInt(2, 5);
+  return Array.from({ length: count }, (_, i) => {
+    const assignedDaysAgo = randomInt(3, 50);
+    const dueAfterDays = randomInt(3, 10);
     const assigned = new Date();
     assigned.setDate(assigned.getDate() - assignedDaysAgo);
-    const due = new Date();
-    due.setDate(due.getDate() + dueInDays);
+    const due = new Date(assigned);
+    due.setDate(due.getDate() + dueAfterDays);
     return {
-      id: `hw-${cls.id}-${sec.id}`,
-      class_id: cls.id,
-      section_id: sec.id,
-      subject_id: subject.id,
-      teacher_id: teacher.id,
-      title: homeworkTitles[subject.id] ?? "Assignment",
-      description: `Complete the ${(homeworkTitles[subject.id] ?? "assignment").toLowerCase()} for ${subject.name}.`,
+      id: `hw-${alloc.id}-${i}`,
+      class_id: alloc.class_id,
+      section_id: alloc.section_id,
+      subject_id: alloc.subject_id,
+      teacher_id: alloc.teacher_id,
+      title,
+      description: `Complete the ${title.toLowerCase()} for ${subjectName}.`,
       due_date: due.toISOString().split("T")[0],
       assigned_date: assigned.toISOString().split("T")[0],
     };
-  })
-);
+  });
+});
 
 export function getClassHomework(classId: string) {
   return homework.filter((h) => h.class_id === classId);
