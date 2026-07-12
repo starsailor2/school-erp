@@ -16,12 +16,12 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import { useAuth } from "@/context/AuthContext";
 import type { Role } from "@/types";
 
-const roles: { role: Role; label: string; icon: React.ReactNode }[] = [
-  { role: "admin", label: "Admin", icon: <AdminPanelSettingsIcon fontSize="small" /> },
-  { role: "teacher", label: "Teacher", icon: <SchoolIcon fontSize="small" /> },
-  { role: "parent", label: "Parent", icon: <PeopleIcon fontSize="small" /> },
-  { role: "student", label: "Student", icon: <PersonIcon fontSize="small" /> },
-  { role: "staff", label: "School Staff", icon: <BadgeIcon fontSize="small" /> },
+const roles: { role: Role; label: string; icon: React.ReactNode; color: string }[] = [
+  { role: "admin", label: "Admin", icon: <AdminPanelSettingsIcon fontSize="small" />, color: "#2a78d6" },
+  { role: "teacher", label: "Teacher", icon: <SchoolIcon fontSize="small" />, color: "#1baf7a" },
+  { role: "parent", label: "Parent", icon: <PeopleIcon fontSize="small" />, color: "#eda100" },
+  { role: "student", label: "Student", icon: <PersonIcon fontSize="small" />, color: "#eb6834" },
+  { role: "staff", label: "School Staff", icon: <BadgeIcon fontSize="small" />, color: "#e34948" },
 ];
 
 export default function RoleSwitcher() {
@@ -62,7 +62,7 @@ export default function RoleSwitcher() {
             selected={role === r.role}
             onClick={() => handleSwitch(r.role)}
           >
-            <ListItemIcon>{r.icon}</ListItemIcon>
+            <ListItemIcon sx={{ color: r.color }}>{r.icon}</ListItemIcon>
             <ListItemText>{r.label}</ListItemText>
           </MenuItem>
         ))}

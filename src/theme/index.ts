@@ -1,10 +1,11 @@
 import { createTheme } from "@mui/material/styles";
-import { modeTokens, sidebarTokens, statusTokens, motionEasingCss, radii } from "./tokens";
+import { modeTokens, getSidebarTokens, statusTokens, motionEasingCss, radii } from "./tokens";
 
 const FONT_STACK = '"Inter", "SF Pro Display", -apple-system, "Segoe UI", Arial, sans-serif';
 
 const getTheme = (mode: "light" | "dark") => {
   const t = modeTokens[mode];
+  const sidebarTokens = getSidebarTokens(mode);
 
   return createTheme({
     palette: {
@@ -52,8 +53,33 @@ const getTheme = (mode: "light" | "dark") => {
     components: {
       MuiCssBaseline: {
         styleOverrides: {
+          html: {
+            scrollbarColor: mode === "light" ? "#8a8a8a #FFFFFF" : "#8a8a8a #000000",
+          },
           body: {
             fontVariantNumeric: "tabular-nums",
+            scrollbarColor: mode === "light" ? "#8a8a8a #FFFFFF" : "#8a8a8a #000000",
+          },
+          "*::-webkit-scrollbar": {
+            width: 10,
+            height: 10,
+          },
+          "*::-webkit-scrollbar-track": {
+            backgroundColor: mode === "light" ? "#FFFFFF" : "#000000",
+          },
+          "*::-webkit-scrollbar-track:hover": {
+            backgroundColor: mode === "light" ? "#FFFFFF" : "#000000",
+          },
+          "*::-webkit-scrollbar-corner": {
+            backgroundColor: mode === "light" ? "#FFFFFF" : "#000000",
+          },
+          "*::-webkit-scrollbar-thumb": {
+            backgroundColor: "#8a8a8a",
+            borderRadius: 999,
+            border: mode === "light" ? "2px solid #FFFFFF" : "2px solid #000000",
+          },
+          "*::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: "#a3a3a3",
           },
           "input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active": {
             WebkitBoxShadow: `0 0 0 100px ${t.paper} inset`,

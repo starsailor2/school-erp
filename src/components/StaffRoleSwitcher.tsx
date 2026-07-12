@@ -20,7 +20,7 @@ const staffRoles: {
   label: string;
   shortLabel: string;
   icon: React.ReactNode;
-  color: "default" | "primary" | "secondary" | "success" | "warning";
+  color: string;
 }[] = [
   {
     role: "accountant",
@@ -75,11 +75,17 @@ export default function StaffRoleSwitcher() {
     <>
       <Chip
         label={current.shortLabel}
-        color={current.color}
         size="small"
         icon={current.icon as React.ReactElement}
         onClick={(e) => setAnchor(e.currentTarget as HTMLElement)}
-        sx={{ cursor: "pointer", fontWeight: 600, mr: 0.5 }}
+        sx={{
+          cursor: "pointer",
+          fontWeight: 600,
+          mr: 0.5,
+          bgcolor: `${current.color}1A`,
+          color: current.color,
+          "& .MuiChip-icon": { color: current.color },
+        }}
       />
       <Menu
         anchorEl={anchor}
@@ -100,7 +106,7 @@ export default function StaffRoleSwitcher() {
               setAnchor(null);
             }}
           >
-            <ListItemIcon>{s.icon}</ListItemIcon>
+            <ListItemIcon sx={{ color: s.color }}>{s.icon}</ListItemIcon>
             <ListItemText>{s.label}</ListItemText>
           </MenuItem>
         ))}
