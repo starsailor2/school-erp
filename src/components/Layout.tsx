@@ -79,19 +79,27 @@ export default function Layout() {
   }, [navItems]);
 
   // The active module drives the secondary sidebar: whichever top-level item
-  // owns the current route (its own path, one of its children's paths, or a
-  // detail route nested under either — e.g. /admin/students/:id — so drilling
-  // into a record doesn't drop the module's contextual panel back to "Menu").
-  const activeItem = useMemo(
-    () =>
+  // owns the current route. Exact matches (own path or a listed child's path)
+  // are checked first and win outright. Prefix matching — for a detail route
+  // nested under a module, e.g. /admin/students/:id, that isn't itself a
+  // listed child — is a fallback restricted to items that actually have
+  // children: without that restriction, a leaf item with a short path (e.g.
+  // Dashboard at "/admin") prefix-matches every other admin route too, and
+  // being first in the array, would always win over the real owning module.
+  const activeItem = useMemo(() => {
+    const exact = navItems.find(
+      (item) => location.pathname === item.path || item.children?.some((c) => location.pathname === c.path)
+    );
+    if (exact) return exact;
+    return (
       navItems.find(
         (item) =>
-          location.pathname === item.path ||
-          location.pathname.startsWith(`${item.path}/`) ||
-          item.children?.some((c) => location.pathname === c.path || location.pathname.startsWith(`${c.path}/`))
-      ) ?? null,
-    [navItems, location.pathname]
-  );
+          item.children &&
+          (location.pathname.startsWith(`${item.path}/`) ||
+            item.children.some((c) => location.pathname.startsWith(`${c.path}/`)))
+      ) ?? null
+    );
+  }, [navItems, location.pathname]);
 
   const [unreadNotifications, setUnreadNotifications] = useState(() => getUnreadNotificationCount());
   useEffect(() => {
