@@ -75,15 +75,23 @@ activity feed.
 
 ## Goals (Phase 1)
 
-- Extend the existing categorical chart palette into UI chrome (stat-card icon
-  chips, category tags, severity avatars, active nav states) so the app reads
-  as intentionally colorful, not just monochrome-with-charts.
-- Add four new reusable components — `CategoryTag`, `PipelineStepper`,
-  `SeverityAvatar`, and a donut+legend `ChartCard` pattern — used consistently
-  wherever the reference patterns apply.
+- Extend the existing categorical chart palette into *content-identity*
+  surfaces only (stat-card icon chips, category tags, severity avatars) so
+  the app reads as intentionally colorful where color carries meaning — not
+  as blanket decoration on structural chrome (see the Color System amendment
+  below).
+- Add five new reusable components — `CategoryTag`, `PipelineStepper`,
+  `SeverityAvatar`, `MetaChip`, and a donut+legend `ChartCard` pattern — used
+  consistently wherever the reference patterns apply.
 - Replace the single collapsible sidebar with a two-tier navigation shell:
   an always-present icon-only rail plus a contextual secondary sidebar, richer
-  for data-heavy modules (Fees, Attendance, Exams, Hostel, Mess).
+  for data-heavy modules (Fees, Attendance, Exams, Hostel, Mess). Icons in
+  this shell are monochrome, not domain-colored (amendment below).
+- Adopt a denser, Linear-inspired layout rhythm — tighter row heights, a
+  smaller icon scale for chrome, and an inline metadata-chip pattern for
+  list/detail rows — applied through shared components (`DataTable`,
+  `PageHeader`, nav) so it reaches every page that already consumes them,
+  not just the flagship reskins.
 - Rebuild all 5 role dashboards on the restyled component set.
 - Reskin the existing pages that are the closest analogs to the reference
   screenshots: Fee Defaulters (escalation stepper), Student Directory /
@@ -95,9 +103,11 @@ activity feed.
 - No new AI/automation logic, no new data models — that's Phase 2. Any
   "auto-matched" / "AI validated" style copy is explicitly out of scope here;
   Phase 1 widgets describe what the data *is*, not what an AI *decided*.
-- No redesign of the remaining ~120 non-flagship list/detail pages beyond
-  inheriting the new persistent nav shell (they already adopted `DataTable`
-  v2 / `StatusChip` / `PageHeader` v2 in the prior redesign).
+- No hand-authored redesign of the remaining ~120 non-flagship list/detail
+  pages — they inherit the new nav shell and the denser `DataTable`/
+  `PageHeader` defaults automatically, the same way they already inherited
+  `DataTable` v2 / `StatusChip` / `PageHeader` v2 in the prior redesign. No
+  page-by-page edits beyond the flagship reskins.
 - No change to the base neutral surfaces (page background, card white/near-
   black) established in the prior redesign — the color shift is in accents,
   not the underlying two-tone system.
@@ -129,6 +139,18 @@ firm rule: **the two palettes never mix roles on the same surface.**
 - `StatCard`'s existing `color` prop (already supports a resolvable hex/theme
   path) needs no interface change — only the *values* passed to it change
   from `"text.primary"` to real domain hues.
+- **Amendment (2026-07-13, Linear-inspired):** domain color is a
+  *content-identity* device, not a *chrome* device. It's for things that
+  represent a domain (`StatCard` icon chips, `CategoryTag` badges) — not for
+  navigation chrome. The current nav rail/sidebar (pre-Phase-1) colors every
+  icon by a domain hash (`iconColorFor` in `Layout.tsx`); that's reversed as
+  part of this phase. Rail and secondary-sidebar icons go monochrome —
+  `sidebarTokens.muted` at rest, `sidebarTokens.activeText` when active — same
+  treatment Linear gives Triage/Issues/Cycles/Projects. Color stays reserved
+  for two things everywhere in the app: (1) semantic state, via the status
+  palette (unchanged), and (2) content identity on data-bearing surfaces
+  (stat chips, category tags, chart series) — never on structural UI (nav,
+  toolbars, buttons, tabs).
 
 ## 2. New Components (`src/components/`)
 
@@ -139,6 +161,7 @@ firm rule: **the two palettes never mix roles on the same surface.**
 | `SeverityAvatar` | New | Icon inside a colored circle, severity-keyed to the status palette. Used in Fee Defaulters, Leave Requests, Notices. |
 | `ChartCard` donut+legend pattern | Extends existing `ChartCard` | Adds an optional legend/breakdown footer (category name, %, amount) below the chart body, replacing bare donuts with no context. |
 | `SecondarySidebar` | New | Contextual per-module panel rendered next to the icon rail. Grouped sections + live status indicators for data-heavy modules; a flat page list for simpler ones. |
+| `MetaChip` | New (2026-07-13) | Small inline icon+label pill (~24px tall, muted, transparent/low-emphasis background) for entity metadata — status, assignee, date, count — that flows after a row's title instead of consuming a fixed table column. Props: `icon`, `label`, `tone?: "default" \| "muted"`. Linear's pattern for tags/estimates/dates on issue rows; used wherever list/detail rows need to show several small attributes inline without adding table columns. |
 
 `StatCard` and `ChartCard` keep their existing props/interfaces — only their
 call sites (dashboards, flagship pages) change what they pass in.
@@ -191,17 +214,64 @@ real value — not decoratively. Concretely:
   `DataTable`/`StatusChip`/`ChartCard` usage) — no pipeline or AI-grading
   treatment yet.
 
-## 6. Rollout order
+## 6. Density, Icon Style & Layout Rhythm (amendment, 2026-07-13)
 
-1. Color tokens: extend `chartPalette.ts` usage into UI chrome, define the
-   domain → hue mapping (validated via the dataviz skill).
-2. New components: `CategoryTag`, `SeverityAvatar`, `PipelineStepper`,
+Added after reviewing Linear as a second reference alongside whitebird.ai.
+Where whitebird supplied color/component patterns, Linear supplies the
+information-density and chrome-icon-style DNA the original spec didn't
+address. This section governs both new surfaces (nav, dashboards) and,
+via shared components, every inherited page.
+
+- **Icon style is monochrome-dominant.** Structural/chrome icons (nav rail,
+  secondary sidebar, toolbars, tabs, buttons) render in a single muted tone
+  (`sidebarTokens.muted` at rest / `text` when active) — never a domain hue.
+  Color on an icon means something: status (via `statusTokens`) or content
+  identity (via `CategoryTag`/`StatCard` domain hues). This supersedes the
+  current pre-Phase-1 nav, which colors every rail icon by domain hash — see
+  the §1 amendment above.
+- **Row heights (density scale):**
+  - Nav rail item: 44px (unchanged — icon-only, needs the tap target).
+  - Secondary sidebar row: 34px (down from today's 40-44px list rows).
+  - `DataTable` row: dense/`small` MUI size becomes the *default* (flip
+    `DataTable`'s `dense` prop default from `false` to `true`), not an
+    opt-in — matches Linear's ~34-38px rows vs. MUI "medium"'s ~53px.
+    Pages that genuinely need more breathing room (e.g. a table with
+    multi-line cell content) can still pass `dense={false}` explicitly.
+- **Icon size scale:** nav/chrome icons 20px (MUI `fontSize="small"` is
+  20px, already the right default — audit call sites for stray `fontSize=
+  "medium"` 24px icons in chrome and correct them); inline meta icons
+  (`MetaChip`, table cell icons) 16px (`fontSize={16}`); avatars in dense
+  contexts 24px (vs. the existing 32-36px `SeverityAvatar` default, which
+  stays for emphasis contexts like watchlists).
+- **Metadata as inline chips, not columns.** New `MetaChip` component (§2)
+  — icon + label, ~24px tall, muted/low-emphasis — for attributes like
+  date, count, or type that would otherwise need a dedicated table column.
+  Prefer it in flagship reskins and new dashboard widgets; existing table
+  columns elsewhere are not being converted (non-goal — see above).
+- **Type scale stays mostly as-is.** The existing `PageHeader` (`h4` title,
+  14px breadcrumbs, small-caps eyebrow) already matches Linear's "one big
+  title, everything else small" hierarchy — no change needed there. Table
+  header cells (`MuiTableCell` `head`, 0.7rem uppercase) also already match.
+- **Borders/dividers stay minimal.** No new rules or borders between rows —
+  density comes from spacing/height, not gridlines. This is already the
+  house style (`DataTable` uses hover-only row emphasis); no change needed,
+  just don't regress it while touching row heights.
+
+## 7. Rollout order
+
+1. Color tokens: extend `chartPalette.ts` usage into content-identity
+   surfaces only (stat-card icon chips, category tags) per the §1 amendment
+   — domain → hue mapping validated via the dataviz skill.
+2. Density foundation: flip `DataTable`'s dense default, add `MetaChip`.
+   Low-risk, highest leverage — reaches ~75 pages immediately.
+3. New components: `CategoryTag`, `SeverityAvatar`, `PipelineStepper`,
    donut+legend `ChartCard` extension.
-3. Two-tier navigation: `SecondarySidebar`, rework `Layout.tsx`/
-   `navigation.tsx` for the icon rail.
-4. Restyle `StatCard`/`ChartCard` call sites with domain color.
-5. Rebuild all 5 dashboards.
-6. Reskin flagship pages (Fee Defaulters, Student Directory/Transfer, Marks
+4. Two-tier navigation: `SecondarySidebar`, rework `Layout.tsx`/
+   `navigation.tsx` for the icon rail — monochrome chrome icons, §6 row
+   heights.
+5. Restyle `StatCard`/`ChartCard` call sites with domain color.
+6. Rebuild all 5 dashboards.
+7. Reskin flagship pages (Fee Defaulters, Student Directory/Transfer, Marks
    Overview/Report Cards).
 
 ## Testing / Verification
