@@ -11,6 +11,8 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { StatCard } from "@/components/StatCard";
 import { ChartCard } from "@/components/ChartCard";
 import { PageHeader } from "@/components/PageHeader";
+import { SeverityAvatar, type Severity } from "@/components/SeverityAvatar";
+import StatusChip from "@/components/StatusChip";
 import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
 import { useColorMode } from "@/context/ColorModeContext";
 import { useAuth } from "@/context/AuthContext";
@@ -23,6 +25,12 @@ import { getStaffFees, getFeePayments } from "@/demo-data/fees/feeTransactionSto
 import { getLibraryRecords } from "@/demo-data/library/libraryCirculationStore";
 import { getStudentRequests } from "@/demo-data/staffOps/studentRequestStore";
 import { getStaffTasks } from "@/demo-data/staffOps/staffTaskStore";
+
+function severityForStatus(status: string): Severity {
+  if (status === "completed" || status === "approved" || status === "fulfilled") return "good";
+  if (status === "rejected") return "critical";
+  return "warning";
+}
 
 export default function StaffDashboard() {
   const navigate = useNavigate();
@@ -47,6 +55,7 @@ export default function StaffDashboard() {
     { name: "Pending", value: getStaffFees().filter((f) => f.status === "pending").length, color: palette.status.warning },
     { name: "Overdue", value: getStaffFees().filter((f) => f.status === "overdue").length, color: palette.status.critical },
   ];
+  const feeStatusForStaffTotal = feeStatusForStaff.reduce((s, d) => s + d.value, 0);
 
   const routeUtilization = routes.map((r) => ({
     name: r.name,
@@ -134,14 +143,22 @@ export default function StaffDashboard() {
       <Grid container spacing={2} sx={{ mb: 3 }}>
         {canViewFeature(staffRole, "fees") && staffRole === "accountant" && (
           <Grid size={{ xs: 12, md: 6 }}>
-            <ChartCard eyebrow="Finance" title="Collections This Month">
+            <ChartCard
+              eyebrow="Finance"
+              title="Collections This Month"
+              legend={feeStatusForStaff.map((d) => ({
+                label: d.name,
+                value: `${d.value} fees`,
+                percent: feeStatusForStaffTotal > 0 ? Math.round((d.value / feeStatusForStaffTotal) * 100) : 0,
+                color: d.color,
+              }))}
+            >
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={feeStatusForStaff} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                  <Pie data={feeStatusForStaff} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={55} outerRadius={80}>
                     {feeStatusForStaff.map((d) => <Cell key={d.name} fill={d.color} />)}
                   </Pie>
                   <Tooltip {...tooltipStyle} />
-                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -268,9 +285,10 @@ export default function StaffDashboard() {
             <Typography variant="subtitle1" fontWeight={600} gutterBottom>Today's Tasks</Typography>
             <Stack spacing={1}>
               {todaysTasks.map((t) => (
-                <Box key={t.id} sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography variant="body2">{t.title}</Typography>
-                  <Chip label={t.status.replace("_", " ")} size="small" />
+                <Box key={t.id} sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+                  <SeverityAvatar severity={severityForStatus(t.status)} icon={<TaskIcon fontSize="small" />} size={30} />
+                  <Typography variant="body2" sx={{ flex: 1 }}>{t.title}</Typography>
+                  <StatusChip status={t.status} />
                 </Box>
               ))}
             </Stack>
@@ -281,9 +299,10 @@ export default function StaffDashboard() {
             <Typography variant="subtitle1" fontWeight={600} gutterBottom>Recent Student Requests</Typography>
             <Stack spacing={1}>
               {recentRequests.map((r) => (
-                <Box key={r.id} sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography variant="body2">{r.request_type.replace(/_/g, " ")}</Typography>
-                  <Chip label={r.status.replace("_", " ")} size="small" />
+                <Box key={r.id} sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+                  <SeverityAvatar severity={severityForStatus(r.status)} icon={<PeopleIcon fontSize="small" />} size={30} />
+                  <Typography variant="body2" sx={{ flex: 1 }}>{r.request_type.replace(/_/g, " ")}</Typography>
+                  <StatusChip status={r.status} />
                 </Box>
               ))}
             </Stack>

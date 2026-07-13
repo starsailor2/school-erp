@@ -7,6 +7,7 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import PaymentIcon from "@mui/icons-material/Payment";
 import HotelIcon from "@mui/icons-material/Hotel";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend,
@@ -14,6 +15,7 @@ import {
 import { StatCard } from "@/components/StatCard";
 import { ChartCard } from "@/components/ChartCard";
 import StatusChip from "@/components/StatusChip";
+import { SeverityAvatar } from "@/components/SeverityAvatar";
 import { PageHeader } from "@/components/PageHeader";
 import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
 import { useColorMode } from "@/context/ColorModeContext";
@@ -63,6 +65,7 @@ export default function AdminDashboard() {
     { name: "Pending", value: fees.filter((f) => f.status === "pending").length, color: palette.status.warning },
     { name: "Overdue", value: fees.filter((f) => f.status === "overdue").length, color: palette.status.critical },
   ];
+  const feeStatusTotal = feeStatusData.reduce((s, d) => s + d.value, 0);
 
   const feeCollectionTrend = useMemo(() => {
     const byMonth = new Map<string, { collected: number; due: number }>();
@@ -166,14 +169,23 @@ export default function AdminDashboard() {
           </ChartCard>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <ChartCard eyebrow="Finance" title="Fee Status Breakdown" delay={0.15}>
+          <ChartCard
+            eyebrow="Finance"
+            title="Fee Status Breakdown"
+            delay={0.15}
+            legend={feeStatusData.map((d) => ({
+              label: d.name,
+              value: `${d.value} fees`,
+              percent: feeStatusTotal > 0 ? Math.round((d.value / feeStatusTotal) * 100) : 0,
+              color: d.color,
+            }))}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={feeStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                <Pie data={feeStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={55} outerRadius={80}>
                   {feeStatusData.map((d) => <Cell key={d.name} fill={d.color} />)}
                 </Pie>
                 <Tooltip {...tooltipStyle} />
-                <Legend />
               </PieChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -260,12 +272,16 @@ export default function AdminDashboard() {
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="subtitle2" fontWeight={600} gutterBottom>Fee Defaulter Watchlist</Typography>
-            <Stack spacing={0.75}>
+            <Stack spacing={1}>
               {feeDefaulters.map((f) => {
                 const student = students.find((s) => s.id === f.student_id);
                 return (
-                  <Box key={f.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Typography variant="body2" fontWeight={500}>{student?.name ?? f.student_id}</Typography>
+                  <Box key={f.id} sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+                    <SeverityAvatar severity="critical" icon={<WarningAmberIcon fontSize="small" />} size={32} />
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="body2" fontWeight={500} noWrap>{student?.name ?? f.student_id}</Typography>
+                      <Typography variant="caption" color="text.secondary">₹{f.amount.toLocaleString()} · {f.fee_type}</Typography>
+                    </Box>
                     <StatusChip status="overdue" />
                   </Box>
                 );
