@@ -57,6 +57,14 @@ export default function StaffDashboard() {
   ];
   const feeStatusForStaffTotal = feeStatusForStaff.reduce((s, d) => s + d.value, 0);
 
+  const paymentMethodLabels: Record<string, string> = {
+    cash: "Cash", card: "Card", online: "Online", bank_transfer: "Bank Transfer",
+  };
+  const recentPayments = [...getFeePayments()]
+    .sort((a, b) => b.payment_date.localeCompare(a.payment_date))
+    .slice(0, 5)
+    .map((p) => ({ ...p, studentName: students.find((s) => s.id === p.student_id)?.name ?? p.student_id }));
+
   const routeUtilization = routes.map((r) => ({
     name: r.name,
     riders: studentTransport.filter((st) => st.route_id === r.id).length,
@@ -162,6 +170,35 @@ export default function StaffDashboard() {
                 </PieChart>
               </ResponsiveContainer>
             </ChartCard>
+          </Grid>
+        )}
+        {canViewFeature(staffRole, "fees") && staffRole === "accountant" && (
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Paper sx={{ p: 2.5, height: "100%" }}>
+              <Typography variant="overline" color="text.secondary" sx={{ fontSize: "0.65rem", display: "block", lineHeight: 1.6 }}>
+                Finance
+              </Typography>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1.5 }}>
+                Recent Fee Collections
+              </Typography>
+              <Stack spacing={1}>
+                {recentPayments.map((p) => (
+                  <Box key={p.id} sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+                    <SeverityAvatar severity="good" icon={<PaymentIcon fontSize="small" />} size={30} />
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="body2" fontWeight={500} noWrap>{p.studentName}</Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {paymentMethodLabels[p.method] ?? p.method} · {p.payment_date}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" fontWeight={700}>₹{p.amount.toLocaleString()}</Typography>
+                  </Box>
+                ))}
+                {recentPayments.length === 0 && (
+                  <Typography variant="body2" color="text.secondary">No payments recorded yet.</Typography>
+                )}
+              </Stack>
+            </Paper>
           </Grid>
         )}
         {staffRole === "transport_manager" && (
