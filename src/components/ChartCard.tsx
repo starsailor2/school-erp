@@ -6,6 +6,13 @@ import { type ReactNode } from "react";
 import { motion } from "motion/react";
 import { motionEasing, motionDuration } from "@/theme/tokens";
 
+interface ChartCardLegendItem {
+  label: string;
+  value: string;
+  percent?: number;
+  color: string;
+}
+
 interface ChartCardProps {
   eyebrow?: string;
   title: string;
@@ -13,10 +20,11 @@ interface ChartCardProps {
   action?: ReactNode;
   height?: number;
   delay?: number;
+  legend?: ChartCardLegendItem[];
   children: ReactNode;
 }
 
-export function ChartCard({ eyebrow, title, subtitle, action, height = 320, delay = 0, children }: ChartCardProps) {
+export function ChartCard({ eyebrow, title, subtitle, action, height = 320, delay = 0, legend, children }: ChartCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -48,6 +56,28 @@ export function ChartCard({ eyebrow, title, subtitle, action, height = 320, dela
           {action}
         </Stack>
         <Box sx={{ flex: 1, minHeight: height, width: "100%" }}>{children}</Box>
+        {legend && legend.length > 0 && (
+          <Stack
+            direction="row"
+            flexWrap="wrap"
+            useFlexGap
+            spacing={1.5}
+            sx={{ mt: 1.5, pt: 1.5, borderTop: "1px solid", borderColor: "divider" }}
+          >
+            {legend.map((item) => (
+              <Stack key={item.label} direction="row" alignItems="center" spacing={0.75}>
+                <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: item.color, flexShrink: 0 }} />
+                <Typography variant="caption" color="text.secondary">
+                  {item.label}
+                </Typography>
+                <Typography variant="caption" fontWeight={700}>
+                  {item.value}
+                  {item.percent !== undefined ? ` · ${item.percent}%` : ""}
+                </Typography>
+              </Stack>
+            ))}
+          </Stack>
+        )}
       </Paper>
     </motion.div>
   );
