@@ -351,7 +351,7 @@ export default function Layout() {
               width: SECONDARY_WIDTH,
               flexShrink: 0,
               "& .MuiDrawer-paper": {
-                width: SECONDARY_WIDTH, boxSizing: "border-box",
+                width: SECONDARY_WIDTH, boxSizing: "border-box", left: RAIL_WIDTH,
                 borderRight: `1px solid ${sidebarTokens.divider}`, mt: "64px", height: "calc(100% - 64px)",
               },
             }}
