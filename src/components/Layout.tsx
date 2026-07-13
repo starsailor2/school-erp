@@ -259,8 +259,9 @@ export default function Layout() {
                           disableRipple
                           onClick={() => handleNav(child.path)}
                           sx={{
-                            pl: 6.5,
-                            mx: 1,
+                            pl: 3,
+                            ml: 4.5,
+                            mr: 1,
                             borderRadius: 1.5,
                             mb: 0.25,
                             minHeight: 40,
