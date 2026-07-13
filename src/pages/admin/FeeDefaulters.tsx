@@ -4,11 +4,14 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import GavelIcon from "@mui/icons-material/Gavel";
+import PhoneIcon from "@mui/icons-material/Phone";
+import EventIcon from "@mui/icons-material/Event";
 import type { SvgIconComponent } from "@mui/icons-material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import { PipelineStepper, type PipelineStep } from "@/components/PipelineStepper";
 import { SeverityAvatar, type Severity } from "@/components/SeverityAvatar";
+import { MetaChip } from "@/components/MetaChip";
 import { fees, students, getClassName } from "@/demo-data";
 
 type Stage = "reminder" | "notice" | "penalty" | "escalate";
@@ -110,11 +113,18 @@ export default function FeeDefaulters() {
               );
             },
           },
-          { key: "phone", label: "Phone" },
           { key: "fee_type", label: "Type" },
           { key: "amount", label: "Amount", render: (f) => `₹${f.amount.toLocaleString()}` },
-          { key: "due_date", label: "Due Date" },
-          { key: "overdueDays", label: "Overdue Days" },
+          {
+            key: "details", label: "Details",
+            render: (f) => (
+              <Stack direction="row" flexWrap="wrap" useFlexGap spacing={0.5}>
+                <MetaChip icon={<PhoneIcon />} label={f.phone} />
+                <MetaChip icon={<EventIcon />} label={f.due_date} />
+                <MetaChip icon={<WarningAmberIcon />} label={`${f.overdueDays}d overdue`} tone="muted" />
+              </Stack>
+            ),
+          },
           { key: "stage", label: "Stage", render: (f) => <Chip label={STAGE_META[f.stage].label} size="small" /> },
           { key: "actions", label: "Actions", render: () => <Button size="small" variant="outlined">Send Reminder</Button> },
         ]}

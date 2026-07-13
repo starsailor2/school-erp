@@ -25,7 +25,7 @@ export function PipelineStepper({ steps }: PipelineStepperProps) {
     status === "done" ? statusTokens.good : status === "active" ? activeColor : undefined;
 
   return (
-    <Stack direction="row" alignItems="flex-start" sx={{ width: "100%" }}>
+    <Stack direction="row" alignItems="flex-start" sx={{ width: "100%", overflowX: "auto", pb: 0.5 }}>
       {steps.map((step, i) => {
         const color = colorFor(step.status);
         const isLast = i === steps.length - 1;

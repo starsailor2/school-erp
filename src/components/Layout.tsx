@@ -79,11 +79,16 @@ export default function Layout() {
   }, [navItems]);
 
   // The active module drives the secondary sidebar: whichever top-level item
-  // owns the current route (its own path, or one of its children's paths).
+  // owns the current route (its own path, one of its children's paths, or a
+  // detail route nested under either — e.g. /admin/students/:id — so drilling
+  // into a record doesn't drop the module's contextual panel back to "Menu").
   const activeItem = useMemo(
     () =>
       navItems.find(
-        (item) => location.pathname === item.path || item.children?.some((c) => location.pathname === c.path)
+        (item) =>
+          location.pathname === item.path ||
+          location.pathname.startsWith(`${item.path}/`) ||
+          item.children?.some((c) => location.pathname === c.path || location.pathname.startsWith(`${c.path}/`))
       ) ?? null,
     [navItems, location.pathname]
   );
@@ -113,7 +118,8 @@ export default function Layout() {
     student: "Student Portal",
   };
 
-  const hasActiveChild = (item: NavItem) => item.children?.some((c) => location.pathname === c.path) ?? false;
+  const hasActiveChild = (item: NavItem) =>
+    item.children?.some((c) => location.pathname === c.path || location.pathname.startsWith(`${c.path}/`)) ?? false;
   const isRailSelected = (item: NavItem) => location.pathname === item.path || hasActiveChild(item);
 
   const railButtonSx = (active: boolean) => ({
