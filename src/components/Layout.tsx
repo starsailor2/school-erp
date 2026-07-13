@@ -135,21 +135,27 @@ export default function Layout() {
                 transition={{ duration: SIDEBAR_TRANSITION_DURATION, ease: SIDEBAR_TRANSITION_EASING }}
                 style={{ overflow: "hidden" }}
               >
-                {item.children.map((child) => (
-                  <ListItemButton
-                    key={child.path}
-                    disableRipple
-                    onClick={() => handleNav(child.path)}
-                    sx={{
-                      pl: 3, ml: 4.5, mr: 1, borderRadius: 1.5, mb: 0.25, minHeight: 34,
-                      color: location.pathname === child.path ? sidebarTokens.activeText : sidebarTokens.muted,
-                      bgcolor: location.pathname === child.path ? sidebarTokens.activeBackground : "transparent",
-                      "&:hover": { bgcolor: sidebarTokens.hoverBackground, color: sidebarTokens.hoverText },
-                    }}
-                  >
-                    <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
-                  </ListItemButton>
-                ))}
+                <Box sx={{ position: "relative" }}>
+                  <Box
+                    aria-hidden
+                    sx={{ position: "absolute", left: 28, top: 4, bottom: 4, width: "1px", bgcolor: sidebarTokens.divider }}
+                  />
+                  {item.children.map((child) => (
+                    <ListItemButton
+                      key={child.path}
+                      disableRipple
+                      onClick={() => handleNav(child.path)}
+                      sx={{
+                        pl: 3, ml: 4.5, mr: 1, borderRadius: 1.5, mb: 0.25, minHeight: 34,
+                        color: location.pathname === child.path ? sidebarTokens.activeText : sidebarTokens.muted,
+                        bgcolor: location.pathname === child.path ? sidebarTokens.activeBackground : "transparent",
+                        "&:hover": { bgcolor: sidebarTokens.hoverBackground, color: sidebarTokens.hoverText },
+                      }}
+                    >
+                      <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
+                    </ListItemButton>
+                  ))}
+                </Box>
               </motion.div>
             )}
           </AnimatePresence>
