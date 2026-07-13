@@ -3,9 +3,11 @@ import {
   TextField, MenuItem, Button,
   Dialog, DialogTitle, DialogContent, DialogActions, Stack,
 } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import StatusChip from "@/components/StatusChip";
+import { CategoryTag } from "@/components/CategoryTag";
 import { students, classes, getClassName } from "@/demo-data";
 import { createStudentRequest } from "@/demo-data/staffOps/studentRequestStore";
 
@@ -73,8 +75,16 @@ export default function StudentTransfer() {
       <DataTable
         columns={[
           { key: "studentName", label: "Student" },
-          { key: "fromClass", label: "From" },
-          { key: "toClass", label: "To" },
+          {
+            key: "transfer", label: "Transfer",
+            render: (t) => (
+              <Stack direction="row" alignItems="center" spacing={0.75}>
+                <CategoryTag label={t.fromClass.replace("Class ", "C")} fullName={t.fromClass} />
+                <ArrowForwardIcon sx={{ fontSize: 14, color: "text.secondary" }} />
+                <CategoryTag label={t.toClass.replace("Class ", "C")} fullName={t.toClass} />
+              </Stack>
+            ),
+          },
           { key: "reason", label: "Reason" },
           { key: "date", label: "Date" },
           {

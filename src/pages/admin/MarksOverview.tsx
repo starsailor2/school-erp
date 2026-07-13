@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MenuItem, TextField, Grid, Chip } from "@mui/material";
 import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
+import { CategoryTag } from "@/components/CategoryTag";
 import { marks, students, classes, exams, getSubjectName, getClassName } from "@/demo-data";
 
 export default function MarksOverview() {
@@ -50,7 +51,10 @@ export default function MarksOverview() {
         pageSize={25}
         columns={[
           { key: "studentName", label: "Student" },
-          { key: "className", label: "Class" },
+          {
+            key: "className", label: "Class",
+            render: (m) => <CategoryTag label={m.className.replace("Class ", "C")} fullName={m.className} />,
+          },
           { key: "examName", label: "Exam" },
           { key: "subject_id", label: "Subject", render: (m) => getSubjectName(m.subject_id) },
           { key: "marks_obtained", label: "Marks", render: (m) => `${m.marks_obtained}/${m.max_marks}` },

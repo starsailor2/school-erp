@@ -4,6 +4,7 @@ import {
 } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
 import { PageHeader } from "@/components/PageHeader";
+import { CategoryTag } from "@/components/CategoryTag";
 import { students, marks, exams, getSubjectName, getClassName } from "@/demo-data";
 
 export default function ReportCards() {
@@ -62,9 +63,12 @@ export default function ReportCards() {
             <Avatar sx={{ width: 56, height: 56, bgcolor: "primary.main" }}>{student.name.charAt(0)}</Avatar>
             <Box>
               <Typography variant="h6">{student.name}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {getClassName(student.class_id)} | Roll No. {student.roll_number} | {student.admission_number}
-              </Typography>
+              <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.5 }}>
+                <CategoryTag label={getClassName(student.class_id).replace("Class ", "C")} fullName={getClassName(student.class_id)} />
+                <Typography variant="body2" color="text.secondary">
+                  Roll No. {student.roll_number} | {student.admission_number}
+                </Typography>
+              </Stack>
             </Box>
           </Box>
           <Divider sx={{ my: 2 }} />
