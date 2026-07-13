@@ -1,8 +1,8 @@
 import {
-  Paper, Typography, Grid, TextField, Button, Stack, Tabs, Tab, MenuItem,
+  Paper, Typography, Grid, TextField, Button, Stack, MenuItem,
   Table, TableHead, TableBody, TableRow, TableCell, Checkbox, Chip,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { PageHeader } from "@/components/PageHeader";
 
@@ -10,8 +10,10 @@ const tabPaths = ["/admin/settings", "/admin/settings/academic-year", "/admin/se
 
 export default function Settings() {
   const location = useLocation();
-  const initialTab = tabPaths.indexOf(location.pathname);
-  const [tab, setTab] = useState(initialTab >= 0 ? initialTab : 0);
+  // Which section renders is driven entirely by the route (the sidebar's
+  // Settings children) - no in-page tab control duplicating that navigation.
+  const tabIndex = tabPaths.indexOf(location.pathname);
+  const tab = tabIndex >= 0 ? tabIndex : 0;
   const [profile, setProfile] = useState({
     schoolName: "Delhi Public School",
     board: "CBSE",
@@ -37,11 +39,6 @@ export default function Settings() {
     { role: "Student", canViewAttendance: true, canEditMarks: false, canSendMessages: false, canViewFees: false, canManageStudents: false },
   ]);
 
-  useEffect(() => {
-    const idx = tabPaths.indexOf(location.pathname);
-    if (idx >= 0) setTab(idx);
-  }, [location.pathname]);
-
   const togglePermission = (roleIdx: number, key: string) => {
     setPermissions((prev) => prev.map((p, i) =>
       i === roleIdx ? { ...p, [key]: !(p as Record<string, boolean | string>)[key] } : p
@@ -57,14 +54,6 @@ export default function Settings() {
           { label: "Settings" },
         ]}
       />
-      <Paper sx={{ mb: 2 }}>
-        <Tabs value={tab} onChange={(_, value) => setTab(value)}>
-          <Tab label="School Profile" />
-          <Tab label="Academic Year" />
-          <Tab label="Permissions" />
-          <Tab label="System Settings" />
-        </Tabs>
-      </Paper>
       <Stack spacing={3}>
         {tab === 0 && (
           <Paper sx={{ p: 3 }}>
