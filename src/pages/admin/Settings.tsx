@@ -111,7 +111,7 @@ export default function Settings() {
                 </TextField>
               </Grid>
             </Grid>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography variant="body2" component="div" color="text.secondary" sx={{ mt: 2 }}>
               Current Academic Year: <Chip label={academicYear.currentYear} size="small" color="primary" /> &nbsp;
               ({academicYear.startDate} to {academicYear.endDate})
             </Typography>
