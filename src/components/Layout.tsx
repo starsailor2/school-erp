@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
@@ -307,7 +307,9 @@ export default function Layout() {
         }}
       >
         <Box sx={{ maxWidth: 1600, mx: "auto" }}>
-          <Outlet />
+          <Suspense fallback={null}>
+            <Outlet />
+          </Suspense>
         </Box>
       </Box>
     </Box>
