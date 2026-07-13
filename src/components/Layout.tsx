@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useRef, useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
@@ -80,6 +80,15 @@ export default function Layout() {
     window.addEventListener("erp-notifications-updated", onUpdate);
     return () => window.removeEventListener("erp-notifications-updated", onUpdate);
   }, []);
+
+  // The scrollable area is this main Box (overflow: auto), not the window -
+  // React Router doesn't reset scroll position on client-side navigation the
+  // way a real page load does, so without this a new page can render already
+  // scrolled partway down from wherever the previous page was left.
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    mainRef.current?.scrollTo(0, 0);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -302,13 +311,14 @@ export default function Layout() {
 
       <Box
         component="main"
+        ref={mainRef}
         sx={{
           flexGrow: 1,
           minWidth: 0,
           p: 3,
           mt: "64px",
           bgcolor: "background.default",
-          minHeight: "calc(100vh - 64px)",
+          height: "calc(100vh - 64px)",
           overflow: "auto",
         }}
       >
