@@ -59,7 +59,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Academics", path: "/admin/academics", icon: <ClassIcon />, group: "Academics",
+          label: "Academics", path: "/admin/academics/classes", icon: <ClassIcon />, group: "Academics",
           children: [
             { label: "Classes", path: "/admin/academics/classes" },
             { label: "Sections", path: "/admin/academics/sections" },
@@ -68,7 +68,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Attendance", path: "/admin/attendance", icon: <EventNoteIcon />, group: "Academics",
+          label: "Attendance", path: "/admin/attendance/students", icon: <EventNoteIcon />, group: "Academics",
           children: [
             { label: "Student Attendance", path: "/admin/attendance/students" },
             { label: "Teacher Attendance", path: "/admin/attendance/teachers" },
@@ -130,7 +130,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Communication", path: "/admin/communication", icon: <CampaignIcon />, group: "Engagement",
+          label: "Communication", path: "/admin/communication/announcements", icon: <CampaignIcon />, group: "Engagement",
           children: [
             { label: "Announcements", path: "/admin/communication/announcements" },
             { label: "Notices", path: "/admin/communication/notices" },
@@ -147,7 +147,7 @@ export function getNavItems(role: Role, teacherType?: TeacherType, staffRole?: S
           ],
         },
         {
-          label: "Reports", path: "/admin/reports", icon: <AssessmentIcon />, group: "Administration",
+          label: "Reports", path: "/admin/reports/academic", icon: <AssessmentIcon />, group: "Administration",
           children: [
             { label: "Academic Reports", path: "/admin/reports/academic" },
             { label: "Attendance Reports", path: "/admin/reports/attendance" },
