@@ -31,19 +31,15 @@ import { useColorMode } from "@/context/ColorModeContext";
 import TeacherTypeSwitcher from "@/components/TeacherTypeSwitcher";
 import StaffRoleSwitcher from "@/components/StaffRoleSwitcher";
 import { getNavItems, type NavItem } from "@/components/navigation";
-import { SecondarySidebar } from "@/components/SecondarySidebar";
 import { getUnreadNotificationCount } from "@/demo-data/communication/notificationStore";
-import { getSidebarTokens, motionEasing, motionDuration, motionEasingCss } from "@/theme/tokens";
+import { getSidebarTokens } from "@/theme/tokens";
 
-const RAIL_WIDTH = 72;
-const SECONDARY_WIDTH = 240;
-const MOBILE_DRAWER_WIDTH = 280;
+const SIDEBAR_WIDTH = 260;
 const SIDEBAR_TRANSITION_DURATION = 0.3;
 const SIDEBAR_TRANSITION_EASING = [0.22, 1, 0.36, 1] as const;
-// Chrome icon size (nav rail, secondary sidebar, mobile drawer, AppBar utility
-// buttons): 20px per the density amendment — structural icons are smaller and
-// monochrome, distinct from the 24px+ domain-colored icons on content surfaces
-// like StatCard.
+// Chrome icon size (sidebar rows, AppBar utility buttons): 20px per the
+// density amendment — structural icons are smaller and monochrome, distinct
+// from the 24px+ domain-colored icons on content surfaces like StatCard.
 const CHROME_ICON_SX = { "& .MuiSvgIcon-root": { fontSize: 20 } };
 
 export default function Layout() {
@@ -78,29 +74,6 @@ export default function Layout() {
     return order.map((g) => ({ group: g, items: map.get(g)! }));
   }, [navItems]);
 
-  // The active module drives the secondary sidebar: whichever top-level item
-  // owns the current route. Exact matches (own path or a listed child's path)
-  // are checked first and win outright. Prefix matching — for a detail route
-  // nested under a module, e.g. /admin/students/:id, that isn't itself a
-  // listed child — is a fallback restricted to items that actually have
-  // children: without that restriction, a leaf item with a short path (e.g.
-  // Dashboard at "/admin") prefix-matches every other admin route too, and
-  // being first in the array, would always win over the real owning module.
-  const activeItem = useMemo(() => {
-    const exact = navItems.find(
-      (item) => location.pathname === item.path || item.children?.some((c) => location.pathname === c.path)
-    );
-    if (exact) return exact;
-    return (
-      navItems.find(
-        (item) =>
-          item.children &&
-          (location.pathname.startsWith(`${item.path}/`) ||
-            item.children.some((c) => location.pathname.startsWith(`${c.path}/`)))
-      ) ?? null
-    );
-  }, [navItems, location.pathname]);
-
   const [unreadNotifications, setUnreadNotifications] = useState(() => getUnreadNotificationCount());
   useEffect(() => {
     const onUpdate = () => setUnreadNotifications(getUnreadNotificationCount());
@@ -128,55 +101,10 @@ export default function Layout() {
 
   const hasActiveChild = (item: NavItem) =>
     item.children?.some((c) => location.pathname === c.path || location.pathname.startsWith(`${c.path}/`)) ?? false;
-  const isRailSelected = (item: NavItem) => location.pathname === item.path || hasActiveChild(item);
+  const isSelected = (item: NavItem) => location.pathname === item.path || hasActiveChild(item);
 
-  const railButtonSx = (active: boolean) => ({
-    mx: 1,
-    borderRadius: 1.5,
-    mb: 0.25,
-    minHeight: 44,
-    justifyContent: "center",
-    px: 1.5,
-    color: active ? sidebarTokens.activeText : sidebarTokens.muted,
-    bgcolor: active ? sidebarTokens.activeBackground : "transparent",
-    transition: `background-color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}, color ${SIDEBAR_TRANSITION_DURATION}s ${motionEasingCss}`,
-    "&:hover": { bgcolor: sidebarTokens.hoverBackground, color: sidebarTokens.hoverText },
-  });
-
-  const railContent = (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", bgcolor: sidebarTokens.background }}>
-      <Box
-        sx={{
-          p: 2,
-          minHeight: 84,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderBottom: `1px solid ${sidebarTokens.divider}`,
-        }}
-      >
-        <Avatar sx={{ bgcolor: sidebarTokens.text, color: sidebarTokens.background, width: 36, height: 36, fontSize: 14, fontWeight: 700 }}>
-          {user?.name.charAt(0) ?? "U"}
-        </Avatar>
-      </Box>
-      <List sx={{ flex: 1, overflow: "auto", py: 1 }} component="nav">
-        {navItems.map((item) => (
-          <Tooltip key={item.path} title={item.label} placement="right">
-            <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: motionDuration, ease: motionEasing }}>
-              <ListItemButton disableRipple onClick={() => handleNav(item.path)} sx={railButtonSx(isRailSelected(item))}>
-                <ListItemIcon sx={{ minWidth: "auto", color: "inherit", ...CHROME_ICON_SX }}>
-                  {item.icon}
-                </ListItemIcon>
-              </ListItemButton>
-            </motion.div>
-          </Tooltip>
-        ))}
-      </List>
-    </Box>
-  );
-
-  const renderMobileNavItem = (item: NavItem) => {
-    const selected = isRailSelected(item);
+  const renderNavItem = (item: NavItem) => {
+    const selected = isSelected(item);
     const iconSx = { minWidth: 36, color: "inherit", ...CHROME_ICON_SX };
     if (item.children) {
       const open = openMenus[item.label] ?? hasActiveChild(item);
@@ -189,6 +117,7 @@ export default function Layout() {
               mx: 1, borderRadius: 1.5, mb: 0.25, minHeight: 44,
               color: selected ? sidebarTokens.activeText : sidebarTokens.text,
               bgcolor: selected ? sidebarTokens.activeBackground : "transparent",
+              "&:hover": { bgcolor: sidebarTokens.hoverBackground, color: sidebarTokens.hoverText },
             }}
           >
             <ListItemIcon sx={iconSx}>{item.icon}</ListItemIcon>
@@ -215,6 +144,7 @@ export default function Layout() {
                       pl: 3, ml: 4.5, mr: 1, borderRadius: 1.5, mb: 0.25, minHeight: 34,
                       color: location.pathname === child.path ? sidebarTokens.activeText : sidebarTokens.muted,
                       bgcolor: location.pathname === child.path ? sidebarTokens.activeBackground : "transparent",
+                      "&:hover": { bgcolor: sidebarTokens.hoverBackground, color: sidebarTokens.hoverText },
                     }}
                   >
                     <ListItemText primary={child.label} primaryTypographyProps={{ fontSize: 13 }} />
@@ -235,6 +165,7 @@ export default function Layout() {
           mx: 1, borderRadius: 1.5, mb: 0.25, minHeight: 44,
           color: selected ? sidebarTokens.activeText : sidebarTokens.text,
           bgcolor: selected ? sidebarTokens.activeBackground : "transparent",
+          "&:hover": { bgcolor: sidebarTokens.hoverBackground, color: sidebarTokens.hoverText },
         }}
       >
         <ListItemIcon sx={iconSx}>{item.icon}</ListItemIcon>
@@ -243,7 +174,7 @@ export default function Layout() {
     );
   };
 
-  const mobileDrawerContent = (
+  const sidebarContent = (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%", bgcolor: sidebarTokens.background }}>
       <Box sx={{ p: 2, minHeight: 84, display: "flex", alignItems: "center", gap: 1.5, borderBottom: `1px solid ${sidebarTokens.divider}` }}>
         <Avatar sx={{ bgcolor: sidebarTokens.text, color: sidebarTokens.background, width: 36, height: 36, fontSize: 14, fontWeight: 700 }}>
@@ -273,7 +204,7 @@ export default function Layout() {
                 {group}
               </Typography>
             )}
-            {items.map(renderMobileNavItem)}
+            {items.map(renderNavItem)}
           </Box>
         ))}
       </List>
@@ -342,43 +273,25 @@ export default function Layout() {
           variant="temporary"
           open={mobileOpen}
           onClose={() => setMobileOpen(false)}
-          sx={{ "& .MuiDrawer-paper": { width: MOBILE_DRAWER_WIDTH, boxSizing: "border-box" } }}
+          sx={{ "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH, boxSizing: "border-box" } }}
           ModalProps={{ keepMounted: true }}
         >
-          {mobileDrawerContent}
+          {sidebarContent}
         </Drawer>
       ) : (
-        <>
-          <Drawer
-            variant="permanent"
-            sx={{
-              width: RAIL_WIDTH,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": { width: RAIL_WIDTH, boxSizing: "border-box", borderRight: "none", mt: "64px", height: "calc(100% - 64px)" },
-            }}
-          >
-            {railContent}
-          </Drawer>
-          <Drawer
-            variant="permanent"
-            sx={{
-              width: SECONDARY_WIDTH,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
-                width: SECONDARY_WIDTH, boxSizing: "border-box", left: RAIL_WIDTH,
-                borderRight: `1px solid ${sidebarTokens.divider}`, mt: "64px", height: "calc(100% - 64px)",
-              },
-            }}
-          >
-            <SecondarySidebar
-              activeItem={activeItem}
-              groups={groups}
-              sidebarTokens={sidebarTokens}
-              currentPath={location.pathname}
-              onNavigate={handleNav}
-            />
-          </Drawer>
-        </>
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: SIDEBAR_WIDTH,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: SIDEBAR_WIDTH, boxSizing: "border-box",
+              borderRight: `1px solid ${sidebarTokens.divider}`, mt: "64px", height: "calc(100% - 64px)",
+            },
+          }}
+        >
+          {sidebarContent}
+        </Drawer>
       )}
 
       <Box
