@@ -33,7 +33,7 @@ export function DataTable<T extends object>({
   rows,
   onRowClick,
   title,
-  dense = false,
+  dense = true,
   pagination = false,
   pageSize = 10,
   emptyTitle = "No data found",
